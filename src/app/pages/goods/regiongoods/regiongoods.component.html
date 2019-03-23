@@ -1,0 +1,816 @@
+<app-search-bar [queryList]='queryList' [searchStart]="searchStart" (searchSubOnlineCategories)="getSelection('online_cat_code',$event)"
+  (childemit)="search($event)"></app-search-bar>
+
+<div class="horizontal-scroll">
+  <div class="zh-serchbox textcenter">
+    <span class="fl">您已选择了全部{{checkNum}}条商品</span>
+    <button nz-button nzType="default" *ngIf="plszjyqd" style="margin-right:2px;" (click)="setallchannel(channelsAllmodelContent,channelsAllmodelFooter)">批量设置经营渠道</button>
+
+    <nz-dropdown [nzTrigger]="'click'">
+      <button nz-button nz-dropdown>导入
+        <i nz-icon type="down"></i>
+      </button>
+      <ul nz-menu>
+        <!-- <li nz-menu-item (click)="showModel('regionpricedrmodel')"> -->
+        <li nz-menu-item (click)="showRegionpricedrModel(regionpricedrmodelContent)">
+          <a>门店商品价格库存导</a>
+        </li>
+        <li nz-menu-item (click)="showRegionStatedrModel(regionStatedrmodelContent)">
+          <a> 门店商品状态导入</a>
+        </li>
+        <li nz-menu-item (click)="showStorechannelModel(storechannelmodalContent)">
+          <a>门店经营渠道导入</a>
+        </li>
+        <li nz-menu-item>
+          <app-upload [onUploaded]="autoUploadedPlu" nzLimit="3" [uploadname]="'门店PLU码导入'" [uploadtype]="'text'"></app-upload>
+
+        </li>
+        <li nz-menu-item>
+          <app-upload [onUploaded]="autoUploadedCx" nzLimit="3" [uploadname]="'促销商品导入'" [uploadtype]="'text'"></app-upload>
+          <!-- <a>促销商品导入</a> -->
+        </li>
+        <li nz-menu-item (click)="showMemberPriceModel(memberpricemodelContent)">
+          <a>会员价导入</a>
+        </li>
+      </ul>
+    </nz-dropdown>
+    <span class="fr">
+      <span class="item dot-top"></span>线上属性&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+      <span class="item dot-bottom"></span>线下属性
+    </span>
+
+    <a class="ant-btn" href="http://www.m-glory.net/newadmin/templete/门店商品模板.zip">
+      下载模板
+    </a>
+    <!-- </button> -->
+    <button nz-button nzType="default" *ngIf="dcdcsvwj" (click)="addexport()">导出到CSV文件</button>
+
+
+
+  </div>
+  <my-page [params]='parem' [pagecount]='pageSize' [changecount]='pageSize.count' (childparams)="childparams($event)"></my-page>
+  <nz-table #nzTable [nzData]="itemRegions" [nzShowPagination]="false" [nzFrontPagination]="false" nzBordered>
+    <thead>
+      <tr>
+        <th>
+          <span class="zh-setallcheck">
+            全选
+            <div class="zh-selectlist">
+              <div>
+                <label nz-checkbox [(ngModel)]="checkAllGoods" (click)="checkAll()">选择全部商品</label>
+              </div>
+              <div>
+                <label nz-checkbox [(ngModel)]="checkCurrentList" (click)="checkCur()">选择本页商品</label>
+              </div>
+            </div>
+          </span>
+        </th>
+        <th>商品</th>
+        <th>品名</th>
+        <th>品类</th>
+        <th>价格</th>
+        <th>库存</th>
+        <th>刷新</th>
+        <th>渠道</th>
+        <th>状态</th>
+        <th>线下售卖状态</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let item of nzTable.data;let i=index" class="tbody-tr">
+
+
+        <td nzShowCheckbox [nzDisabled]="checkAllGoods" [(nzChecked)]="item.sfxz" (click)="setcheckbox(item.sfxz)"></td>
+        <td class="td-btns">
+          <div class="zh-btns">
+            <span *ngIf="!item.set_combo">
+              <button nz-button nzType="primary" nzSize="small" (click)="getauditing(item,auditingmodalContent)" *ngIf="jhbt">稽核</button>
+            </span>
+            <button nz-button nzType="primary" nzSize="small" (click)="prodetails(item,goodsInfoContent)" *ngIf="spxqbt">商品详情</button>
+            <span *ngIf="!item?.must_sale">
+              <button nz-button nzType="primary" nzSize="small" (click)="setchannel(item,channelsmodelContent)" *ngIf="szjyqdbt">设置经营渠道</button>
+            </span>
+            <span *ngIf="!item.set_combo">
+              <button nz-button nzType="primary" nzSize="small" (click)="getitemregionlogs(item,regionlogsmodelContent)"
+                *ngIf="ckmdrzbt">查看门店日志</button>
+              <button nz-button nzType="primary" nzSize="small" (click)="inventorychangelog(item,inventorychangelogsContent)"
+                *ngIf="ckkcrzbt">查看库存日志</button>
+              <!-- <button nz-button nzType="primary" nzSize="small" (click)="getchannellogs(item,channelslogsmodel)" *ngIf="ckqdjhrzbt"
+                style="display:none">查看渠道交互日志</button> -->
+              <!-- <button class="btn btn-warning btn-xs" (click)="editstatus(item)">修改状态</button> -->
+              <button nz-button nzType="primary" nzSize="small" (click)="getchannellogsinfos(item,channelslogsContent)"
+                *ngIf="ckqdjhrzbt">渠道日志</button>
+
+              <span *ngIf="!item.set_combo">
+                <button nz-button nzType="primary" nzSize="small" *ngIf="item.receive_stock=='-1'&&zmkcbt" (click)="fillStock(item)">置满库存</button>
+                <button nz-button nzType="primary" nzSize="small" *ngIf="(item.receive_price=='-1'||item.receive_stock=='-1')&&kcjgxgbt"
+                  (click)="editkcjg(item,changepriceContent)">库存价格修改
+                </button>
+              </span>
+              <nz-dropdown>
+                <button nz-button nz-dropdown><span>同步</span> <i nz-icon type="down"></i></button>
+                <ul nz-menu>
+                  <li nz-menu-item (click)="syncprice(item,1)">同步线下价格</li>
+                  <li nz-menu-item (click)="syncprice(item,2)">同步线下库存</li>
+                  <li nz-menu-item (click)="syncprice(item,3)">同步线上价格</li>
+                  <li nz-menu-item (click)="syncprice(item,4)">同步线上库存</li>
+                </ul>
+              </nz-dropdown>
+            </span>
+          </div>
+
+          <div style="margin-bottom: 5px;" *ngIf="item?.item_code">
+            编码:{{item?.item_code}}
+          </div>
+          <div style="margin-bottom: 5px;" *ngIf="item?.barcode">
+            条码:{{item?.barcode}}
+          </div>
+          <div *ngIf="item?.plu_code">
+            PLU:{{item?.plu_code}}
+          </div>
+        </td>
+        <td>
+          <div class="zh-mb5" *ngIf="item?.m_desc" style="line-height: 20px;margin-bottom: 3px;">
+            <span class="item dot-top"></span>{{item?.m_desc}}</div>
+          <div *ngIf="item?.item_name" style="line-height: 20px;">
+            <span class="item dot-bottom"></span>{{item?.item_name}}</div>
+        </td>
+        <td>
+          <div class="zh-mb5" style="line-height: 20px;margin-bottom: 3px;" *ngIf="item.online_cat_name">
+            <span class="item dot-top"></span>{{item?.online_cat_name}}</div>
+        </td>
+        <td>
+          <span *ngIf="!item.set_combo">
+            <div style="margin-bottom: 5px;" [class.lineth]="item.reference_price!=item.sale_price">市价:{{item?.reference_price}}</div>
+            <div style="margin-bottom: 5px;">售价:{{item?.sale_price}}</div>
+            <div style="margin-bottom: 5px;">线下价:{{item?.erp_price}}</div>
+            <div>会员价:{{item?.vip_price}}</div>
+          </span>
+          <!-- 查看多规格价格库存 -->
+          <span *ngIf="item.set_combo==='1'">
+            <a class="goodstoggle" (click)="pm_toggledetail(item,$event,i)">
+              <span *ngIf="!pm_zsdgg[i]"> 查看价格
+                <!-- <i class="anticon anticon-down"></i> -->
+              </span>
+              <span *ngIf="pm_zsdgg[i]"> 收起
+                <!-- <i class="anticon anticon-up"></i> -->
+              </span>
+            </a>
+          </span>
+        </td>
+
+        <td width="5%">
+          <span *ngIf="!item.set_combo">
+            <div class="zh-mb5" style="line-height: 20px;margin-bottom: 3px;">
+              <span class="item dot-top"></span>{{item?.available_qty}}</div>
+            <div style="line-height: 20px;">
+              <span class="item dot-bottom"></span>{{item?.erp_qty}}</div>
+          </span>
+          <!-- 查看多规格价格库存 -->
+          <span *ngIf="item.set_combo==='1'">
+            <a class="goodstoggle" (click)="pm_toggledetail(item,$event,i)">
+              <span *ngIf="!pm_zsdgg[i]"> 查看库存
+                <!-- <i class="anticon anticon-down"></i> -->
+              </span>
+              <span *ngIf="pm_zsdgg[i]"> 收起
+                <!-- <i class="anticon anticon-up"></i> -->
+              </span>
+            </a>
+          </span>
+        </td>
+        <td>
+          <p *ngIf="item.region_time" style="margin-bottom: 5px;">售价:{{item?.region_time}}</p>
+          <p style="margin-bottom: 5px;" *ngIf="item.stock_time">库存:{{item?.stock_time}}</p>
+          <p style="margin-bottom: 5px;" *ngIf="item.manual_date">手工下架时间:{{item?.manual_date |
+            date:'yyyy-MM-dd'}}</p>
+          <p style="margin-bottom: 5px;" *ngIf="item.status_time">手工停售时间:{{item?.status_time |
+            date:'yyyy-MM-dd'}}</p>
+          <p style="margin-bottom: 5px;" *ngIf="item.oper_user">手工下架操作人:{{item?.oper_user}}</p>
+        </td>
+        <td width="14%">
+          <div style="margin-bottom: 5px;">经营:
+            <span style="margin-bottom:5px;display: inline-block;" *ngFor="let channel of item.channelwhi" [ngSwitch]="channel">
+              <label *ngSwitchCase="'美团外卖'" class="label label-success" style="background:#eaae17;">美</label>
+              <label *ngSwitchCase="'饿了么星选'" class="label label-success" style="background:#d8112f;">星</label>
+              <label *ngSwitchCase="'饿了么'" class="label label-success" style="background:#2e82c5;">饿</label>
+              <label *ngSwitchCase="'京东到家'" class="label label-success" style="background:#00833f;">京</label>
+              <label *ngSwitchCase="'京东商城'" class="label label-success" style="background:#f00;">京</label>
+              <label *ngSwitchCase="'福州电信'" class="label label-success" style="background:#ed6d02;">福</label>
+              <label *ngSwitchCase="'银座云生活'" class="label label-success" style="background:#e60012;">银</label>
+              <label *ngSwitchCase="'有赞'" class="label label-success" style="background:#2c3a46;">赞</label>
+              <label *ngSwitchCase="'饿百零售'" class="label label-success" style="background:#b2d1f3;color:#067ad8">饿
+                <span style="color:#d8112f;">百</span>
+              </label>
+              <label *ngSwitchCase="'美团外卖餐饮'" class="label label-success" style="background:#eaae17;">餐</label>
+              <label *ngSwitchCase="'美团扫码购'" class="label label-success" style="background:#eaae17;">扫</label>
+              <label *ngSwitchCase="'轻松购'" class="label label-success" style="background:#30c749;">轻</label>
+              <label *ngSwitchCase="'饿了么餐饮'" class="label label-success" style="background:#2e82c5;">饿餐</label>
+            </span>
+          </div>
+          <div style="margin-bottom: 5px;">上线:
+            <span style="margin-bottom:5px;display: inline-block;" *ngFor="let channel of item.onlinechannel"
+              [ngSwitch]="channel">
+              <label *ngSwitchCase="'美团外卖'" class="label label-success" style="background:#eaae17;">美</label>
+              <label *ngSwitchCase="'饿了么星选'" class="label label-success" style="background:#d8112f;">星</label>
+              <label *ngSwitchCase="'饿了么'" class="label label-success" style="background:#2e82c5;">饿</label>
+              <label *ngSwitchCase="'京东到家'" class="label label-success" style="background:#00833f;">京</label>
+              <label *ngSwitchCase="'京东商城'" class="label label-success" style="background:#f00;">京</label>
+              <label *ngSwitchCase="'福州电信'" class="label label-success" style="background:#ed6d02;">福</label>
+              <label *ngSwitchCase="'银座云生活'" class="label label-success" style="background:#e60012;">银</label>
+              <label *ngSwitchCase="'有赞'" class="label label-success" style="background:#2c3a46;">赞</label>
+              <label *ngSwitchCase="'饿百零售'" class="label label-success" style="background:#b2d1f3;color:#067ad8">饿
+                <span style="color:#d8112f;">百</span>
+              </label>
+              <label *ngSwitchCase="'美团外卖餐饮'" class="label label-success" style="background:#eaae17;">餐</label>
+              <label *ngSwitchCase="'美团扫码购'" class="label label-success" style="background:#eaae17;">扫</label>
+              <label *ngSwitchCase="'轻松购'" class="label label-success" style="background:#30c749;">轻</label>
+              <label *ngSwitchCase="'饿了么餐饮'" class="label label-success" style="background:#2e82c5;">饿餐</label>
+            </span>
+          </div>
+          <div>活动:
+            <span style="margin-bottom:5px;display: inline-block;" *ngFor="let channel of item.hdchannel" [ngSwitch]="channel">
+              <label *ngSwitchCase="'美团外卖'" class="label label-success" style="background:#eaae17;">美</label>
+              <label *ngSwitchCase="'饿了么星选'" class="label label-success" style="background:#d8112f;">星</label>
+              <label *ngSwitchCase="'饿了么'" class="label label-success" style="background:#2e82c5;">饿</label>
+              <label *ngSwitchCase="'京东到家'" class="label label-success" style="background:#00833f;">京</label>
+              <label *ngSwitchCase="'京东商城'" class="label label-success" style="background:#f00;">京</label>
+              <label *ngSwitchCase="'福州电信'" class="label label-success" style="background:#ed6d02;">福</label>
+              <label *ngSwitchCase="'银座云生活'" class="label label-success" style="background:#e60012;">银</label>
+              <label *ngSwitchCase="'有赞'" class="label label-success" style="background:#2c3a46;">赞</label>
+              <label *ngSwitchCase="'饿百零售'" class="label label-success" style="background:#b2d1f3;color:#067ad8">饿
+                <span style="color:#d8112f;">百</span>
+              </label>
+              <label *ngSwitchCase="'美团外卖餐饮'" class="label label-success" style="background:#eaae17;">餐</label>
+              <label *ngSwitchCase="'美团扫码购'" class="label label-success" style="background:#eaae17;">扫</label>
+              <label *ngSwitchCase="'轻松购'" class="label label-success" style="background:#30c749;">轻</label>
+              <label *ngSwitchCase="'饿了么餐饮'" class="label label-success" style="background:#2e82c5;">饿餐</label>
+            </span>
+          </div>
+        </td>
+
+        <td width="9%">
+          <span *ngIf="!item?.must_sale">
+
+            <button nz-button [nzType]="item.status==='1'?'primary':'danger'" nzSize="small" *ngIf="item.status&&smbt"
+              (click)="editstatus1(item,1)">
+              {{item.status1}}
+            </button>
+            <button nz-button [nzType]="item.sale_status==='1'?'primary':'danger'" nzSize="small" *ngIf="item.status&&sjbt"
+              (click)="editstatus1(item,2)">
+              {{item.sale_status1}}
+            </button>
+            <span *ngIf="!item.set_combo">
+              <button nz-button [nzType]="item.receive_stock==='1'?'primary':'danger'" nzSize="small" *ngIf="item.receive_stock&&jkcbt"
+                (click)="editstatus1(item,3)">
+                {{item.receive_stock1}}
+              </button>
+              <button nz-button [nzType]="item.receive_price==='1'?'primary':'danger'" nzSize="small" *ngIf="item.receive_price&&jjgbt"
+                (click)="editstatus1(item,4)">
+                {{item.receive_price1}}
+              </button>
+            </span>
+          </span>
+        </td>
+
+        <td width="8%" style="text-align: center;">
+          <span *ngIf="item.erp_status==='1'">
+            售卖
+          </span>
+          <span *ngIf="item.erp_status==='-1'">
+            停售
+          </span>
+        </td>
+
+      </tr>
+    </tbody>
+  </nz-table>
+
+  <!-- 批量设置经营渠道 -->
+  <ng-template #channelsAllmodelContent>
+    <nz-table nzSize="small" nzHideOnSinglePage="true" #channelTable [nzData]="regionchannel">
+      <thead>
+        <tr>
+          <th></th>
+          <th>经营渠道</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of channelTable.data">
+          <td nzShowCheckbox [(nzChecked)]="item.sfxz"></td>
+          <td>{{item.name}}</td>
+        </tr>
+      </tbody>
+    </nz-table>
+  </ng-template>
+
+
+  <!-- 门店商品价格导入 -->
+  <ng-template #regionpricedrmodelContent>
+    <div class="model-content">
+      <div class="model-left">
+        <div>第一步：选择门店</div>
+        <nz-table nzSize="small" nzHideOnSinglePage="true" #basicTable [nzData]="storelist">
+          <thead>
+            <tr>
+              <th nzShowCheckbox #checkValue (click)="setimportallstore(checkValue)"></th>
+              <th>门店名称</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of basicTable.data">
+              <td nzShowCheckbox [(nzChecked)]="item.sfxz" (click)="checkList(checkValue)"></td>
+              <td>{{item.codename}}</td>
+            </tr>
+          </tbody>
+        </nz-table>
+      </div>
+      <div class="model-right">
+        <div>第二步：选择文件</div>
+        <app-upload [onUploaded]="uploaded" nzLimit="3" [showuploadlist]="true"></app-upload>
+      </div>
+      <div class="clear"></div>
+    </div>
+  </ng-template>
+
+
+  <!-- 门店商品状态导入 -->
+  <ng-template #regionStatedrmodelContent>
+    <div class="model-content">
+      <div class="model-left">
+        <div>第一步：选择门店</div>
+        <nz-table nzSize="small" nzHideOnSinglePage="true" #basicTable [nzData]="storelist">
+          <thead>
+            <tr>
+              <th nzShowCheckbox #checkValue (click)="setimportallstore(checkValue)"></th>
+              <th>门店名称</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of basicTable.data">
+              <td nzShowCheckbox [(nzChecked)]="item.sfxz" (click)="checkList(checkValue)"></td>
+              <td>{{item.codename}}</td>
+            </tr>
+          </tbody>
+        </nz-table>
+      </div>
+      <div class="model-right">
+        <div>第二步：选择文件</div>
+        <app-upload [onUploaded]="uploaded" nzLimit="3" [showuploadlist]="true"></app-upload>
+      </div>
+      <div class="clear"></div>
+    </div>
+  </ng-template>
+
+  <!-- 门店经营渠道导入 -->
+
+  <ng-template #storechannelmodalContent>
+    <div class="model-content-channel">
+      <div class="model-left-1">
+        <div>第一步：选择渠道</div>
+        <nz-table nzSize="small" nzHideOnSinglePage="true" #basicTable1 [nzData]="regionchannel">
+          <thead>
+            <tr>
+              <th></th>
+              <th>渠道名称</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of basicTable1.data">
+              <td nzShowCheckbox [(nzChecked)]="item.sfxz"></td>
+              <td>{{item.name}}</td>
+            </tr>
+          </tbody>
+        </nz-table>
+      </div>
+      <div class="model-middle-2">
+        <div>第二步：选择门店</div>
+        <nz-table nzSize="small" nzHideOnSinglePage="true" #basicTable2 [nzData]="storelist">
+          <thead>
+            <tr>
+              <th nzShowCheckbox #checkValue (click)="setimportallstore(checkValue)"></th>
+              <th>门店名称</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of basicTable2.data">
+              <td nzShowCheckbox [(nzChecked)]="item.sfxz" (click)="checkList(checkValue)"></td>
+              <td>{{item.codename}}</td>
+            </tr>
+          </tbody>
+        </nz-table>
+      </div>
+      <div class="model-right-3">
+        <div>第三步：选择文件</div>
+        <app-upload [onUploaded]="uploaded" nzLimit="3" [showuploadlist]="true"></app-upload>
+      </div>
+      <div class="clear"></div>
+    </div>
+
+  </ng-template>
+
+
+  <!-- 会员价导入 -->
+  <ng-template #memberpricemodelContent>
+    <div class="model-content">
+      <div class="model-left">
+        <div>第一步：选择门店</div>
+        <nz-table nzSize="small" nzHideOnSinglePage="true" #basicTable [nzData]="storelist">
+          <thead>
+            <tr>
+              <th nzShowCheckbox #checkValue (click)="setimportallstore(checkValue)"></th>
+              <th>门店名称</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of basicTable.data">
+              <td nzShowCheckbox [(nzChecked)]="item.sfxz" (click)="checkList(checkValue)"></td>
+              <td>{{item.codename}}</td>
+            </tr>
+          </tbody>
+        </nz-table>
+      </div>
+      <div class="model-right">
+        <div>第二步：选择文件</div>
+        <app-upload [onUploaded]="uploaded" nzLimit="3" [showuploadlist]="true"></app-upload>
+      </div>
+      <div class="clear"></div>
+    </div>
+  </ng-template>
+
+  <!--  稽核信息 -->
+  <ng-template #auditingmodalContent>
+    <div class="modal-body" style="max-height: 660px;overflow-y: scroll;">
+      <div style="text-align: left;padding-left: 10px;padding-bottom:10px;font-weight: bold;">
+        <span style="margin-right:30px;">门店编码:
+          <b style="color:#f00;">{{headpro?.region_code}}</b>
+        </span>
+        <span style="margin-right:30px;">商品编码:
+          <b style="color:#f00;">{{headpro?.item_code}}</b>
+        </span>
+        <span style="margin-right:30px;">商品条码:
+          <b style="color:#f00;">{{headpro?.barcode}}</b>
+        </span>
+      </div>
+    </div>
+    <nz-table nzSize="small" nzHideOnSinglePage="true" [nzNoResult]="errortip" #auditingTable [nzData]="auditinglists">
+      <thead>
+        <tr>
+          <th></th>
+          <th>品名规格</th>
+          <th>价格</th>
+          <th>牵牛花渠道价格</th>
+          <th>库存</th>
+          <th>上下架</th>
+          <th>渠道加价率</th>
+          <th>安全库存</th>
+          <th>库存共享率</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of auditingTable.data">
+          <td>
+            <my-channeltags [getchannel]="item.channel"></my-channeltags>
+          </td>
+          <td>{{item.item_name}}</td>
+          <td>{{item.price}}</td>
+          <td>{{item.channel_price}}</td>
+          <td>{{item.stock}}</td>
+          <td [ngSwitch]="item.sale_status">
+            <span *ngSwitchCase="1" style="color:#00FF00">上架</span>
+            <span *ngSwitchCase="2" style="color:#f00;">下架</span>
+          </td>
+          <td>{{item.adjust_rate}}</td>
+          <td>{{item.safeQty}}</td>
+          <td>{{item.kcgxl}}</td>
+
+        </tr>
+      </tbody>
+    </nz-table>
+  </ng-template>
+
+
+
+  <!-- 商品详情 -->
+  <ng-template #goodsInfoContent>
+    <div>
+      <div nz-row class="search-bar">
+        <div nz-col nzXs="12" nzSm="8" nzMd="8" nzLg="8" nzXl="8">
+          <label>商品图片</label>
+          <span>
+            <img src="{{headpro?.img_url}}" style="width:100px;height:100px;border:1px solid transparent;margin:0 auto;">
+          </span>
+        </div>
+        <div nz-col nzXs="12" nzSm="8" nzMd="8" nzLg="8" nzXl="8">
+          <label>线下名称：</label>
+          <span>{{headpro?.item_name}}</span>
+        </div>
+        <div nz-col nzXs="12" nzSm="8" nzMd="8" nzLg="8" nzXl="8">
+          <label>线上名称：</label>
+          <span>{{headpro?.m_desc}}</span>
+
+        </div>
+        <div nz-col nzXs="12" nzSm="8" nzMd="8" nzLg="8" nzXl="8">
+          <label>线下编码：</label>
+          <span>{{headpro?.item_code}}</span>
+        </div>
+
+        <div nz-col nzXs="12" nzSm="8" nzMd="8" nzLg="8" nzXl="8">
+          <label>商品条码：</label>
+          <span>{{headpro?.barcode}}</span>
+        </div>
+
+        <div nz-col nzXs="12" nzSm="8" nzMd="8" nzLg="8" nzXl="8">
+          <label>线下编码：</label>
+          <span>{{headpro?.item_code}}</span>
+        </div>
+
+        <div nz-col nzXs="12" nzSm="8" nzMd="8" nzLg="8" nzXl="8">
+          <label>线下规格：</label>
+          <span>{{headpro?.spec}}</span>
+        </div>
+
+        <div nz-col nzXs="12" nzSm="8" nzMd="8" nzLg="8" nzXl="8">
+          <label>线上规格：</label>
+          <span>{{headpro?.m_spec}}</span>
+        </div>
+
+        <div nz-col nzXs="12" nzSm="8" nzMd="8" nzLg="8" nzXl="8">
+          <label>线下计量单位：</label>
+          <span>{{headpro?.base_uom_name}}</span>
+        </div>
+        <div nz-col nzXs="12" nzSm="8" nzMd="8" nzLg="8" nzXl="8">
+          <label>线上计量单位：</label>
+          <span>{{headpro?.m_base_uom_name}}</span>
+        </div>
+        <div nz-col nzXs="12" nzSm="8" nzMd="8" nzLg="8" nzXl="8">
+          <label>线下重量：</label>
+          <span>{{headpro?.m_gross_weight}}</span>
+        </div>
+        <div nz-col nzXs="12" nzSm="8" nzMd="8" nzLg="8" nzXl="8">
+          <label>线上重量：</label>
+          <span>{{headpro?.gross_weight}}</span>
+        </div>
+        <div nz-col nzXs="12" nzSm="8" nzMd="8" nzLg="8" nzXl="8">
+          <label>线上品类：</label>
+          <span>{{headpro?.base_uom_name}}</span>
+          <span>-</span>
+          <span>{{headpro?.online_cat_name}}</span>
+        </div>
+
+        <div nz-col nzXs="12" nzSm="8" nzMd="8" nzLg="8" nzXl="8">
+          <label>是否牵牛花维护：</label>
+          <span *ngIf="goods?.testwh==='1'">是</span>
+          <span *ngIf="goods?.testwh!=='1'">否</span>
+        </div>
+
+        <div nz-col nzXs="12" nzSm="8" nzMd="8" nzLg="8" nzXl="8">
+          <label>线上描述：</label>
+          <span>{{headpro?.m_xsms}}</span>
+        </div>
+        <div nz-col nzXs="12" nzSm="8" nzMd="8" nzLg="8" nzXl="8">
+          <label>单位转换系数：</label>
+          <span>{{headpro?.dwzhxs}}</span>
+        </div>
+
+        <div nz-col nzXs="12" nzSm="8" nzMd="8" nzLg="8" nzXl="8">
+          <label>保质期：</label>
+          <span>{{headpro?.warranty}}</span>
+        </div>
+
+        <div nz-col nzXs="12" nzSm="8" nzMd="8" nzLg="8" nzXl="8">
+          <label>商品税码：</label>
+          <span>{{headpro?.item_tax_code}}</span>
+        </div>
+
+
+      </div>
+    </div>
+  </ng-template>
+
+  <!-- 设置经营渠道 -->
+  <ng-template #channelsmodelContent>
+    <nz-table nzSize="small" nzHideOnSinglePage="true" #channelTable [nzData]="channels">
+      <thead>
+        <tr>
+          <th></th>
+          <th>经营渠道</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of channelTable.data">
+          <td nzShowCheckbox [(nzChecked)]="item.sfxz"></td>
+          <td>{{item.name}}</td>
+        </tr>
+      </tbody>
+    </nz-table>
+  </ng-template>
+
+  <!-- 门店商品日志 -->
+  <ng-template #regionlogsmodelContent>
+
+    <div class="modal-body" *ngIf="itemregionlogs">
+      <div style="text-align: left;padding-left: 10px;padding-bottom:10px;font-weight: bold;">
+        <span style="margin-right:30px;">门店编码:
+          <b style="color:#f00;">{{itemregionlogs[0]?.region_code}}</b>
+        </span>
+        <span style="margin-right:30px;">商品编码:
+          <b style="color:#f00;">{{itemregionlogs[0]?.item_code}}</b>
+        </span>
+        <span style="margin-right:30px;">商品条码:
+          <b style="color:#f00;">{{itemregionlogs[0]?.barcode}}</b>
+        </span>
+      </div>
+      <nz-table nzSize="small" nzHideOnSinglePage="true" #itemregionlogsTable [nzData]="itemregionlogs">
+        <thead>
+          <tr>
+            <th>修改时间</th>
+            <th>销售价</th>
+            <th>调整比</th>
+            <th>售卖状态</th>
+            <th>上下架</th>
+            <th>线下价格</th>
+            <th>线下库存</th>
+            <th>操作人</th>
+            <th>操作备注</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let itemregionlog of itemregionlogsTable.data">
+            <td>{{itemregionlog.timestamp}}</td>
+            <td>{{itemregionlog.sale_price | number:"0.1-2"}}</td>
+            <td [ngSwitch]="itemregionlog?.yanse">
+              <span *ngSwitchCase="'0'" style="color:#bb3cc2;">{{itemregionlog?.variation}}</span>
+              <span *ngSwitchCase="'1'" style="color:#1da130;">{{itemregionlog?.variation}}</span>
+              <span *ngSwitchCase="'2'" style="color: #f00;">{{itemregionlog?.variation}}</span>
+            </td>
+            <td [ngSwitch]="itemregionlog?.status">
+              <span *ngSwitchCase="'1'" style="color:#1da130;">↑售卖</span>
+              <span *ngSwitchCase="'-1'" style="color: #FF0000;">↓停售</span>
+            </td>
+            <td [ngSwitch]="itemregionlog?.sale_status">
+              <span *ngSwitchCase="'1'" style="color:#1da130;">↑上架</span>
+              <span *ngSwitchCase="'2'" style="color: #FF0000;">↓下架</span>
+            </td>
+            <td [ngSwitch]="itemregionlog?.receive_price">
+              <span *ngSwitchCase="'1'" style="color:#1da130;">↑接收</span>
+              <span *ngSwitchCase="'-1'" style="color: #FF0000;">↓不接收</span>
+            </td>
+            <td [ngSwitch]="itemregionlog?.receive_stock">
+              <span *ngSwitchCase="'1'" style="color:#1da130;">↑接收</span>
+              <span *ngSwitchCase="'-1'" style="color: #FF0000;">↓不接收</span>
+            </td>
+            <td>
+              <span *ngIf="itemregionlog.oper_user">{{itemregionlog.oper_user}}</span>
+              <span *ngIf="!itemregionlog.oper_user">牵牛花平台</span>
+            </td>
+            <td>{{itemregionlog.comment}}</td>
+          </tr>
+        </tbody>
+      </nz-table>
+
+    </div>
+
+  </ng-template>
+
+  <!-- 库存日志 -->
+  <ng-template #inventorychangelogsContent>
+    <div>
+      <div class="modal-body" *ngIf="inventorychangelogs">
+        <div style="text-align: left;padding-left: 10px;padding-bottom:10px;font-weight: bold;">
+          <span style="margin-right:30px;">门店编码:
+            <b style="color:#f00;">{{inventorychangelogs[0]?.region_code}}</b>
+          </span>
+          <span style="margin-right:30px;">商品编码:
+            <b style="color:#f00;">{{inventorychangelogs[0]?.item_code}}</b>
+          </span>
+          <span style="margin-right:30px;">商品条码:
+            <b style="color:#f00;">{{inventorychangelogs[0]?.barcode}}</b>
+          </span>
+        </div>
+        <nz-table nzSize="small" nzHideOnSinglePage="true" #inventorychangelogsTable [nzData]="inventorychangelogs">
+          <thead>
+            <tr>
+              <th>修改时间</th>
+              <th>可用库存</th>
+              <th>库存变化值</th>
+              <th>修改人</th>
+              <th>操作备注</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let itemregionlog of inventorychangelogsTable.data">
+              <td>{{itemregionlog.timestamp}}</td>
+              <td>{{itemregionlog.qty}}</td>
+              <td [ngSwitch]="inventorychangelog?.yanse">
+                <span *ngSwitchCase="'0'" style="color:#bb3cc2;">{{itemregionlog?.variation}}</span>
+                <span *ngSwitchCase="'1'" style="color:#f00;">{{itemregionlog?.variation}}</span>
+                <span *ngSwitchCase="'2'" style="color: #1da130;">{{itemregionlog?.variation}}</span>
+              </td>
+              <td>{{itemregionlog.oper_user}}</td>
+              <td>{{itemregionlog.comment}}</td>
+            </tr>
+          </tbody>
+        </nz-table>
+
+      </div>
+    </div>
+  </ng-template>
+
+  <!-- 渠道日志 -->
+  <ng-template #channelslogsContent>
+    <div class="modal-body">
+      <div class="logs-list">
+        <span *ngFor="let channel of initchannels;" [ngStyle]="{'color':channel.checked?'#0567e7':'inherit'}" (click)="getchannellogs1(channel)">
+          {{channel.name}}
+        </span>
+      </div>
+      <nz-table nzSize="small" nzHideOnSinglePage="true" #channelslogsTable [nzData]="channelslogs">
+        <thead>
+          <tr>
+            <th style="width:180px">修改时间</th>
+            <th style="width:118px">渠道</th>
+            <th style="width:121px">类型</th>
+            <th style="width:119px">数据</th>
+            <th style="width:130px">执行结果</th>
+            <th style="width:130px">失败原因</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let itemregionlog of channelslogsTable.data">
+            <td>{{logs.updateTime}}</td>
+            <td>{{logs.channel}}</td>
+            <td>{{logs.logtype}}</td>
+            <td>{{logs.value}}</td>
+            <td>{{logs.result}}</td>
+            <td>
+              <span>{{logs.err}}</span>
+            </td>
+          </tr>
+        </tbody>
+      </nz-table>
+
+    </div>
+
+  </ng-template>
+
+
+  <!-- 库存价格修改 -->
+  <ng-template #changepriceContent>
+
+    <nz-table nzSize="small" nzHideOnSinglePage="true" #channelslogsTable1 [nzData]="priceinv">
+      <thead>
+        <tr>
+          <th>门店编码</th>
+          <th>商品编码</th>
+          <th>商品条码</th>
+          <th>商品名称</th>
+          <th *ngIf="priceinv[0].receive_price==='-1'">销售价</th>
+          <th *ngIf="priceinv[0].receive_stock==='-1'">可用库存</th>
+          <th *ngIf="priceinv[0].use_vip_price === '1'&&priceinv[0].receive_price==='-1'">会员价</th>
+          <th *ngIf="priceinv[0].receive_price==='1'">销售价</th>
+          <th *ngIf="priceinv[0].receive_stock==='1'">可用库存</th>
+          <th *ngIf="priceinv[0].use_vip_price === '-1'&&priceinv[0].receive_price==='1'">会员价</th>
+
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let priceinv of channelslogsTable1.data">
+          <td>{{priceinv.region_code}}</td>
+          <td>{{priceinv.item_code}}</td>
+          <td>{{priceinv.barcode}}</td>
+          <td>{{priceinv.name}}</td>
+          <td *ngIf="priceinv.receive_price==='-1'">
+            <input type="text" nz-input [(ngModel)]="priceinv.sale_price" name="sale_price">
+          </td>
+          <td *ngIf="priceinv.receive_stock==='-1'">
+            <input type="text" nz-input [(ngModel)]="priceinv.available_qty" name="available_qty">
+          </td>
+          <td *ngIf="priceinv.use_vip_price === '1'&&priceinv.receive_price==='-1'">
+            <input type="text" nz-input [(ngModel)]="priceinv.vip_price" name="vip_price">
+          </td>
+          <td *ngIf="priceinv.receive_price==='1'">
+            <input type="text" nz-input [disabled]="priceinv.receive_price==='1'" [(ngModel)]="priceinv.sale_price"
+              name="sale_price">
+          </td>
+          <td *ngIf="priceinv.receive_stock==='1'">
+            <input type="text" nz-input [disabled]="priceinv.receive_stock==='1'" [(ngModel)]="priceinv.available_qty"
+              name="available_qty">
+          </td>
+          <td *ngIf="priceinv.use_vip_price === '-1'&&priceinv.receive_price==='1'">
+            <input type="text" nz-input [(ngModel)]="priceinv.vip_price" name="vip_price">
+          </td>
+        </tr>
+      </tbody>
+    </nz-table>
+
+
+
+  </ng-template>
+
+
+
+  <!-- 导入状态提示 -->
+  <ng-template #template let-notification>
+    <import-tip [importres]="new_results"></import-tip>
+  </ng-template>
+</div>

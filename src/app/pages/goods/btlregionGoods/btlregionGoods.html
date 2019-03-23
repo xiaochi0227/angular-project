@@ -1,0 +1,355 @@
+<div class="zh-serchbox">
+  <table class="table zh-serchtable black-muted-bg">
+    <tbody>
+      <tr>
+        <td>
+          <table class="table zh-serch-table">
+            <tr>
+              <td class="zh-zdname" width="12%">商品名称：</td>
+              <td class="zh-textbox" width="21%">
+                <input nz-input placeholder="请输入商品名称" [(ngModel)]="itemRegion.search.item_name">
+              </td>
+              <td class="zh-zdname" width="12%">商品条码：</td>
+              <td class="zh-textbox" width="21%">
+                <input nz-input placeholder="请输入商品条码" [(ngModel)]="itemRegion.search.barcode">
+              </td>
+              <td class="zh-zdname" width="10%">
+                <span style="color:#f00;font-size:16px;margin-right:5px;">*</span>门店:</td>
+              <td class="zh-textbox">
+                <nz-select style="width: 180px;" [(ngModel)]="itemRegion.search.region_code" nzShowSearch nzAllowClear
+                  nzPlaceHolder="请选择门店名称">
+                  <nz-option *ngFor="let store of stores" [nzValue]="store.code" [nzLabel]="store.codename"></nz-option>
+                </nz-select>
+              </td>
+            </tr>
+            <tr *ngIf="hidesearch">
+              <td class="zh-zdname">商品编码：</td>
+              <td class="zh-textbox">
+                <input nz-input placeholder="请输入商品编码" [(ngModel)]="itemRegion.search.item_code">
+              </td>
+              <td class="zh-zdname" name="status">售卖状态:</td>
+              <td class="zh-textbox">
+                <nz-select style="width: 150px;" [(ngModel)]="itemRegion.search.status" nzAllowClear>
+                  <nz-option nzValue="" nzLabel="请选择"></nz-option>
+                  <nz-option nzValue="1" nzLabel="售卖"></nz-option>
+                  <nz-option nzValue="-1" nzLabel="停售"></nz-option>
+                </nz-select>
+              </td>
+              <td class="zh-zdname">已上线渠道：</td>
+              <td class="zh-textbox">
+                <nz-select style="width: 180px;" [(ngModel)]="itemRegion.search.online_channel" nzShowSearch
+                  nzAllowClear nzPlaceHolder="请选择已上线渠道">
+                  <nz-option nzValue="" nzLabel="请选择"></nz-option>
+                  <nz-option *ngFor="let channel of channelss;" [nzValue]="channel.channel_keyword" [nzLabel]="channel.name"></nz-option>
+                </nz-select>
+              </td>
+            </tr>
+            <tr *ngIf="hidesearch">
+              <td class="zh-zdname">价格范围：</td>
+              <td class="zh-textbox">
+                <input nz-input placeholder="￥" style="width:40%;display:inline-block;" [(ngModel)]="itemRegion.search.start_money">-
+                <input nz-input placeholder="￥" style="width:40%;display:inline-block;" [(ngModel)]="itemRegion.search.end_money">
+              </td>
+              <td colspan="4"> </td>
+            </tr>
+          </table>
+        </td>
+        <td>
+          <button nz-button nzType="primary" style="margin-right:10px;" (click)="search(itemRegion)">查询</button>
+          <button nz-button nzType="default" (click)="Reset()">重置</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <input value="展开更多↓" type="button" (click)="togglesearch($event)" style="display:block;width:100%;color:#333;background:rgba(240, 240, 240, 0.2);border: 1px solid rgba(225, 225, 225, 0.3);text-align: center;padding:3px 0;cursor: pointer;" />
+</div>
+<my-page [params]='itemRegion' [pagecount]='itemRegionCount' [changecount]='changecount' (childparams)="childparams($event)"></my-page>
+<div class="horizontal-scroll">
+  <div class="zh-listhead1">
+    <button nz-button nzType="default" (click)="addexport()"><i nz-icon type="file-excel" theme="outline"></i>导出到CSV文件</button>
+  </div>
+
+  <div class="zh-bglistbox" style="min-height: 200px;">
+    <table class="zh-bglisthead">
+      <tr>
+        <td width="5%">序号</td>
+        <td width="5%">商品</td>
+        <td>编码/条码/PLU码</td>
+        <td width="12%">品名</td>
+        <td width="10%">品类</td>
+        <td width="13%">原价/现价/会员价</td>
+        <!-- <td width="6%">库存</td> -->
+        <td width="10%">刷新</td>
+        <td width="8%">经营渠道</td>
+        <td width="8%">上线渠道</td>
+        <td width="8%">活动渠道</td>
+        <td width="8%">状态</td>
+        <!--<td width="5%">库位</td>-->
+      </tr>
+    </table>
+    <div>
+      <div class="zh-bglistcardbox" style="text-align:center;" *ngIf="itemRegions&&itemRegions.length===0">暂无数据!</div>
+      <div class="zh-bglistcardbox" *ngFor="let item of itemRegions;let i=index">
+        <div class="zh-btns">
+          <nz-button-group>
+            <button nz-button nzType="default" nzSize="small" (click)="prodetails(item)">商品详情</button>
+            <button nz-button nzType="default" nzSize="small" (click)="getitemregionlogs(item)">查看线下门店日志</button>
+            <button nz-button nzType="default" nzSize="small" (click)="getchannellogsinfos(item)">渠道日志</button>
+          </nz-button-group>
+        </div>
+        <div class="zh-bgcardhead">
+        </div>
+        <div class="zh-bgcardcontent">
+          <table>
+            <tr>
+              <td width="5%">{{cow+i+1}}</td>
+              <td width="5%">
+                <i class="label label-danger label-xs bmp" *ngIf="item?.must_sale">必卖</i>
+                <span *ngIf="item.img_url" style="float: left;">
+                  <img class="lazy commodity-img" [src]="item?.img_url+'?x-oss-process=style/100_100'" #listimg
+                    (mouseover)="listimg.src=item?.img_url" (mouseout)="listimg.src=item?.img_url+'?x-oss-process=style/100_100'"
+                    style="width:50px;height:50px;border:1px solid transparent;margin:0 auto;">
+                </span>
+              </td>
+              <td>
+                <div>{{item?.item_code}}</div>
+                <div>{{item?.barcode}}</div>
+                <div>{{item?.plu_code}}</div>
+              </td>
+              <td width="12%">
+                <div *ngIf="item.item_name" style="line-height: 20px;">
+                  {{item?.item_name}}</div>
+              </td>
+              <td width="10%">
+                {{item?.source_cat_name}} /{{item?.source_cat_code}}
+              </td>
+              <td width="13%">
+                <span style="display:inline-block;">{{item?.erp_reference_price}}/
+                  <span [class.lineth]="item.reference_price!=item.sale_price">{{item?.erp_price}}</span>/{{item?.vip_price}}</span>
+              </td>
+              <td width="10%">
+                <p *ngIf="item.region_time">售价:{{item?.region_time}}</p>
+                <p style="line-height: 16px;" *ngIf="item.stock_time">库存:{{item?.stock_time}}</p>
+              </td>
+              <td width="8%">
+                <span style="margin-bottom:5px;display: inline-block;" *ngFor="let channel of item.channelwhi"
+                  [ngSwitch]="channel">
+                  <label *ngSwitchCase="'美团外卖'" class="label label-success" style="background:#eaae17;">美</label>
+                  <label *ngSwitchCase="'百度外卖'" class="label label-success" style="background:#d8112f;">百</label>
+                  <label *ngSwitchCase="'饿了么'" class="label label-success" style="background:#2e82c5;">饿</label>
+                  <label *ngSwitchCase="'京东到家'" class="label label-success" style="background:#00833f;">京</label>
+                  <label *ngSwitchCase="'京东商城'" class="label label-success" style="background:#f00;">京</label>
+                  <label *ngSwitchCase="'福州电信'" class="label label-success" style="background:#ed6d02;">福</label>
+                  <label *ngSwitchCase="'银座云生活'" class="label label-success" style="background:#e60012;">银</label>
+                  <label *ngSwitchCase="'有赞'" class="label label-success" style="background:#2c3a46;">赞</label>
+                  <label *ngSwitchCase="'扫码购'" class="label label-success" style="background:#029c0f;">扫</label>
+                  <label *ngSwitchCase="'饿百零售'" class="label label-success" style="background:#b2d1f3;color:#067ad8">饿
+                    <span style="color:#d8112f;">百</span>
+                  </label>
+                  <label *ngSwitchCase="'轻松购'" class="label label-success" style="background:#30c749;">轻</label>
+                </span>
+              </td>
+              <td width="8%">
+                <span style="margin-bottom:5px;display: inline-block;" *ngFor="let channel of item.onlinechannel"
+                  [ngSwitch]="channel">
+                  <label *ngSwitchCase="'美团外卖'" class="label label-success" style="background:#eaae17;">美</label>
+                  <label *ngSwitchCase="'百度外卖'" class="label label-success" style="background:#d8112f;">百</label>
+                  <label *ngSwitchCase="'饿了么'" class="label label-success" style="background:#2e82c5;">饿</label>
+                  <label *ngSwitchCase="'京东到家'" class="label label-success" style="background:#00833f;">京</label>
+                  <label *ngSwitchCase="'京东商城'" class="label label-success" style="background:#f00;">京</label>
+                  <label *ngSwitchCase="'福州电信'" class="label label-success" style="background:#ed6d02;">福</label>
+                  <label *ngSwitchCase="'银座云生活'" class="label label-success" style="background:#e60012;">银</label>
+                  <label *ngSwitchCase="'有赞'" class="label label-success" style="background:#2c3a46;">赞</label>
+                  <label *ngSwitchCase="'扫码购'" class="label label-success" style="background:#029c0f;">扫</label>
+                  <label *ngSwitchCase="'饿百零售'" class="label label-success" style="background:#b2d1f3;color:#067ad8">饿
+                    <span style="color:#d8112f;">百</span>
+                  </label>
+                  <label *ngSwitchCase="'轻松购'" class="label label-success" style="background:#30c749;">轻</label>
+                </span>
+              </td>
+              <td width="8%">
+                <span style="margin-bottom:5px;display: inline-block;" *ngFor="let channel of item.hdchannel"
+                  [ngSwitch]="channel">
+                  <label *ngSwitchCase="'美团外卖'" class="label label-success" style="background:#eaae17;">美</label>
+                  <label *ngSwitchCase="'百度外卖'" class="label label-success" style="background:#d8112f;">百</label>
+                  <label *ngSwitchCase="'饿了么'" class="label label-success" style="background:#2e82c5;">饿</label>
+                  <label *ngSwitchCase="'京东到家'" class="label label-success" style="background:#00833f;">京</label>
+                  <label *ngSwitchCase="'京东商城'" class="label label-success" style="background:#f00;">京</label>
+                  <label *ngSwitchCase="'福州电信'" class="label label-success" style="background:#ed6d02;">福</label>
+                  <label *ngSwitchCase="'银座云生活'" class="label label-success" style="background:#e60012;">银</label>
+                  <label *ngSwitchCase="'有赞'" class="label label-success" style="background:#2c3a46;">赞</label>
+                  <label *ngSwitchCase="'扫码购'" class="label label-success" style="background:#029c0f;">扫</label>
+                  <label *ngSwitchCase="'饿百零售'" class="label label-success" style="background:#b2d1f3;color:#067ad8">饿
+                    <span style="color:#d8112f;">百</span>
+                  </label>
+                  <label *ngSwitchCase="'轻松购'" class="label label-success" style="background:#43f861;">轻</label>
+                </span>
+              </td>
+              <td width="8%">
+                <span *ngIf="!item?.must_sale">
+                  <input type="button" class="zh-btnlink" [disabled]='!smbt||!tsbt' *ngIf="item.status"
+                    [class.zh-bright]="item.status==='1'" [value]="item.status1" />
+                </span>
+              </td>
+            </tr>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- 弹出框 -->
+<app-modal [modalwidth]="modalwidth" [modaltitle]="modaltitle" [isVisible]="modalstatus" [isConfirmLoading]="modalconfirloading"
+  [confirmisshow]="confirmisshow" (handleokemit)="handleokfun($event)" (handlecancelemit)="closemodal()">
+  <div *ngIf="this.modaltitle==='商品详情'">
+    <table class="table zh-serch-table" *ngIf="goods">
+      <tbody>
+        <tr>
+          <td class="zh-zdname">商品图片:</td>
+          <td colspan="3" class="zh-textbox">
+            <img src="{{goods?.img_url}}" style="width:100px;height:100px;border:1px solid transparent;margin:0 auto;">
+          </td>
+        </tr>
+        <tr>
+          <td class="zh-zdname" width="15%">线上名称:</td>
+          <td class="zh-textbox">{{goods?.m_desc}}</td>
+          <td class="zh-zdname">线下规格:</td>
+          <td class="zh-textbox">{{goods?.spec}}</td>
+        </tr>
+        <tr>
+          <td class="zh-zdname">线下编码:</td>
+          <td class="zh-textbox">{{goods?.item_code}}</td>
+          <td class="zh-zdname">商品条码:</td>
+          <td class="zh-textbox">{{goods?.barcode}}</td>
+        </tr>
+        <tr>
+          <td class="zh-zdname">线下计量单位:</td>
+          <td class="zh-textbox">{{goods?.base_uom_name}}</td>
+
+          <td class="zh-zdname">线下重量:</td>
+          <td class="zh-textbox">
+            <span *ngIf="goods?.gross_weight">{{goods?.gross_weight}}g</span>
+          </td>
+        </tr>
+        <tr>
+          <td class="zh-zdname">线下品类:</td>
+          <td class="zh-textbox">
+            {{goods?.online_sup_name}}
+            <span *ngIf="goods?.online_cat_name">-</span>{{goods?.online_cat_name}}
+          </td>
+          <td class="zh-zdname">是否牵牛花维护</td>
+          <td class="zh-textbox">
+            <span *ngIf="goods?.testwh==='1'">是</span>
+            <span *ngIf="goods?.testwh!=='1'">否</span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div *ngIf="this.modaltitle==='门店商品日志'&&itemregionlogs">
+    <div style="text-align: left;padding-left: 10px;padding-bottom:10px;font-weight: bold;">
+      <span style="margin-right:30px;">门店编码:
+        <b style="color:#f00;">{{itemregionlogs[0]?.region_code}}</b>
+      </span>
+      <span style="margin-right:30px;">商品编码:
+        <b style="color:#f00;">{{itemregionlogs[0]?.item_code}}</b>
+      </span>
+      <span style="margin-right:30px;">商品条码:
+        <b style="color:#f00;">{{itemregionlogs[0]?.barcode}}</b>
+      </span>
+    </div>
+    <div class="row" style="padding:0 15px;">
+      <nz-table #nzTable [nzData]="itemregionlogs" [nzShowPagination]="false" [nzFrontPagination]="false" nzBordered>
+        <thead>
+          <tr bgcolor="#ccc">
+            <th>修改时间</th>
+            <th>销售价</th>
+            <th>调整比</th>
+            <th>售卖状态</th>
+            <th>上下架</th>
+            <th>线下价格</th>
+            <th>线下库存</th>
+            <!--<th>推库存</th>-->
+            <th>操作人</th>
+            <th>操作备注</th>
+          </tr>
+        </thead>
+        <tbody *ngIf="itemregionlogs.length>0">
+          <tr *ngFor="let itemregionlog of nzTable.data">
+            <td>{{itemregionlog.timestamp}}</td>
+            <td>{{itemregionlog.sale_price}}</td>
+            <td [ngSwitch]="itemregionlog?.yanse">
+              <span *ngSwitchCase="'0'" style="color:#bb3cc2;">{{itemregionlog?.variation}}</span>
+              <span *ngSwitchCase="'1'" style="color:#1da130;">{{itemregionlog?.variation}}</span>
+              <span *ngSwitchCase="'2'" style="color: #f00;">{{itemregionlog?.variation}}</span>
+            </td>
+            <td [ngSwitch]="itemregionlog?.status">
+              <span *ngSwitchCase="'1'" style="color:#1da130;">↑售卖</span>
+              <span *ngSwitchCase="'-1'" style="color: #FF0000;">↓停售</span>
+            </td>
+            <td [ngSwitch]="itemregionlog?.sale_status">
+              <span *ngSwitchCase="'1'" style="color:#1da130;">↑上架</span>
+              <span *ngSwitchCase="'2'" style="color: #FF0000;">↓下架</span>
+            </td>
+            <td [ngSwitch]="itemregionlog?.receive_price">
+              <span *ngSwitchCase="'1'" style="color:#1da130;">↑接收</span>
+              <span *ngSwitchCase="'-1'" style="color: #FF0000;">↓不接收</span>
+            </td>
+            <td [ngSwitch]="itemregionlog?.receive_stock">
+              <span *ngSwitchCase="'1'" style="color:#1da130;">↑接收</span>
+              <span *ngSwitchCase="'-1'" style="color: #FF0000;">↓不接收</span>
+            </td>
+            <td>
+              <span *ngIf="itemregionlog.oper_user">{{itemregionlog.oper_user}}</span>
+              <span *ngIf="!itemregionlog.oper_user">牵牛花平台</span>
+            </td>
+            <td>{{itemregionlog.comment}}</td>
+          </tr>
+        </tbody>
+      </nz-table>
+    </div>
+  </div>
+
+  <div *ngIf="this.modaltitle==='渠道日志'">
+    <div class="row" style="padding:0 15px;">
+      <div class="tabs" *ngIf="channelss">
+        <a href="javascript:;" *ngFor="let channel of channelss;let q=index" [class.on]="focusIndex===channel.name"
+          (click)="getchannellogs1(channel)">
+          <span>{{channel.name}}</span>
+        </a>
+      </div>
+      <nz-table #channelTable [nzData]="channelloginfos" [nzShowPagination]="false" [nzFrontPagination]="false"
+        nzBordered>
+        <thead>
+          <tr>
+            <th style="border-bottom: 1px solid #d9d9d9;width:180px">修改时间</th>
+            <th style="width:118px">渠道</th>
+            <th style="width:121px">类型</th>
+            <th style="width:119px">数据</th>
+            <th style="width:130px">执行结果</th>
+            <th style="width:130px">失败原因</th>
+          </tr>
+        </thead>
+        <tbody style="border: 0;">
+          <div *ngIf="!isLog">
+            <tr *ngFor="let logs of channelTable.data;let a=index">
+              <td>{{logs.updateTime}}</td>
+              <td>{{logs.channel}}</td>
+              <td>{{logs.logtype}}</td>
+              <td>{{logs.value}}</td>
+              <td>{{logs.result}}</td>
+              <td>
+                <span>{{logs.err}}</span>
+              </td>
+            </tr>
+          </div>
+
+        </tbody>
+        <tr *ngIf="islog">
+          <td colspan="6" style="text-align:center;">暂无日志！</td>
+        </tr>
+      </nz-table>
+    </div>
+  </div>
+</app-modal>

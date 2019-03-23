@@ -1,0 +1,127 @@
+<nz-card>
+  <div>
+  
+    <table>
+        <tr>
+        <td width="10%">分组名称</td>
+        <td width="70%">
+            <!-- <input type="text" class="form-control" [(ngModel)]="params.search.group_name" /> -->
+            <input nz-input placeholder="Basic usage" [(ngModel)]="params.search.group_name">
+        </td>
+        <td>
+            <button nz-button nzType="primary" (click)="search(params)">查询</button>
+            <button nz-button nzType="primary" (click)="Reset()">重置</button>
+        </td>
+        </tr>
+    </table>
+   
+  </div>
+</nz-card>
+<div style="width:100%; padding:10px 0; text-align: center;">
+  <button nz-button nzType="defalut" (click)="addstoregrouping()">新增门店分组</button>
+</div>
+<my-page [params]='params' [pagecount]='pageSize' [changecount]='changecount' (childparams)="childparams($event)"></my-page>
+<nz-card>
+  <div class="horizontal-scroll" id="zh-tablecontent" style="min-height: 260px;">
+    <div class="zh-listhead">
+      <!-- <input  type="button" class="btn btn-success" value="新增门店分组" (click)="addstoregrouping()"> -->
+
+      <nz-modal [(nzVisible)]="isVisible" nzTitle="modeltitle" [nzZIndex]="1000" [nzWidth]="800" [nzContent]="modalContent"
+        (nzOnCancel)="handleCancel($event)" (nzOnOk)="handleOk($event)" [nzOkLoading]="isConfirmLoading">
+
+        <div *ngIf="detailbox">
+          <nz-table [nzBordered]="true" class="table zh-modeltable" *ngIf="grounpdetaillists">
+            <thead>
+              <tr>
+                <th>序号</th>
+                <th>线下门店名称</th>
+                <th>线下门店编码</th>
+                <th>添加时间</th>
+                <th>添加人</th>
+              </tr>
+            </thead>
+            <tbody *ngIf="!grounpdetaillists||grounpdetaillists.length===0">
+              <tr>
+                <td colspan="5">暂无数据！</td>
+              </tr>
+            </tbody>
+            <tbody *ngIf="grounpdetaillists">
+              <tr *ngFor="let item of grounpdetaillists;let i=index">
+                <td>{{cow1+i+1}}</td>
+                <td>{{item?.name}}</td>
+                <td>{{item?.code}}</td>
+                <td>{{item?.create_time}}</td>
+                <td>{{item?.modifier}}</td>
+              </tr>
+              <tr>
+                <td colspan="5">
+                  <my-page [pagetheme]="true" [params]='detailopt' [pagecount]='detailPage' [changecount]='changedetailcount'
+                    (childparams)="detailchildparams($event)"></my-page>
+                </td>
+              </tr>
+            </tbody>
+          </nz-table>
+        </div>
+        <div *ngIf="editgrounp">
+          <div class="edithead">
+            <p>门店分组名称:<span class="grouptext">
+                <input nz-input style="border:1px solid #e9e9e9;color:#333;" maxlength='10' [(ngModel)]="configparam.group_name" />
+
+              </span>{{configparam.group_name.length}}/10</p>
+            <p class="tittext">要添加到该分组的门店</p>
+          </div>
+          <div class="transfer">
+            <nz-transfer [nzDataSource]="stores" nzShowSearch [nzOperations]="['to right', 'to left']" [nzListStyle]="{'width.px': 320, 'height.px': 400}"
+              (nzSelectChange)="select($event)" (nzChange)="change($event)" [nzTitles]="['可添加的门店','已添加的门店']">
+              <span style="margin-right:20px;">门店名称</span><span>门店编码</span>
+              <ng-template #render let-item>
+                <span style="margin-right:20px;">[{{item.code}}]{{item.name}}</span><span>{{item.city}}</span>
+              </ng-template>
+            </nz-transfer>
+          </div>
+        </div>
+
+      </nz-modal>
+    </div>
+    <nz-table class="table table-hover zh-dsrtable">
+      <thead>
+        <tr>
+          <th width="5%">序号</th>
+          <th width="15%">门店分组名称</th>
+          <th width="20">门店分组ID</th>
+          <th width="10%">包含门店个数</th>
+          <th width="13%">创建时间</th>
+          <th width="13%">最后修改时间</th>
+          <th width="12%">最后修改人</th>
+          <th width="12%">操作</th>
+        </tr>
+      </thead>
+      <tbody *ngIf="groupings&&groupings.length===0">
+        <tr>
+          <td colspan="8">暂无数据！</td>
+        </tr>
+      </tbody>
+      <tbody *ngIf="groupings">
+        <tr *ngFor="let grouping of groupings;let i=index">
+          <td>{{cow+i+1}}</td>
+          <td>{{grouping?.group_name}}</td>
+          <td>{{grouping?.group_code}}</td>
+          <td>
+            {{grouping?.store_count}}
+            <a style="font-size:12px;font-weight:normal;" (click)="gotodetail(grouping.group_code)">查看详情</a>
+          </td>
+          <td>{{grouping?.create_time}}</td>
+          <td>{{grouping?.update_time}}</td>
+          <td>{{grouping?.modifier}}</td>
+          <td>
+            <!-- <input type="button" class="btn btn-info btn-xs" value="修改" (click)="editdetail(grouping)" />
+                                <input type="button" class="btn btn-danger btn-xs" value="删除" (click)="del(grouping.group_code)" /> -->
+            <button nz-button nzType="primary" (click)="editdetail(grouping)">修改</button>
+            <button nz-button nzType="dafault" (click)="del(grouping.group_code)">删除</button>
+
+          </td>
+        </tr>
+      </tbody>
+    </nz-table>
+  </div>
+</nz-card>

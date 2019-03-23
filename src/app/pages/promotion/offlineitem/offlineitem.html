@@ -1,0 +1,149 @@
+<div class="zh-serchbox">
+  <table class="table zh-serchtable black-muted-bg">
+    <tbody>
+      <tr>
+        <td>
+          <table class="table zh-serch-table">
+            <tr>
+              <td class="zh-zdname" width="12%">活动编码：</td>
+              <td class="zh-textbox" width="21%">
+                <input nz-input placeholder="请输入活动编码" [(ngModel)]="params.search.pd_code">
+              </td>
+              <td class="zh-zdname" width="12%">活动状态：</td>
+              <td class="zh-textbox" width="21%">
+                <nz-select style="width: 150px;" [(ngModel)]="params.search.status" nzAllowClear nzPlaceHolder="请选择">
+                  <nz-option nzValue="" nzLabel="全部"></nz-option>
+                  <nz-option nzValue="1" nzLabel="审核通过"></nz-option>
+                  <nz-option nzValue="-1" nzLabel="取消"></nz-option>
+                </nz-select>
+              </td>
+              <td class="zh-zdname" width="10%">
+                <span style="color:#f00;font-size:16px;margin-right:5px;">*</span>门店:</td>
+              <td class="zh-textbox">
+                <nz-select style="width: 180px;" [(ngModel)]="params.search.storecode" nzShowSearch nzAllowClear
+                  nzPlaceHolder="请选择门店名称">
+                  <nz-option nzValue="" nzLabel="全部"></nz-option>
+                  <nz-option *ngFor="let store of stores" [nzValue]="store.code" [nzLabel]="store.codename"></nz-option>
+                </nz-select>
+              </td>
+            </tr>
+
+            <tr *ngIf="hidesearch">
+              <td class="zh-zdname">商品编码：</td>
+              <td class="zh-textbox">
+                <input nz-input placeholder="请输入商品编码" [(ngModel)]="params.search.item_code">
+              </td>
+              <td class="zh-zdname" name="status">商品条码:</td>
+              <td class="zh-textbox">
+                <input nz-input placeholder="请输入商品条码" [(ngModel)]="params.search.barcode">
+              </td>
+              <td class="zh-zdname">渠道：</td>
+              <td class="zh-textbox">
+                <nz-select style="width: 180px;" [(ngModel)]="params.search.channel" nzShowSearch nzAllowClear
+                  nzPlaceHolder="请选择渠道">
+                  <nz-option nzValue="" nzLabel="全部"></nz-option>
+                  <nz-option *ngFor="let channel of channels;" [nzValue]="channel.channel_keyword" [nzLabel]="channel.name"></nz-option>
+                </nz-select>
+              </td>
+            </tr>
+
+            <tr *ngIf="hidesearch">
+              <td class="zh-zdname">选择时间：</td>
+              <td class="zh-textbox" colspan="2">
+                <my-daterange [_startDate]="_startDate" [_endDate]="_endDate" (startchange)="startchange($event)"
+                  (endchange)="endchange($event)"></my-daterange>
+              </td>
+              <!-- <td colspan="4"> </td> -->
+            </tr>
+
+          </table>
+        </td>
+        <td>
+          <button nz-button nzType="primary" style="margin-right:10px;" (click)="searchInfo()">查询</button>
+          <button nz-button nzType="default" (click)="Reset()">重置</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <input value="展开更多↓" type="button" (click)="togglesearch($event)" style="display:block;width:100%;color:#333;background:rgba(240, 240, 240, 0.2);border: 1px solid rgba(225, 225, 225, 0.3);text-align: center;padding:3px 0;cursor: pointer;" />
+</div>
+
+
+
+<div class="btn-block">
+  <button nz-button nzType="primary" (click)="editAllRegion(modal)">批量修改促销商品</button>
+</div>
+
+<span style="color: #f00">*只能把审核通过的活动改为取消</span>
+
+<div style="margin-top: 30px;">
+  <nz-table #basicTable [nzData]="singleitemlist" nzFrontPagination="false" nzShowPagination="false">
+    <thead>
+      <tr>
+        <th>活动编码</th>
+        <th>活动名称</th>
+        <th>活动状态</th>
+        <th>开始时间</th>
+        <th>结束时间</th>
+        <th>时间段</th>
+        <th>门店编码</th>
+        <th>商品编码</th>
+        <th>商品条码</th>
+        <th>商品名称</th>
+        <th>原价</th>
+        <th>促销价</th>
+        <th>会员价</th>
+        <th>促销渠道</th>
+        <th>操作人</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let singleitem of basicTable.data;let i=index">
+        <td>{{singleitem.pd_code}}</td>
+        <td>{{singleitem.pd_name}}</td>
+        <td *ngIf="singleitem.status==='1'">
+          <a href="javascript:void(0)" (click)="updItemState(singleitem)">审核通过</a>
+        </td>
+        <td *ngIf="singleitem.status==='-1'">取消</td>
+        <td>{{singleitem.begin_time}}</td>
+        <td>{{singleitem.end_time}}</td>
+        <td>{{singleitem.time}}</td>
+        <td>{{singleitem.storecode}}</td>
+        <td>{{singleitem.item_code}}</td>
+        <td>{{singleitem.barcode}}</td>
+        <td>{{singleitem.item_name}}</td>
+        <td>{{singleitem.original_price}}</td>
+        <td>{{singleitem.price}}</td>
+        <td>{{singleitem.vip_price}}</td>
+        <td>
+          <span *ngFor="let channel of singleitem.channel">
+            <nz-tag *ngIf="channel==='MTWM'" [nzColor]="'#eaae17'">美</nz-tag>
+            <nz-tag *ngIf="channel==='EMLE'" [nzColor]="'#2e82c5'">饿</nz-tag>
+            <nz-tag *ngIf="channel==='JDDJ'" [nzColor]="'#00833f'">京</nz-tag>
+            <nz-tag *ngIf="channel==='QSG'" [nzColor]="'#1dd865'">轻</nz-tag>
+          </span>
+        </td>
+        <td>
+          {{singleitem.auditor}}
+        </td>
+      </tr>
+    </tbody>
+  </nz-table>
+</div>
+
+
+
+<!-- 对话框 -->
+<ng-template #modal>
+  <div style="display: flex;align-items: center;">
+    活动编码：<input type="text" nz-input [(ngModel)]="pd_code" placeholder="请输入活动编码" style="width: 60%;">
+  </div>
+</ng-template>
+
+
+
+
+
+
+<!-- 分页组件 -->
+<my-page [params]='params' [pagecount]='pageSize' [changecount]='pageSize.count' (childparams)="childparams($event)"></my-page>

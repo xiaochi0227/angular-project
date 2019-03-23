@@ -1,0 +1,269 @@
+.zh-card {
+  color: #333;
+  border: 1px solid #e8e8e8;
+  margin-bottom: 10px;
+  background: #fff;
+
+  .zh-cardhead {
+    background: #fbfbfb;
+    height: 48px;
+
+    .leftbox {
+      display: inline-block;
+      width: 48%;
+      vertical-align: middle;
+
+      .zh-xh {
+        margin-right: 10px;
+        display: inline-block;
+        text-align: center;
+        vertical-align: middle;
+
+        .zh-channeltag {
+          text-align: center;
+          margin-top: 4px;
+          margin-left: 4px;
+          height: 22px;
+        }
+
+        .zh-orderxh {
+          font-weight: bold;
+          font-size: 18px;
+          height: 22px;
+        }
+      }
+
+      .zh-sheetno {
+        display: inline-block;
+        vertical-align: middle;
+
+        p {
+          padding: 0;
+          margin: 0;
+          line-height: 20px;
+          font-size: 12px;
+        }
+      }
+    }
+
+    .zh-odstauts {
+      width: 50%;
+      display: inline-block;
+      text-align: right;
+      vertical-align: middle;
+
+      .odstauts {
+        margin-left: 10px;
+        font-size: 18px;
+        color: #f60;
+      }
+    }
+  }
+
+  .zh-cardbody {
+    padding: 15px;
+
+    .zh-client {
+      border-bottom: 1px solid rgba(225, 225, 225, 0.5);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      ul {
+        margin-bottom: 10px;
+        list-style: none;
+
+        li {
+          line-height: 16px;
+          font-size: 12px;
+          margin-bottom: 5px;
+        }
+
+        li:first-child {
+          line-height: 22px;
+          font-size: 16px;
+        }
+      }
+
+      .rightbottoms {
+        width: 90px;
+        text-align: right;
+
+        button {
+          margin-bottom: 5px;
+        }
+      }
+    }
+
+    .zh-orderdetail {
+      padding: 10px 0;
+      border-bottom: 1px solid rgba(225, 225, 225, 0.1);
+
+      .zh-detailhead {
+        line-height: 22px;
+        margin-bottom: 10px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        .goodsnum {
+          font-size: 16px;
+        }
+
+        .goodstoggle {
+          font-size: 12px;
+          color: #1890ff;
+        }
+      }
+
+      .zh-detailbox {
+        .zh-orderbz {
+          line-height: 16px;
+          margin-bottom: 5px;
+
+          span {
+            margin-right: 45px;
+          }
+        }
+
+        .zh-detaillist {
+          .zh-table {
+            width: 100%;
+            border: 0;
+
+            thead th {
+              text-align: center;
+              background: rgba(225, 225, 225, 0.1);
+              height: 35px;
+              line-height: 35px;
+            }
+
+            thead th:first-child {
+              padding-left: 5px;
+              text-align: left;
+            }
+
+            td {
+              text-align: center;
+              line-height: 18px;
+              padding: 5px 0;
+              height: 35px;
+              border-bottom: 1px solid rgba(225, 225, 225, 0.1);
+            }
+
+            tbody td:first-child {
+              padding-left: 5px;
+              text-align: left;
+            }
+          }
+        }
+      }
+    }
+
+    .zh-amount {
+      padding: 10px 0;
+      border-bottom: 1px solid rgba(225, 225, 225, 0.5);
+
+      .zh-amounthead {
+        line-height: 22px;
+        margin-bottom: 10px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        .goodsamount {
+          font-size: 16px;
+        }
+
+        .goodstoggle {
+          font-size: 12px;
+          color: #1890ff;
+        }
+      }
+
+      .zh-amountlist {
+        ul {
+          display: flex;
+          flex-wrap: wrap;
+          align-items: center;
+
+          li {
+            width: 180px;
+            margin-bottom: 6px;
+
+            span {
+              font-size: 16px;
+            }
+
+            .redspan {
+              color: #f60;
+              font-size: 22px;
+            }
+
+            .largespan {
+              font-size: 22px;
+            }
+          }
+        }
+      }
+    }
+
+    .zh-ordertimes {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+
+      span {
+        display: inline-block;
+        margin-right: 45px;
+        line-height: 35px;
+        color: #888;
+      }
+    }
+  }
+}
+
+.alloffer a {
+  color: #333;
+}
+
+.ant-steps .ant-steps-item {
+  width: 100% !important;
+  text-align: left !important;
+}
+
+.ant-modal-title {
+  text-align: left !important;
+}
+
+.printbox {
+  color: #333;
+  text-align: left;
+  width: 60mm;
+  background: none;
+  display: block;
+  margin: 0 auto;
+}
+
+.invoice {
+  border: 1px solid #00833F;
+  background: #fff;
+  cursor: pointer;
+  color: #00833F;
+  padding: 1px 5px;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.invoice-list {
+  padding: 15px;
+
+  .content {
+    font-weight: bold;
+    margin-left: 5px;
+  }
+}
+
+.alloffer a {
+  color: rgba(255, 255, 255, 0.6);
+}

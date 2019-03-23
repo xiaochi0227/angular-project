@@ -1,0 +1,32 @@
+.headpie{clear: both;}
+.ordercharts{padding:0 16px;}
+.searchitem{
+    width:600px;height:48px;line-height: 55px;text-align: right;
+    a{color:#999;margin-right:20px;}
+    a:hover{color:#1890ff;}
+}
+.chartcontent{
+    .chartbox{
+        width:65%;display:inline-block;
+        .orderchart{padding-right:16px;}
+    }
+    .ranking{
+        width:35%;display:inline-block;vertical-align: top;
+        .rankingbox{padding-left:40px;}
+        .rankingtable{
+            width:100%;
+            thead{font-size: 16px;font-weight: bold;}
+            tbody{
+                font-size: 14px;
+                td{line-height: 36px;}
+                td:nth-child(1){width:50%;}
+                td:nth-child(2),td:nth-child(3){width:25%;}
+            }
+        }
+    }
+}
+.storedata{
+    padding:0 16px;margin-top:16px;
+    .storestab{width:65%;display:inline-block;vertical-align: top;}
+    .proportion{width:35%;display: inline-block;}
+}

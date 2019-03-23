@@ -1,0 +1,52 @@
+<nz-layout class="pagebody">
+  <nz-sider nzCollapsible [(nzCollapsed)]="isCollapsed" [nzWidth]="200" class="al-sidebar-list">
+    <div class="logo">
+      <img [src]="whitelogo" alt="牵牛花">
+      <span *ngIf="!isCollapsed" class="tit">牵牛花商家后台</span>
+    </div>
+    <ul nz-menu [nzTheme]="'dark'" [nzMode]="'inline'" [nzInlineCollapsed]="isCollapsed" *ngIf="menus">
+      <li nz-submenu *ngFor="let menu of menus;let i = index;">
+        <span title [routerLink]="menu.menuurl"><i nz-icon [type]="menu.icon"></i><span class="nav-text">{{menu.menuname}}</span></span>
+        <ul>
+          <li nz-menu-item *ngFor="let menuitem of menu.List;let j = index;" [routerLink]="menuitem.menuurl" (click)="getbreadcrumbvalue(menu,menuitem)">{{menuitem.menuname}}</li>
+        </ul>
+      </li>
+  
+    </ul>
+    <div class="footer"> </div>
+  </nz-sider>
+  <nz-layout class="contentbox">
+    <nz-header>
+      <i class="trigger" nz-icon [type]="isCollapsed?'menu-unfold':'menu-fold'" (click)="isCollapsed=!isCollapsed"></i>
+      <div class="headerright">
+        <i nz-icon type="bell" class="bellicon" theme="outline"></i>
+        <nz-dropdown [nzTrigger]="'click'">
+          <a nz-dropdown class="username">
+            {{userinfo?.name}}<i nz-icon type="down"></i>
+          </a>
+          <ul nz-menu>
+            <li nz-menu-item (click)="loginout()"><i nz-icon type="poweroff" theme="outline"></i>退出登录</li>
+          </ul>
+        </nz-dropdown>
+        <nz-avatar nzIcon="user"></nz-avatar>
+      </div>
+    </nz-header>
+    <nz-content class="content" #content>
+      <!-- <nz-breadcrumb [nzAutoGenerate]="true" style="margin:16px 0;" >
+      </nz-breadcrumb> -->
+      <nz-breadcrumb style="margin:16px 0;">
+        <nz-breadcrumb-item *ngFor="let item of getbreadcrumbobj">
+          <span [routerLink]="item.url" [ngStyle]="{'cursor': item.url?'pointer':'inherit'}">
+            {{item.name}}
+          </span>
+        </nz-breadcrumb-item>
+      </nz-breadcrumb>
+      <router-outlet></router-outlet>
+    </nz-content>
+  </nz-layout>
+</nz-layout>
+<ng-template #trigger>
+  <i nz-icon type="up"></i>
+</ng-template>
+
+

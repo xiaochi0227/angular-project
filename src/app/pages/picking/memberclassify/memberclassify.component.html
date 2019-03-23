@@ -1,0 +1,24 @@
+<div class="zh-serchbox">
+  <header>
+    <button nz-button nzType="primary" (click)="savememberclassify()">保存顺序</button>
+    <span>可以拖曳分类调整顺序，操作完了记得保存顺序~</span>
+
+  </header>
+  <div class="search">
+
+    <label>门店选择:</label>
+    <nz-select style="width: 120px;" [(ngModel)]="params.search.region_code" nzAllowClear nzPlaceHolder="Choose">
+      <nz-option *ngFor="let item of storeList" [nzValue]="item.code" [nzLabel]="item.codename"></nz-option>
+    </nz-select>
+    <button nz-button nzType="primary" (click)="getStorelist()">查询</button>
+
+  </div>
+  <div>
+    <ul [sortablejs]="categories" class="sort">
+      <li *ngFor="let category of categories;let i=index">
+        <span class="zh-catename">{{category.name}}&nbsp;&nbsp;
+          [编码:{{category.code}}]</span>
+      </li>
+    </ul>
+  </div>
+</div>

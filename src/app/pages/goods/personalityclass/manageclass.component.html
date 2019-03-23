@@ -1,0 +1,151 @@
+<div class="horizontal-scroll">
+  <table class="zh-onlinecategorytable">
+    <thead>
+      <tr>
+        <th>
+          <span style="display:inline-block;">
+            <app-upload [onUploaded]="uploadexcel" nzLimit="1" [uploadname]="'批量导入分类'" [uploadtype]="'button'"></app-upload>
+          </span>
+          <a href="http://www.m-glory.net/newadmin/templete/门店个性分类导入模板.xlsx">
+            <button nz-button nzType="default">下载门店个性分类导入模板</button>
+          </a>
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td style="text-align: left;">
+
+          <p>
+            <button nz-button [nzSize]="small" (click)="pm_newone()">新增一级分类</button>
+            <button nz-button [nzSize]="small" (click)="savesortorder()">保存顺序</button>
+            <span style="color:#FF9900">拖动一级、二级分类可以调整分类顺序</span>
+          </p>
+          <div class="zh-categoriesbox">
+            <table class="zh-caterows" *ngIf="fllist">
+              <tbody [sortablejs]="fllist" [sortablejsOptions]="options">
+                <tr class="glyphiconmove" *ngFor="let item of fllist let i = index;">
+                  <td class="zh-bordertd">
+                    <table class="zh-level">
+                      <tr>
+                        <td style="width:40%;">
+                          <input *ngIf="item.parent==='0'" type="button" (click)="getlevel2(item,$event,i)" class="zh-toggleicon"
+                            value="+" />
+                          <span [ngSwitch]="item.status" class="zh-icon">
+                            <i nz-icon *ngSwitchCase="true" [type]="'check-circle'" [theme]="'twotone'" [twoToneColor]="'#52c41a'"></i>
+                            <i nz-icon *ngSwitchCase="false" [type]="'close-circle'" [theme]="'twotone'" [twoToneColor]="'#eb2f96'"></i>
+                          </span>
+                          <span class="zh-catename">{{item.name}}[编码:{{item.code}}]</span>
+                        </td>
+                        <td style="text-align: right;">
+                          <button nz-button [nzSize]="small" (click)="pm_modifyone(item)">修改</button>
+                          <button nz-button [nzSize]="small" (click)="pm_newtwo(item)">新增二级分类</button>
+                        </td>
+                      </tr>
+                    </table>
+                    <table class="table table-bordered" style="width:100%;" *ngIf="selectedbts[i]">
+                      <tbody [sortablejs]="showlevel2[i]" [sortablejsOptions]="options">
+                        <tr *ngFor="let item of showlevel2[i]">
+                          <td style="width:40%;text-align: left;">
+                            <span [ngSwitch]="item.status" class="zh-icon1">
+                              <i nz-icon *ngSwitchCase="'1'" [type]="'check-circle'" [theme]="'twotone'" [twoToneColor]="'#52c41a'"></i>
+                              <i nz-icon *ngSwitchCase="'2'" [type]="'close-circle'" [theme]="'twotone'" [twoToneColor]="'#eb2f96'"></i>
+                            </span>
+                            {{item.name}}({{item.code}})
+                          </td>
+                          <td style="text-align: right;">
+                            <button nz-button [nzSize]="small" (click)="pm_modifytwo(item)" nzType="default">修改</button>
+                          </td>
+                        </tr>
+                        <tr *ngIf="showlevel2[i]&&showlevel2[i].length ===0">
+                          <td colspan="2">无二级分类!</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </td>
+      </tr>
+      <tr>
+        <td><button nz-button [nzSize]="small" (click)="pm_back()" nzType="default">返回</button></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<app-modal [modalwidth]="modalwidth" [modaltitle]="modaltitle" [isVisible]="modalstatus" [confirmisshow]="confirmisshow"
+  (handleokemit)="handleokfun($event)" (handlecancelemit)="closemodal()">
+  <div *ngIf="this.modaltitle==='新建一级分类'||this.modaltitle ==='修改一级分类'">
+    <table class="table table-bordered" *ngIf="!flag">
+      <tbody>
+        <tr>
+          <td>
+            <span style="color:red">*</span>
+            分类名称
+          </td>
+          <td>
+            <input type="text" class="form-control" [(ngModel)]="newfirstclass.name">
+          </td>
+        </tr>
+        <tr>
+          <td><span style="color:red">*</span>
+            分类编码</td>
+          <td><input type="text" class="form-control" [(ngModel)]="newfirstclass.code" [disabled]="nomodify"></td>
+        </tr>
+        <tr>
+          <td><span style="color:red">*</span>是否启用</td>
+          <td>
+            <select class="form-control" [(ngModel)]="newfirstclass.status" style="color:black; border:1px solid black;">
+              <option value="1">启用</option>
+              <option value="2">停用</option>
+            </select>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div *ngIf="this.modaltitle==='新建二级分类'||this.modaltitle==='修改二级分类'">
+    <table class="table table-bordered" *ngIf="flag">
+      <tbody>
+        <tr>
+          <td>所属活动一级分类:</td>
+          <td>
+            {{newsecondclass.parentName}}
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <span style="color:red">*</span>
+            分类名称
+          </td>
+          <td>
+            <input type="text" class="form-control" [(ngModel)]="newsecondclass.name">
+          </td>
+        </tr>
+        <tr>
+          <td><span style="color:red">*</span>
+            分类编码</td>
+          <td><input type="text" class="form-control" [(ngModel)]="newsecondclass.code" [disabled]="nomodify"></td>
+        </tr>
+        <tr>
+          <td><span style="color:red">*</span>是否启用</td>
+          <td>
+            <select class="form-control" [(ngModel)]="newsecondclass.status" style="color:black; border:1px solid black;">
+              <option value="1">启用</option>
+              <option value="2">停用</option>
+            </select>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</app-modal>
+
+<!-- 导入状态提示 -->
+<ng-template #template let-notification>
+  <import-tip [importres]="results"></import-tip>
+</ng-template>

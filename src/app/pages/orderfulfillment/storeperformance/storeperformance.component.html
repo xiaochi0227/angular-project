@@ -1,0 +1,151 @@
+<app-search-bar [queryList]='queryList' [searchStart]="searchStart" 
+  (childemit)="search($event)"></app-search-bar>
+<div nz-row class="zh-serchbox middle">
+  <span nz-col>门店总数量:{{results?.total_region_count}}</span>
+  <span>超时门店数量:{{results?.timeout_region_count}}</span>
+  <span>超时总次数:{{results?.total_timeout_count}}</span>
+  <span>超时总时长:{{results?.total_timespan}}s</span>
+  <span>最长超时时长:{{results?.max_time_out}}s</span>
+  <span>超时时长最多项目:{{results?.max_time_item}}</span>
+  <span>超时次数最多项目:{{results?.max_count_item}}</span>
+</div>
+<div *ngIf="results">
+
+  <my-page [params]='params' [pagecount]='pageSize' [changecount]='pageSize.count' (childparams)="childparams($event)"></my-page>
+
+  <nz-table nzSize="samll" #basicTable [nzData]="results?.rows" nzShowPagination="false">
+    <thead>
+      <tr>
+        <th nzWidth="7%">日期</th>
+        <th nzWidth="8%">门店名称</th>
+        <th nzWidth="6%">订单数量</th>
+        <th nzWidth="7%">超时订单</th>
+        <th nzWidth="7%">订单送达</th>
+        <th nzWidth="7%">订单拣货</th>
+        <th nzWidth="7%">接单</th>
+        <th nzWidth="7%">拣货开始</th>
+        <th nzWidth="7%">拣货完成</th>
+        <th nzWidth="7%">复核开始</th>
+        <th nzWidth="7%">复核结束</th>
+        <th nzWidth="7%">异常单审批</th>
+        <th nzWidth="7%">售后单审批</th>
+        <th>配送</th>
+      </tr>
+    </thead>
+    <tbody nz-popover nzTitle="介绍" [nzContent]="contentTemplate" nzTrigger="hover">
+      <ng-template #contentTemplate>
+        <div>
+          <div>列表统计截止时间为24时,到截止时间未完成的项目计入第二天，以此类推</div>
+          <div>Num:超时次数;Med:作业时长中间位;Acc:超时次数占比</div>
+          <div>点击单元格查看详情</div>
+        </div>
+      </ng-template>
+      <tr *ngFor="let item of basicTable.data;let i = index;">
+        <td>{{item?.date|date:'yyyy-MM-dd'}}</td>
+        <td>[{{item?.region_code}}]{{item?.region_name}}</td>
+        <td>{{item?.order_count}}</td>
+
+        <td (click)="showModal(item.out_order,modalContent,'超时订单')" style="cursor: pointer;">
+          <div>Num:{{item?.out_order?.timeout_count}}</div>
+          <div>Med:{{item?.out_order?.zws_timespan}}s</div>
+          <div>Acc:{{item?.out_order?.timeout_ratio}}%</div>
+        </td>
+        <td (click)="showModal(item.order_ddsd,modalContent,'订单送达')" style="cursor: pointer;">
+          <div>Num:{{item?.order_ddsd?.timeout_count}}</div>
+          <div>Med:{{item?.order_ddsd?.zws_timespan}}s</div>
+          <div>Acc:{{item?.order_ddsd?.timeout_ratio}}%</div>
+        </td>
+        <td (click)="showModal(item.order_ddjh,modalContent,'订单拣货')" style="cursor: pointer;">
+          <div>Num:{{item?.order_ddjh?.timeout_count}}</div>
+          <div>Med:{{item?.order_ddjh?.zws_timespan}}s</div>
+          <div>Acc:{{item?.order_ddjh?.timeout_ratio}}%</div>
+        </td>
+        <td (click)="showModal(item.order_jd,modalContent,'接单')" style="cursor: pointer;">
+          <div>Num:{{item?.order_jd?.timeout_count}}</div>
+          <div>Med:{{item?.order_jd?.zws_timespan}}s</div>
+          <div>Acc:{{item?.order_jd?.timeout_ratio}}%</div>
+        </td>
+
+        <td (click)="showModal(item.order_jhks,modalContent,'拣货开始')" style="cursor: pointer;">
+
+          <div>Num:{{item?.order_jhks?.timeout_count}}</div>
+          <div>Med:{{item?.order_jhks?.zws_timespan}}s</div>
+          <div>Acc:{{item?.order_jhks?.timeout_ratio}}%</div>
+
+        </td>
+        <td (click)="showModal(item.order_jhwc,modalContent,'拣货完成')" style="cursor: pointer;">
+          <div>Num:{{item?.order_jhwc?.timeout_count}}</div>
+          <div>Med:{{item?.order_jhwc?.zws_timespan}}s</div>
+          <div>Acc:{{item?.order_jhwc?.timeout_ratio}}%</div>
+        </td>
+        <td (click)="showModal(item.order_fhks,modalContent,'复核开始')" style="cursor: pointer;">
+          <div>Num:{{item?.order_fhks?.timeout_count}}</div>
+          <div>Med:{{item?.order_fhks?.zws_timespan}}s</div>
+          <div>Acc:{{item?.order_fhks?.timeout_ratio}}%</div>
+        </td>
+        <td (click)="showModal(item.order_fhjs,modalContent,'复核结束')" style="cursor: pointer;">
+          <div>Num:{{item?.order_fhjs?.timeout_count}}</div>
+          <div>Med:{{item?.order_fhjs?.zws_timespan}}s</div>
+          <div>Acc:{{item?.order_fhjs?.timeout_ratio}}%</div>
+        </td>
+        <td (click)="showModal(item.order_tksp,modalContent,'退款审批')" style="cursor: pointer;">
+          <div>Num:{{item?.order_tksp?.timeout_count}}</div>
+          <div>Med:{{item?.order_tksp?.zws_timespan}}s</div>
+          <div>Acc:{{item?.order_tksp?.timeout_ratio}}%</div>
+        </td>
+        <td (click)="showModal(item.order_thsp,modalContent,'退货审批')" style="cursor: pointer;">
+          <div>Num:{{item?.order_thsp?.timeout_count}}</div>
+          <div>Med:{{item?.order_thsp?.zws_timespan}}s</div>
+          <div>Acc:{{item?.order_thsp?.timeout_ratio}}%</div>
+        </td>
+        <td (click)="showModal(item.order_ps,modalContent,'配送')" style="cursor: pointer;">
+          <div>Num:{{item?.order_ps?.timeout_count}}</div>
+          <div>Med:{{item?.order_ps?.zws_timespan}}s</div>
+          <div>Acc:{{item?.order_ps?.timeout_ratio}}%</div>
+        </td>
+      </tr>
+    </tbody>
+  </nz-table>
+
+
+</div>
+
+<ng-template #modalContent>
+  <ul>
+    <li>
+      <label>监控次数</label>
+      <span>{{modalparams?.control_count}}</span>
+    </li>
+    <li>
+      <label>超时次数</label>
+      <span>{{modalparams?.timeout_count}}</span>
+    </li>
+
+    <li>
+      <label>超时占比</label>
+      <span>{{modalparams?.timeout_ratio}}</span>
+    </li>
+
+    <li>
+      <label>超时时长</label>
+      <span>{{modalparams?.total_timespan}}</span>
+    </li>
+
+    <li>
+      <label>中位数时长</label>
+      <span>{{modalparams?.zws_timespan}}s</span>
+    </li>
+    <li>
+      <label>平均超时</label>
+      <span> {{modalparams?.average_ratio}}s</span>
+    </li>
+    <li>
+      <label>最长用时</label>
+      <span> {{modalparams?.max_timespan}}s</span>
+    </li>
+    <li>
+      <label>最短用时</label>
+      <span> {{modalparams?.min_timespan}}s</span>
+    </li>
+  </ul>
+</ng-template>

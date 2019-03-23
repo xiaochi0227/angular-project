@@ -1,0 +1,204 @@
+<div class="zh-serchbox">
+  <table class="table zh-serchtable black-muted-bg">
+    <tbody>
+      <tr>
+        <td>
+          <table class="table zh-serch-table">
+            <tr>
+              <td class="zh-zdname">门店</td>
+              <td class="zh-textbox" *ngIf="stores">
+                <nz-select style="width: 180px;" [(ngModel)]="params.search.region_code" nzShowSearch nzAllowClear
+                  nzPlaceHolder="请选择门店名称">
+                  <nz-option *ngFor="let store of stores" [nzValue]="store.code" [nzLabel]="store.codename"></nz-option>
+                </nz-select>
+              </td>
+              <td class="zh-zdname">渠道</td>
+              <td class="zh-textbox">
+                <nz-select style="width: 180px;" [(ngModel)]="params.search.channel_keyword" nzShowSearch nzAllowClear
+                  nzPlaceHolder="请选择渠道">
+                  <nz-option nzValue="" nzLabel="请选择"></nz-option>
+                  <nz-option *ngFor="let channel of channels;" [nzValue]="channel.channel_keyword" [nzLabel]="channel.name"></nz-option>
+                </nz-select>
+              </td>
+              <td class="zh-zdname">核销状态</td>
+              <td class="zh-textbox">
+                <nz-select style="width: 150px;" [(ngModel)]="params.search.pos" nzAllowClear>
+                  <nz-option nzValue="" nzLabel="全部"></nz-option>
+                  <nz-option nzValue="1" nzLabel="已核销"></nz-option>
+                  <nz-option nzValue="2" nzLabel="未核销"></nz-option>
+                </nz-select>
+              </td>
+            </tr>
+            <tr *ngIf="hidesearch">
+              <td class="zh-zdname">订单类型</td>
+              <td class="zh-textbox">
+                <nz-select style="width: 150px;" [(ngModel)]="params.search.order_type" (change)="selupd()"
+                  nzAllowClear>
+                  <nz-option nzValue="" nzLabel="全部"></nz-option>
+                  <nz-option nzValue="order" nzLabel="订单"></nz-option>
+                  <nz-option nzValue="return_order" nzLabel="退货单"></nz-option>
+                </nz-select>
+              </td>
+              <td class="zh-zdname">订单序号</td>
+              <td class="zh-textbox">
+                <input nz-input placeholder="请输入订单序号" [(ngModel)]="params.search.order_seq">
+              </td>
+              <td class="zh-zdname">日期类型</td>
+              <td class="zh-textbox">
+                <nz-select style="width: 150px;" [(ngModel)]="params.search.date_type" nzAllowClear>
+                  <nz-option nzValue="1" nzLabel="发生时间"></nz-option>
+                  <nz-option nzValue="2" nzLabel="记账时间"></nz-option>
+                </nz-select>
+              </td>
+
+            </tr>
+            <tr *ngIf="hidesearch">
+              <td class="zh-zdname">订单状态</td>
+              <td class="zh-textbox">
+                <nz-select style="width: 150px;" [disabled]="params.search.order_type==='return_order'" [(ngModel)]="params.search.status"
+                  nzAllowClear>
+                  <nz-option nzValue="" nzLabel="全部状态"></nz-option>
+                  <nz-option nzValue="not_cannel" nzLabel="非已取消"></nz-option>
+                  <nz-option nzValue="1" nzLabel="已接收"></nz-option>
+                  <nz-option nzValue="4" nzLabel="已释放"></nz-option>
+                  <nz-option nzValue="6" nzLabel="已备货"></nz-option>
+                  <nz-option nzValue="9" nzLabel="已配送"></nz-option>
+                  <nz-option nzValue="11" nzLabel="已签收"></nz-option>
+                  <nz-option nzValue="14" nzLabel="待取消"></nz-option>
+                  <nz-option nzValue="15" nzLabel="已取消"></nz-option>
+                  <nz-option nzValue="8" nzLabel="已复核"></nz-option>
+                </nz-select>
+              </td>
+              <td class="zh-zdname">选择时间</td>
+              <td colspan="3" style="text-align:left;">
+                <my-daterange [_startDate]="_startDate" [_endDate]="_endDate" (startchange)="startchange($event)"
+                  (endchange)="endchange($event)"></my-daterange>
+              </td>
+            </tr>
+          </table>
+        </td>
+        <td>
+          <button nz-button nzType="primary" style="margin-right:10px;" (click)="getreconlistQuery()">查询</button>
+          <button nz-button nzType="default" (click)="OrderRest()">重置</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <input value="展开更多↓" type="button" (click)="togglesearch($event)" style="display:block;width:100%;color:#333;background:rgba(240, 240, 240, 0.2);border: 1px solid rgba(225, 225, 225, 0.3);text-align: center;padding:3px 0;cursor: pointer;" />
+</div>
+<my-page [params]='params' [pagecount]='pageSize' [changecount]='changecount' (childparams)="childparams($event)"></my-page>
+<div class="horizontal-scroll" style="min-height: 500px;">
+  <div class="zh-listhead1">
+    <button nz-button nzType="default" (click)="addexport()"><i nz-icon type="file-excel" theme="outline"></i>导出到CSV文件</button>
+  </div>
+  <nz-table #nzTable [nzData]="reconciliationlists" [nzShowPagination]="false" [nzFrontPagination]="false" nzBordered>
+    <thead>
+      <tr>
+        <th>序号</th>
+        <th>状态</th>
+        <th>发生时间</th>
+        <th>记账日期</th>
+        <th>订单号</th>
+        <th>订单序号</th>
+        <th>渠道</th>
+        <th>门店</th>
+        <th>收入金额</th>
+        <th>佣金</th>
+        <th>商家优惠</th>
+        <th>餐盒费</th>
+        <!-- <th>平台单品优惠</th> -->
+        <th>手工核销</th>
+        <th>核销金额</th>
+        <th>其它金额</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let recon of nzTable.data;let i=index">
+        <td>{{cow+i+1}}
+          <nz-tag *ngIf="recon?.highlight&&recon?.pos_time" [nzColor]="'#f50'">跨天核销</nz-tag>
+          <nz-tag *ngIf="!recon?.pos_time" [nzColor]="'#f50'">未核销</nz-tag>
+        </td>
+        <td style="color:#f60;font-weight:bold;">
+          <span>{{recon?.status}}/{{recon?.pos}}</span>
+          <!-- <span *ngIf="recon.returnStatus">{{recon?.returnStatus?.test}}</span> -->
+        </td>
+        <td>
+          <span *ngIf="recon.settle_date">{{recon?.settle_date | date : 'yyyy-MM-dd HH:mm:ss'}}</span>
+          <!-- <span *ngIf="recon.create_time">{{recon?.create_time | date : 'yyyy-MM-dd HH:mm:ss'}}</span> -->
+        </td>
+        <td>
+          <span *ngIf="recon.pos_time">{{recon?.pos_time | date : 'yyyy-MM-dd HH:mm:ss'}}</span>
+          <!-- <span *ngIf="recon.return_time">{{recon?.return_time | date : 'yyyy-MM-dd HH:mm:ss'}}</span> -->
+        </td>
+        <td>
+          <span *ngIf="recon.channel_sheetno">{{recon?.channel_sheetno}}</span>
+          <!-- <span *ngIf="recon.sheetno">{{recon?.sheetno}}</span> -->
+        </td>
+        <td class="textcenter">#{{recon?.order_seq}}</td>
+        <td class="textcenter" [ngSwitch]="recon?.channel_keyword">
+          <my-channeltags [getchannel]="recon?.channel_keyword"></my-channeltags>
+        </td>
+        <td class="textcenter"> {{recon?.region_code}} </td>
+        <td class="textright">
+          {{recon?.total_sale_value|number:'1.2-2'}}
+          <!-- <span *ngIf="recon?.total_pay_value">
+                                {{recon?.total_pay_value|number:'1.2-2'}}
+                              </span>   -->
+        </td>
+        <td class="textright">{{recon?.commission_value|number:'1.2-2'}}</td>
+        <td class="textcenter">{{recon?.total_sj_disc|number:'1.2-2'}}</td>
+        <td class="textcenter">{{recon?.box_value|number:'1.2-2'}}</td>
+        <!-- <td>{{recon?.total_pt_dp}}</td> -->
+        <td>{{recon?.sghx}}</td>
+        <td>{{recon?.pos_money}}</td>
+        <td>
+          商家支付运费:
+          <span *ngIf="recon.freight_value&&recon.freight_value!==0">{{recon?.freight_value}}</span>
+          <span *ngIf="!recon.freight">0</span>
+          <div>运费商家优惠:
+            <span *ngIf="recon.logistics_sj_disc&&recon.logistics_sj_disc!==0">{{recon?.logistics_sj_disc}}</span>
+            <span *ngIf="!recon.logistics_sj_disc">0</span>
+          </div>
+
+        </td>
+      </tr>
+      <tr *ngIf="collect">
+        <td>订单汇总</td>
+        <td colspan="14">
+          总订单数:
+          <span style="margin-right:25px;color:#f60;">{{collect?.order_num}}</span>
+          收入金额:
+          <span style="margin-right:25px;color:#f60;">￥{{collect?.total_total_sale_value|number:'1.2-2'}}</span>
+          <!-- <span style="margin-right:25px;color:#f60;"  *ngIf="collect?.total_total_pay_value">￥{{collect?.total_total_pay_value|number:'1.2-2'}}</span> -->
+          佣金:
+          <span style="margin-right:25px;color:#f60;">￥{{collect?.total_commission_value|number:'1.2-2'}}</span>
+          商家优惠:
+          <span style="margin-right:25px;color:#f60;">￥{{collect?.total_total_sj_disc|number:'1.2-2'}}</span>
+          餐盒费:
+          <span style="margin-right:25px;color:#f60;">￥{{collect?.total_box_value|number:'1.2-2'}}</span>
+          <!-- 平台单品优惠:<span style="margin-right:25px;color:#f60;">￥{{collect?.total_total_pt_dp|number:'1.2-2'}}</span> -->
+          核销金额:
+          <span style="margin-right:25px;color:#f60;">￥{{collect?.total_pos_money|number:'1.2-2'}}</span>
+        </td>
+      </tr>
+      <tr *ngIf="conllect1">
+        <td>退货单汇总</td>
+        <td colspan="14">
+          总订单数:
+          <span style="margin-right:25px;color:#f60;">{{conllect1?.order_num}}</span>
+          收入金额:
+          <span style="margin-right:25px;color:#f60;">-￥{{conllect1?.total_total_sale_value|number:'1.2-2'}}</span>
+          <!-- <span style="margin-right:25px;color:#f60;"  *ngIf="collect?.total_total_pay_value">￥{{collect?.total_total_pay_value|number:'1.2-2'}}</span> -->
+          佣金:
+          <span style="margin-right:25px;color:#f60;">-￥{{conllect1?.total_commission_value|number:'1.2-2'}}</span>
+          商家优惠:
+          <span style="margin-right:25px;color:#f60;">-￥{{conllect1?.total_total_sj_disc|number:'1.2-2'}}</span>
+          餐盒费:
+          <span style="margin-right:25px;color:#f60;">-￥{{conllect1?.total_box_value|number:'1.2-2'}}</span>
+          核销金额:
+          <span style="margin-right:25px;color:#f60;">-￥{{conllect1?.total_pos_money|number:'1.2-2'}}</span>
+        </td>
+      </tr>
+    </tbody>
+  </nz-table>
+</div>

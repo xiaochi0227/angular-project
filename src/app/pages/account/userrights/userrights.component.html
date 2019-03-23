@@ -1,0 +1,197 @@
+<div class="widgets">
+  <div class="row">
+    <div class="zh-serchbox">
+      <table class="table zh-serchtable black-muted-bg">
+        <tbody>
+          <tr>
+            <td>
+              <table class="table zh-serch-table">
+                <tr>
+                  <td class="zh-zdname">手机号</td>
+                  <td class="zh-textbox"><input nz-input [(ngModel)]="params.search.mobileNo" placeholder="请输手机号"></td>
+                  <td class="zh-zdname">用户名</td>
+                  <td class="zh-textbox"><input nz-input [(ngModel)]="params.search.code" placeholder="请输入用户名"></td>
+                  <td class="zh-zdname">姓名</td>
+                  <td class="zh-textbox"><input nz-input [(ngModel)]="params.search.name" placeholder="请输入姓名"></td>
+                </tr>
+                <tr>
+                  <td class="zh-zdname">用户类型</td>
+                  <td class="zh-textbox">
+                    <nz-select style="width: 120px;" [(ngModel)]="params.search.usertype" nzAllowClear nzPlaceHolder="选择用户类型">
+                      <nz-option nzValue="" nzLabel="全部用户"></nz-option>
+                      <nz-option nzValue="2" nzLabel="总部用户"></nz-option>
+                      <nz-option nzValue="3" nzLabel="门店用户"></nz-option>
+                    </nz-select>
+                  </td>
+                  <td class="zh-zdname">状态</td>
+                  <td class="zh-textbox">
+                    <nz-select style="width: 120px;" [(ngModel)]="params.search.status" nzAllowClear nzPlaceHolder="选择用户状态">
+                      <nz-option nzValue="" nzLabel="全部状态"></nz-option>
+                      <nz-option nzValue="1" nzLabel="启用"></nz-option>
+                      <nz-option nzValue="-1" nzLabel="停用"></nz-option>
+                    </nz-select>
+                  </td>
+                </tr>
+              </table>
+            </td>
+            <td><button nz-button nzType="primary" style="margin-right:5px;" (click)="search()">查询</button>
+              <button nz-button nzType="primary" (click)="Reset()">重置</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="horizontal-scroll">
+      <div class="zh-listhead">
+        <button nz-button nzType="default" *ngIf="zjbt" (click)="addexport()">导出账号</button>
+        <button nz-button nzType="default" *ngIf="zjbt" (click)="gotoadduser()">新建账号</button>
+        <button nz-button nzType="primary" *ngIf="qybt" (click)="enabled()">启用</button>
+        <button nz-button nzType="danger" *ngIf="tybt" (click)="disabled()">停用</button>
+      </div>
+      <nz-table #basicTable nzShowSizeChanger [nzFrontPagination]="false" [nzLoading]="loading" [nzTotal]="count"
+        [(nzPageIndex)]="params.page_no" [(nzPageSize)]="params.page_size" (nzPageIndexChange)="getuserlist()"
+        (nzPageSizeChange)="search()" [nzData]="userrights">
+        <!-- <table class="table table-hover zh-dsrtable"> -->
+        <thead>
+          <tr>
+            <th width="5%"></th>
+            <th width="5%">序号</th>
+            <th width="15%">用户名</th>
+            <th width="10%">姓名</th>
+            <th width="10%">状态</th>
+            <th width="10%">手机号</th>
+            <th width="15%">用户类型</th>
+            <th width="20%">管理门店</th>
+            <th width="10%">操作</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let userright of basicTable.data;let i=index" style="cursor:pointer;" (click)="setcheckbox(userright)">
+            <input type="hidden" name="id" [(ngModel)]="userright.id" />
+            <td><input type="checkbox" name="sfxz" [disabled]="userright.roletype&&userright.roletype == 'admin'"
+                [(ngModel)]="userright.sfxz" /></td>
+            <td>{{cow+i+1}}</td>
+            <td>{{userright.code}}<span style="color:#f60;" *ngIf="userright.roletype&&userright.roletype == 'admin'">(企业主账号)</span></td>
+            <td>{{userright.name}}</td>
+            <td [ngSwitch]="userright.status"><span *ngSwitchCase="'1'">启用</span><span *ngSwitchCase="'-1'">停用</span></td>
+            <td>{{userright.mobileNo}}</td>
+            <td [ngSwitch]="userright.usertype">
+              <span *ngSwitchCase="'1'">系统管理员</span>
+              <span *ngSwitchCase="'2'">总部用户</span>
+              <span *ngSwitchCase="'3'">门店用户</span>
+              <span *ngSwitchCase="'-20000'">pos打印用户</span>
+            </td>
+            <td style="word-wrap:break-word;word-wrap:break-word;max-width:430px;">{{userright.userstores}}</td>
+            <td>
+              <button nz-button nzType="primary" (click)="gotoedituser(userright.code)" *ngIf="xgbt">修改</button>
+            </td>
+          </tr>
+        </tbody>
+        <!-- </table> -->
+      </nz-table>
+    </div>
+  </div>
+</div>
+
+<!-- 新增用户 -->
+<nz-modal nzWidth="60%" [(nzVisible)]="isVisible" nzTitle="新增用户" (nzOnCancel)="hidemodal()" (nzOnOk)="submit()"
+  [nzOkLoading]="isOkLoading">
+  <form nz-form [formGroup]="addForm">
+    <div nz-row [nzGutter]="18">
+      <div nz-col [nzSpan]="12">
+        <nz-form-item nzFlex>
+          <nz-form-label nzFor="name">用户账号</nz-form-label>
+          <nz-form-control>
+            <input nz-input placeholder="请输入用户账号" formControlName="code">
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+      <div nz-col [nzSpan]="12">
+        <nz-form-item nzFlex>
+          <nz-form-label nzFor="name">用户姓名</nz-form-label>
+          <nz-form-control>
+            <input nz-input placeholder="请输入用户姓名" formControlName="name">
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+      <div nz-col [nzSpan]="12">
+        <nz-form-item nzFlex>
+          <nz-form-label nzFor="password">用户密码</nz-form-label>
+          <nz-form-control>
+            <input nz-input type="password" nz-tooltip nzTitle="必须为数字加字母并且不小于8位" placeholder="请输入用户密码" formControlName="password">
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+      <div nz-col [nzSpan]="12" *ngIf="editinguser && editinguser.mobileNo">
+        <nz-form-item nzFlex>
+          <nz-form-label nzFor="mobileNo">用户电话</nz-form-label>
+          <nz-form-control>
+            <nz-input-group nzSearch [nzSuffix]="suffixButton">
+              <input type="text" nz-input formControlName="mobileNo">
+            </nz-input-group>
+            <ng-template #suffixButton>
+              <button nz-button nzType="primary" nzSearch (click)="removeboundr()">解除绑定</button>
+            </ng-template>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+      <div nz-col [nzSpan]="12">
+        <nz-form-item nzFlex>
+          <nz-form-label nzFor="status">用户状态</nz-form-label>
+          <nz-form-control>
+            <nz-select style="width: 200px;" nzShowSearch nzAllowClear nzPlaceHolder="请选择用户状态" formControlName="status">
+              <nz-option nzValue="1" nzLabel="启用"></nz-option>
+              <nz-option nzValue="-1" nzLabel="停用"></nz-option>
+            </nz-select>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+      <div nz-col [nzSpan]="12">
+        <nz-form-item nzFlex>
+          <nz-form-label nzFor="usertype">用户类型</nz-form-label>
+          <nz-form-control>
+            <nz-select (ngModelChange)="changeUserType($event)" style="width: 200px;" nzShowSearch nzAllowClear
+              nzPlaceHolder="请选择用户类型" formControlName="usertype">
+              <nz-option nzValue="2" nzLabel="总部用户"></nz-option>
+              <nz-option nzValue="3" nzLabel="门店用户"></nz-option>
+              <nz-option nzValue="-20000" nzLabel="pos打印用户"></nz-option>
+            </nz-select>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+      <div nz-col [nzSpan]="12">
+        <nz-form-item nzFlex>
+          <nz-form-label nzFor="rolecode">用户角色</nz-form-label>
+          <nz-form-control>
+            <nz-select style="width: 200px;" nzMode="multiple" nzShowSearch nzAllowClear nzPlaceHolder="请选择用户角色"
+              formControlName="rolecode">
+              <nz-option *ngFor="let option of roleList" [nzLabel]="option.name" [nzValue]="option.value"></nz-option>
+            </nz-select>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+      <div nz-col [nzSpan]="12">
+        <nz-form-item nzFlex>
+          <nz-form-label nzFor="channel_keywords">管理渠道</nz-form-label>
+          <nz-form-control>
+            <nz-select style="width: 200px;" nzMode="multiple" nzShowSearch nzAllowClear nzPlaceHolder="请选择管理渠道"
+              formControlName="channel_keywords">
+              <nz-option *ngFor="let items of channels" [nzLabel]="items.name" [nzValue]="items.channel_keyword"></nz-option>
+            </nz-select>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+      <div nz-col [nzSpan]="12" *ngIf="addForm.get('userstores')">
+        <nz-form-item nzFlex>
+          <nz-form-label nzFor="userstores">管理门店</nz-form-label>
+          <nz-form-control>
+            <nz-select style="width: 200px;" nzMode="multiple" nzShowSearch nzAllowClear nzPlaceHolder="请选择管理门店"
+              formControlName="userstores">
+              <nz-option *ngFor="let items of storelist" [nzLabel]="items.codename" [nzValue]="items.code"></nz-option>
+            </nz-select>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+    </div>
+  </form>
+</nz-modal>

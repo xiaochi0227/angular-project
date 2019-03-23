@@ -1,0 +1,98 @@
+<!-- <div class="search-wrapper">
+  <div class="search-form">
+    <div nz-row [nzGutter]="24">
+      <div nz-col nzSpan="8">
+        <nz-form-item nzFlex>
+          <nz-form-label>提交状态</nz-form-label>
+          <nz-form-control style="width: 100%;">
+            <nz-select style="width: 100%;" [(ngModel)]="params.search.status" nzShowSearch nzAllowClear
+              nzPlaceHolder="请选择门店名称">
+              <nz-option nzValue="" nzLabel="全部"></nz-option>
+              <nz-option nzValue="1" nzLabel="未提交线上"></nz-option>
+              <nz-option nzValue="2" nzLabel="已提交线上"></nz-option>
+            </nz-select>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+      <div nz-col nzSpan="8">
+        <nz-form-item nzFlex>
+          <nz-form-label>门店</nz-form-label>
+          <nz-form-control style="width: 100%;">
+            <nz-select style="width: 100%;" [(ngModel)]="params.search.region_code" nzShowSearch nzAllowClear
+              nzPlaceHolder="请选择门店名称">
+              <nz-option *ngFor="let store of stores" [nzValue]="store.code" [nzLabel]="store.codename"></nz-option>
+            </nz-select>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+      <div nz-col nzSpan="8">
+        <button nz-button nzType="primary" style="margin-right:10px;" (click)="getactivitylist(params)">查询</button>
+        <button nz-button nzType="default" (click)="Reset()">重置</button>
+      </div>
+    </div>
+  </div>
+</div> -->
+<app-search-bar [queryList]='queryList' [searchStart]="searchStart"
+  (searchSubOnlineCategories)="getSelection('online_cat_code',$event)" (childemit)="search($event)"></app-search-bar>
+<my-page [params]='params' [pagecount]='pageSize' [changecount]='changecount' (childparams)="childparams($event)">
+</my-page>
+<div class="horizontal-scroll" style="min-height: 600px;">
+  <nz-table #nzTable [nzData]="activitylist" [nzShowPagination]="false" [nzFrontPagination]="false" nzBordered>
+    <thead>
+      <tr>
+        <th colspan="7">
+          <button nz-button nzType="default" (click)="pm_newactive()">新建个性分类</button>
+          <!-- <input type="button" class="btn btn-success" value="设置分类排序" (click)="pm_setsort()"> -->
+        </th>
+      </tr>
+      <tr>
+        <th width="10%">个性分类名称</th>
+        <th width="15%">个性分类ID</th>
+        <th width="10%">提交状态</th>
+        <th width="20%">上线渠道</th>
+        <th width="20%">所属门店</th>
+        <!-- <th>活动日期</th> -->
+        <th width="10%">最后修改人</th>
+        <th>操作</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let item of nzTable.data;let i=index">
+        <td>{{item.activity_name}}</td>
+        <td>{{item.activity_id}}</td>
+        <td>
+          <span [ngSwitch]="item.status">
+            <p *ngSwitchCase="1" style="color:blue;">
+              未提交线上
+            </p>
+            <!-- <p *ngSwitchCase="2" style="color:green;">
+                      提交中
+                    </p> -->
+            <p *ngSwitchCase="2" style="color:red;">
+              已提交线上
+            </p>
+          </span>
+        </td>
+        <td>
+          <span *ngFor="let channel of item.channels;let i=index">{{channel.name}}<span
+              *ngIf="item.channels.length!==i+1">,</span></span>
+        </td>
+        <td>
+          <span *ngFor="let store of item.stores;let i = index">{{store.region_name}}<span
+              *ngIf="item.stores.length!==i+1">,</span></span>
+        </td>
+        <!-- <td>{{item.online_time}}-{{item.offline_time}}</td> -->
+        <td>{{item.oper_user}}</td>
+        <td>
+          <button nz-button nzType="default" (click)="pm_moify(item)">修改</button>
+          <button nz-button nzType="danger" *ngIf="item.status == '1'" (click)="pm_offline(item)">提交到线上</button>
+          <!-- <button *ngIf="item.status != '2'" class="btn btn-danger" (click)="pm_delactive(item)">删除</button> -->
+        </td>
+      </tr>
+    </tbody>
+  </nz-table>
+
+</div>
+<div>
+
+</div>

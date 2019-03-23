@@ -1,0 +1,331 @@
+@import "../../../../styles.less";
+
+.ng2-smart-table-container table.ng2-smart-table {
+
+  th,
+  td {
+    border: 1px solid @border-light  !important;
+    line-height: 35px;
+    vertical-align: middle;
+  }
+
+  color: @default-text;
+
+  input {
+    line-height: 1.5 !important;
+  }
+
+  tbody {
+    tr:hover {
+      background: rgba(0, 0, 0, 0.03);
+    }
+  }
+
+  a.ng2-smart-sort-link {
+    font-size: 14px !important;
+    color: @default-text;
+    font-weight: @font-bolder;
+
+    &.sort {
+      font-weight: @font-bolder  !important;
+
+      &::after {
+        border-bottom-color: @default-text  !important;
+      }
+    }
+  }
+
+  .ng2-smart-actions {
+    width: 70px;
+    text-align: center;
+
+    .actions {
+      float: none;
+      text-align: center;
+    }
+  }
+
+  a.ng2-smart-action {
+    font-size: 14px !important;
+    color: @default-text;
+    padding: 0 5px;
+    display: inline-block;
+
+    &.ng2-smart-action-add-add {
+      font-size: 25px !important;
+    }
+  }
+}
+
+nav.ng2-smart-pagination-nav {
+  display: flex;
+  justify-content: center;
+}
+
+img.goodimg {
+  width: 60px;
+  height: 60px;
+}
+
+select.form-control:not([size]):not([multiple]) {
+  height: 35px;
+}
+
+.zh-selectorder {
+  display: none;
+}
+
+.zh-selected+.zh-selectorder {
+  display: table-row;
+}
+
+.zh-table td {
+  height: 50px;
+  vertical-align: middle;
+}
+
+/*搜索条件样式*/
+.zh-serchbox {}
+
+.zh-serchbox .zh-serchtable {
+  margin-bottom: 0px;
+  border-top: 1px solid #fff;
+  margin-bottom: 15px;
+}
+
+.zh-serchbox .zh-serchtable td {
+  vertical-align: middle;
+  border-top: none;
+}
+
+.zh-serchbox .zh-serchtable .zh-zdname {
+  text-align: right;
+}
+
+.zh-serchbox .zh-serchtable .zh-textbox {
+  text-align: left;
+}
+
+.zh-serchbox .zh-serchtable .zh-serch-table {
+  margin-bottom: 0;
+}
+
+.zh-serchbox .zh-serchtable .zh-serch-table td {
+  border-top: 0;
+  height: 50px;
+}
+
+.zh-serchbox input[type="radio"] {
+  vertical-align: middle;
+  margin-right: 5px;
+}
+
+.zh-serchbox .table .table {
+  background: none;
+}
+
+.table tbody+tbody {
+  border-top: none;
+}
+
+/*翻页样式*/
+.zh-pages {
+  padding: 10px 0;
+  display: block;
+}
+
+.zh-pages .zh-select {
+  width: 60px;
+  height: 30px;
+  line-height: 30px;
+  vertical-align: middle;
+  padding: 0;
+  text-align: center;
+}
+
+.zh-pages .zh-text {
+  width: 60px;
+  height: 30px;
+  line-height: 30px;
+  vertical-align: middle;
+  padding: 0;
+  text-align: center;
+}
+
+.zh-pages .zh-totpage {
+  margin-left: 20px;
+  vertical-align: middle;
+  line-height: 30px;
+}
+
+.zh-pages .zh-count {
+  vertical-align: middle;
+  line-height: 30px;
+  float: right;
+}
+
+select.form-control:not([size]):not([multiple]) {
+  padding: 0.5rem 0.75rem;
+  line-height: 1.25;
+}
+
+.zh-imglist {
+  display: inline-block;
+  width: 104px;
+  margin: 10px;
+  position: relative;
+  border: 2px solid #d1d1d1;
+}
+
+.zh-imglist img {
+  width: 100px;
+  height: 100px;
+}
+
+.zh-imglist a {
+  text-decoration: none;
+  cursor: pointer;
+  display: none;
+  width: 100px;
+  height: 20px;
+  line-height: 20px;
+  background-color: #000;
+  color: #fff;
+  text-align: center;
+  position: absolute;
+  margin-top: -20px;
+  opacity: 0.8;
+}
+
+.zh-imglist a:hover {
+  text-decoration: underline;
+}
+
+.zh-imglist:hover {
+  border: 2px solid #a4a4a4;
+}
+
+.zh-imglist:hover>a {
+  display: block;
+}
+
+.zh-imgupload {
+  position: relative;
+  display: inline-block;
+  width: 104px;
+  height: 104px;
+  border: 2px solid #d1d1d1;
+  background-color: #f1f1f1;
+  vertical-align: middle;
+}
+
+.zh-imgupload i {
+  vertical-align: middle;
+  position: absolute;
+  top: 38%;
+  left: 42%;
+  color: #000;
+  font-weight: bold;
+}
+
+/*
+商品图片
+ */
+.commodity-img {
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.commodity-img:hover {
+  transform: scale(6.0);
+}
+
+.positionPage {
+  margin: 0px;
+  position: fixed !important;
+  bottom: 1px !important
+}
+
+.checkbox-inline {
+  margin-right: 10px;
+}
+
+.zh-channelbox {
+  border-left: 1px solid rgba(255, 255, 255, 0.3);
+  border-top: 1px solid rgba(255, 255, 255, 0.3);
+  margin: 10px;
+}
+
+.zh-channelbox .zh-channelitem {
+  border-right: 1px solid rgba(255, 255, 255, 0.3);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.zh-channelitem h3 {
+  height: 35px;
+  line-height: 35px;
+  position: relative;
+  padding-left: 15px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+  color: #000;
+  font-size: 14px;
+  margin-bottom: 0;
+}
+
+.zh-channelitem h3 .zh-bts {
+  position: absolute;
+  display: inline-block;
+  width: 90px;
+  top: 0;
+  right: 15px;
+  margin-bottom: 0;
+}
+
+.zh-channelitem .zh-optlist {
+  width: 100%;
+}
+
+.zh-channelitem .zh-optlist ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.zh-channelitem ul li {
+  position: relative;
+  display: block;
+  padding: 3px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.zh-channelitem ul li:last-child {
+  border-bottom: none;
+}
+
+.zh-channelitem ul li span {
+  display: inline-block;
+}
+
+.zh-channelitem ul li .zh-infoname {
+  width: 8%;
+  text-align: right;
+  margin-bottom: 3px;
+}
+
+.zh-channelitem ul li .zh-channeltext {
+  width: 15%;
+  margin-bottom: 3px;
+}
+
+.zh-channelitem ul li .zh-channeltext input {
+  width: 90%;
+}
+
+.zh-channelitem ul li a {
+  position: absolute;
+  color: #f00;
+  text-decoration: underline;
+  right: 5px;
+  top: 7px;
+  cursor: pointer;
+}

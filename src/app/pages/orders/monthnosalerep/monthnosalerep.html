@@ -1,0 +1,66 @@
+<div class="zh-serchbox">
+  <table class="table zh-serchtable black-muted-bg">
+    <tbody>
+      <tr>
+        <td>
+          <table class="table zh-serch-table">
+            <tr>
+              <td class="zh-zdname"><span style="color:#f00;font-size:16px;margin-right:5px;">*</span>日期</td>
+              <td class="zh-textbox" id="datepicker">
+                <!-- <button nz-button [nzType]="'primary'">测试按钮</button> -->
+                <nz-date-picker [(ngModel)]="params.search.month" [nzPlaceHolder]="'Select month'" [nzMode]="'month'"
+                  [nzAllowClear]='false' [nzDisabledDate]="_disabledMonth" [nzFormat]="'YYYY-MM'"></nz-date-picker>
+                <!-- <input ng2-datetime-picker date-only="true" class="form-control" [(ngModel)]="params.search.date" placeholder="开始时间"> -->
+              </td>
+              <td class="zh-zdname"><span style="color:#f00;font-size:16px;margin-right:5px;">*</span>门店</td>
+              <td class="zh-textbox">
+                <nz-select style="width: 180px;" [(ngModel)]="params.region_code" nzShowSearch nzAllowClear
+                  nzPlaceHolder="请选择门店名称">
+                  <nz-option *ngFor="let store of stores" [nzValue]="store.code" [nzLabel]="store.codename"></nz-option>
+                </nz-select>
+              </td>
+            </tr>
+          </table>
+        </td>
+        <td>
+          <button nz-button nzType="primary" style="margin-right:10px;" (click)="search(params)">查询</button>
+          <button nz-button nzType="default" (click)="Reset()">重置</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+<my-page [params]='params' [pagecount]='pageSize' [changecount]='changecount' (childparams)="childparams($event)"></my-page>
+<div class="horizontal-scroll" style="min-height: 350px;">
+  <div class="zh-listhead">
+    <button nz-button nzType="default" (click)="addexport()"><i nz-icon type="file-excel" theme="outline"></i>导出到CSV文件</button>
+  </div>
+  <div style="padding-right:5px;">
+    <nz-table #nzTable [nzData]="nosales" [nzShowPagination]="false" [nzFrontPagination]="false" nzBordered>
+      <thead>
+        <tr>
+          <th>序号</th>
+          <th>日期</th>
+          <th>门店</th>
+          <th>商品编码</th>
+          <th>商品条码</th>
+          <th>商品名称</th>
+          <th>一级分类</th>
+          <th>二级分类</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let nosale of nzTable.data;let i=index">
+          <td>{{cow+i+1}}</td>
+          <td>{{nosale?.month}}</td>
+          <td>{{nosale?.region_name}}</td>
+          <td>{{nosale?.item_code}}</td>
+          <td>{{nosale?.barcode}}</td>
+          <td>{{nosale?.item_name}}</td>
+          <td>{{nosale?.online_sup_name}}</td>
+          <td>{{nosale?.online_cat_name}}</td>
+        </tr>
+      </tbody>
+    </nz-table>
+  </div>
+</div>

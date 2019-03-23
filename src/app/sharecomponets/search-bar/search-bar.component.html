@@ -1,0 +1,99 @@
+<div class="zh-serchbox" [ngStyle]="{'padding-bottom':inittogglesearch?'48px':'24px'}">
+  <div nz-row class="search-box">
+    <div nz-col nzLg="21" nzXl="21" class="search-bar-left">
+      <div nz-row>
+        <div *ngFor="let option of queryList">
+          <div *ngIf="option.show?option.type=='input':false" nz-col nzSpan="{{option.width?option.width:'8'}}">
+            <label>
+              <span *ngIf="option.importent" style="color:red">*</span>
+              {{option.label}}
+            </label>
+            <input nz-input placeholder="请输入{{option.label}}" name="option.name" [(ngModel)]="option.value">
+          </div>
+
+          <div *ngIf="option.show?option.type=='select':false" nz-col nzSpan="{{option.width?option.width:'8'}}">
+            <label>
+              <span *ngIf="option.importent" style="color:red">*</span>
+              {{option.label}}
+            </label>
+            <nz-select name="option.name" [nzShowSearch]='option.search' [(ngModel)]="option.code" nzAllowClear>
+              <nz-option *ngFor="let item of option.list" [nzValue]="item.code" [nzLabel]="item.name"></nz-option>
+            </nz-select>
+          </div>
+
+          <div *ngIf="option.show?option.type=='double-select':false" class="double-select" nz-col nzSpan="{{option.width?option.width:'8'}}">
+            <label>
+              {{option.label}}
+            </label>
+            <nz-select [(ngModel)]="option.code1" (ngModelChange)="getSubOnlineCategories($event)">
+              <nz-option *ngFor="let item of option.list1" [nzValue]="item.code" [nzLabel]="item.name"></nz-option>
+            </nz-select>
+            <span>-</span>
+            <nz-select [(ngModel)]="option.code2">
+              <nz-option *ngFor="let item of option.list2" [nzValue]="item.code2" [nzLabel]="item.name"></nz-option>
+            </nz-select>
+          </div>
+
+          <div *ngIf="option.show?option.type=='select-check':false" class="select-check" nz-col nzXs="12" nzSpan="{{option.width?option.width:'8'}}">
+            <label>{{option.label}}</label>
+            <nz-select [(ngModel)]="option.code1" nzAllowClear>
+              <nz-option *ngFor="let item of option.list1" [nzValue]="item.code1" [nzLabel]="item.name"></nz-option>
+            </nz-select>
+            <label nz-checkbox [(ngModel)]="option.code2">
+              {{option.label2}}
+            </label>
+          </div>
+
+          <div *ngIf="option.show?option.type=='double-input':false" class="double-input" nz-col nzXs="12" nzSpan="{{option.width?option.width:'8'}}">
+            <label>{{option.label}}</label>
+            <input nz-input placeholder="￥" name="option.name1" [(ngModel)]="option.value1">
+            <span>-</span>
+            <input nz-input placeholder="￥" name="option.name2" [(ngModel)]="option.value2">
+          </div>
+
+          <div *ngIf="option.show?option.type=='date-picker':false" class="double-input" nz-col nzXs="16" nzSpan="{{option.width?option.width:'16'}}">
+            <label>{{option.label}}</label>
+
+            <nz-range-picker [ngStyle]="{'width':ngContent.childElementCount==0?'calc(100% - 120px)':'calc(100% - 320px)'}"
+              [(ngModel)]="option.value" nzFormat="yyyy-MM-dd" nzClassName='date-picker'></nz-range-picker>
+
+            <div #ngContent class="date-btn-group">
+              <ng-content></ng-content>
+            </div>
+          </div>
+
+
+          <div *ngIf="option.show?option.type=='checkbox':false" class="checkbox" nz-col nzXs="12" nzSm="8" nzMd="8"
+            nzLg="8" nzXl="8">
+            <label nz-checkbox [(ngModel)]="option.code">
+              {{option.label}}
+            </label>
+          </div>
+
+          <div *ngIf="option.show?option.type=='radio':false" class="radio" nz-col nzXs="24" nzSm="24" nzMd="24" nzLg="24"
+            nzXl="24">
+            <label>{{option.label}}</label>
+            <nz-radio-group [(ngModel)]="option.code">
+              <label *ngFor="let item of option.list" [nzValue]="item.code" nz-radio>{{item.name}}</label>
+            </nz-radio-group>
+          </div>
+        </div>
+      </div>
+
+    </div>
+    <div nz-col nzLg="3" nzXl="3" class="search-bar-right">
+      <nz-radio-group [(ngModel)]="size">
+        <button nz-button nzType="primary" (click)=search()>查询</button>
+        <button nz-button nzType="default" (click)=reset()>重置</button>
+
+      </nz-radio-group>
+
+    </div>
+
+  </div>
+
+
+  <div *ngIf="inittogglesearch" class="close" (click)="togglesearch()">
+    {{closeText}}
+  </div>
+</div>

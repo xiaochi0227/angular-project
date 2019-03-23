@@ -1,0 +1,665 @@
+<div *ngIf="newvision">
+  <div class="zh-serchbox">
+    <table class="table zh-serchtable black-muted-bg">
+      <tbody>
+        <tr>
+          <td>
+            <table class="table zh-serch-table">
+              <tr>
+                <td class="zh-zdname" width="10%">渠道订单号</td>
+                <td class="zh-textbox" width="23%">
+                  <input nz-input placeholder="请输入渠道订单号" [(ngModel)]="params.search.channel_sheetno">
+                </td>
+                <td class="zh-zdname" width="10%">门店</td>
+                <td class="zh-textbox" width="23%" *ngIf="stores">
+                  <nz-select style="width: 180px;" [(ngModel)]="params.search.region_code" nzShowSearch nzAllowClear
+                    nzPlaceHolder="请选择门店名称">
+                    <nz-option *ngFor="let store of stores" [nzValue]="store.code" [nzLabel]="store.codename"></nz-option>
+                  </nz-select>
+                </td>
+                <td class="zh-zdname" width="10%">手机号</td>
+                <td class="zh-textbox">
+                  <input nz-input placeholder="请输入手机号" [(ngModel)]="params.search.mobile">
+                </td>
+              </tr>
+              <tr *ngIf="hidesearch">
+                <td class="zh-zdname">选择时间</td>
+                <td colspan="3" style="text-align:left;">
+                  <nz-radio-group [(ngModel)]="params.search.time_type" style="display:inline-block;">
+                    <label nz-radio nzValue="1">下单</label>
+                    <label nz-radio nzValue="2">完成</label>
+                    <label nz-radio nzValue="3">核销</label>
+                  </nz-radio-group>
+                  <span style="display: inline-block;width:280px;">
+                    <my-daterange [_startDate]="_startDate" [_endDate]="_endDate" (startchange)="startchange($event)"
+                      (endchange)="endchange($event)"></my-daterange>
+                  </span>
+                </td>
+                <td class="zh-zdname">核销状态</td>
+                <td class="zh-textbox">
+                  <nz-select style="width: 150px;" [(ngModel)]="params.search.pos" nzAllowClear>
+                    <nz-option nzValue="" nzLabel="请选择"></nz-option>
+                    <nz-option nzValue="1" nzLabel="已核销"></nz-option>
+                    <nz-option nzValue="-1" nzLabel="未核销"></nz-option>
+                  </nz-select>
+                </td>
+              </tr>
+              <tr *ngIf="hidesearch">
+                <td class="zh-zdname">订单序号</td>
+                <td class="zh-textbox">
+                  <input nz-input placeholder="请输入订单序号" [(ngModel)]="params.search.order_seq">
+                </td>
+                <td class="zh-zdname">订单类型</td>
+                <td class="zh-textbox">
+                  <nz-select style="width: 150px;" [(ngModel)]="params.search.bill_type" nzAllowClear>
+                    <nz-option nzValue="1" nzLabel="销售单"></nz-option>
+                    <nz-option nzValue="3" nzLabel="调整单"></nz-option>
+                    <nz-option nzValue="4" nzLabel="直赔单"></nz-option>
+                  </nz-select>
+                </td>
+                <td class="zh-textbox" colspan="2">
+                  <label nz-checkbox [(ngModel)]="params.search.sghx" (click)="gosearch($event,'1')">手工核销</label>
+                  <label nz-checkbox [(ngModel)]="params.search.pre_order" (click)="gosearch($event,'2')">预订单</label>
+                </td>
+              </tr>
+              <tr *ngIf="hidesearch">
+                <td class="zh-zdname" style="vertical-align: top;">渠道</td>
+                <td colspan="5" class="zh-textbox" style="vertical-align: top;">
+                  <nz-tag (click)="getchannel()" [nzColor]="'#00abff'">全部渠道</nz-tag>
+                  <span *ngFor="let channel of channels;" style="cursor: pointer;" (click)="getchannel(channel.channel_keyword)">
+                    <my-channeltags [getchannel]="channel.channel_keyword"></my-channeltags>
+                  </span>
+
+                  <span style="margin-left: 60px;margin-right:15px;">订单状态</span>
+                  <span>
+                    <nz-button-group>
+                      <button nz-button [nzType]="status===''?'primary':'default'" (click)="getorderstatus('')">全部状态</button>
+                      <button nz-button [nzType]="status==='1'?'primary':'default'" (click)="getorderstatus('1')">已接收</button>
+                      <button nz-button [nzType]="status==='4'?'primary':'default'" (click)="getorderstatus('4')">已释放</button>
+                      <button nz-button [nzType]="status==='6'?'primary':'default'" (click)="getorderstatus('6')">已备货</button>
+                      <button nz-button [nzType]="status==='9'?'primary':'default'" (click)="getorderstatus('9')">已配送</button>
+                      <button nz-button [nzType]="status==='11'?'primary':'default'" (click)="getorderstatus('11')">已签收</button>
+                      <button nz-button [nzType]="status==='14'?'primary':'default'" (click)="getorderstatus('14')">待取消</button>
+                      <button nz-button [nzType]="status==='15'?'primary':'default'" (click)="getorderstatus('15')">已取消</button>
+                      <button nz-button [nzType]="status==='8'?'primary':'default'" (click)="getorderstatus('8')">已复核</button>
+                    </nz-button-group>
+                  </span>
+                  <span style="margin-left: 60px;">
+                    <nz-button-group>
+                      <button nz-button [nzType]="types==='1'?'primary':'default'" (click)="getdate('1')">今天</button>
+                      <button nz-button [nzType]="types==='2'?'primary':'default'" (click)="getdate('2')">昨天</button>
+                      <button nz-button [nzType]="types==='3'?'primary':'default'" (click)="getdate('3')">前天</button>
+                      <button nz-button [nzType]="types==='4'?'primary':'default'" (click)="getdate('4')">上周</button>
+                      <button nz-button [nzType]="types==='5'?'primary':'default'" (click)="getdate('5')">本月</button>
+                    </nz-button-group>
+                  </span>
+                </td>
+              </tr>
+            </table>
+          </td>
+          <td>
+            <button nz-button nzType="primary" style="margin-right:10px;" (click)="getOrdersQuery()">查询</button>
+            <button nz-button nzType="default" (click)="OrderRest()">重置</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <input value="展开更多↓" type="button" (click)="togglesearch($event)" style="display:block;width:100%;color:#333;background:rgba(240, 240, 240, 0.2);border: 1px solid rgba(225, 225, 225, 0.3);text-align: center;padding:3px 0;cursor: pointer;" />
+  </div>
+  <!-- <div class="btn-toolbar zh-pages">
+  <div class="btn-group">
+    <select [(ngModel)]="params.page_size" class="form-control zh-select" (change)="getPageOrders(1)">
+      <option>10</option>
+      <option>20</option>
+      <option selected="selected">50</option>
+      <option>100</option>
+    </select>
+  </div>
+  <div class="btn-group">
+    <button type="button" class="btn btn-primary" (click)="getPageOrders(1)">首页</button>
+    <button type="button" class="btn btn-primary" (click)="getPageOrders(params.page_no - 1)">上一页</button>
+    <button type="button" class="btn btn-primary" (click)="getPageOrders(params.page_no + 1)">下一页</button>
+    <button type="button" class="btn btn-primary" (click)="getPageOrders(totalpage)">尾页</button>
+  </div>
+  <div class="btn-group">
+    <input class="form-control zh-text" type="number" min="1" max="{{totalpage}}" [(ngModel)]="params.page_no" />
+  </div>
+  <div class="btn-group">
+    <button type="button" class="btn btn-primary" (click)="getPageOrders(params.page_no)">跳转</button>
+  </div>
+  <span class="zh-totpage"> 共：{{totalpage}} 页</span>
+  <span class="zh-count">共记：{{orders.count}}条订单/支付总金额：
+    <span style="color:#f60;">{{orders.paymoney|number:'1.2-2'}}</span>元/收入总金额：
+    <span style="color:#f60;">{{orders.inmoney|number:'1.2-2'}}</span>元/商品总金额：
+    <span style="color:#f60;">{{orders.itemmoney|number:'1.2-2'}}</span>元/优惠总金额：
+    <span style="color:#f60;">{{orders.discMoney|number:'1.2-2'}}</span>元</span>
+</div> -->
+  <div class="zh-listbox">
+    <div class="zh-listhead">
+      <input type="button" class="btn btn-success" value="导出到CSV文件" *ngIf="dcdcsvwj" (click)="addexport()">
+      <a (click)="selectvision('1')" style="color:#f00;">切换到新版本</a>
+    </div>
+    <div class="zh-listcardbox">
+      <div class="zh-listcard" *ngFor="let order of orders.rows;let i=index">
+        <table class="zh-listp-head">
+          <tr>
+            <td>{{order.order_time}}</td>
+            <td>
+              <my-channeltags [getchannel]="order.channel_keyword"></my-channeltags>
+            </td>
+            <td>
+              <span class="zh-cardspan">门店：[{{order.region_code}}]{{order.region_name}}</span>
+              <span>订单号：{{order.channel_sheetno}}</span>
+
+            </td>
+            <td>
+              <span class="zh-cardspan">收货人：{{order['receiver_name']}}</span>
+              <span>手机号：{{order['receiver_mobile1']}}</span>
+              <span *ngIf="order.invoice?.need">
+                <button class="invoice" (click)="invoice(order.invoice,order.payable_value)">需开发票</button>
+              </span>
+
+            </td>
+            <td>
+              <input type="button" class="btn btn-xs zh-tagglebt" value="打印小票" (click)="gotoprint(order)" style="cursor:pointer;margin-right:3px;" />
+              <input type="button" class="btn btn-xs zh-tagglebt" value="展开详情↓" (click)="getorderdetailnew(order.channel_sheetno,order)"
+                style="cursor:pointer;" />
+            </td>
+          </tr>
+        </table>
+        <table class="zh-listp-child" [class.selected]="order===selectorder">
+          <tr>
+            <td width='5%' style="text-align: center;">{{cow+i+1}}</td>
+            <td width='10%' style="text-align: center;">
+              <div>
+                <nz-tag *ngIf="order.sghx!==''" [nzColor]="'#f50'" style="margin-bottom:2px;">超卖</nz-tag>
+                <nz-tag *ngIf="order.bill_type==='4'" [nzColor]="'#f0ad4e'" style="margin-bottom:2px;">直赔单</nz-tag>
+                <nz-tag *ngIf="order.pre_order" [nzColor]="'#f0ad4e'" style="margin-bottom:2px;">预订单</nz-tag>
+                <nz-tag *ngIf="order.logistics_mode_keyword ==='1'" [nzColor]="'#f0ad4e'">自提</nz-tag>
+              </div>
+              {{order['order_status_center']}}/{{order.pos}}
+              <!-- <div style="text-align: center;">
+                    <input type="button" class="btn btn-xs zh-tagglebt" value="订单轨迹" (click)="gotoorderstatus(order.channel_sheetno)" style="cursor:pointer;"
+                    /></div> -->
+            </td>
+            <td width='30%'>
+              <!-- <span style="margin-right:10px;display:inline-block;margin-bottom:10px;">
+                      <span class="label label-zh-default">原价总额</span>¥{{order?.total_item_yj|number:'1.2-2'}}</span> -->
+              <span style="margin-right:10px;display:inline-block;margin-bottom:10px;">
+                <span class="label label-zh-default">支付</span>¥{{order.payable_value|number:'1.2-2'}}</span>
+              <span style="margin-right:10px;display:inline-block;margin-bottom:10px;">
+                <span class="label label-zh-default">收入</span>¥{{order.total_sale_value|number:'1.2-2'}}</span>
+              <span style="margin-right:10px;display:inline-block;margin-bottom:10px;">
+                <span class="label label-zh-default">商品</span>¥{{order.total_item_value|number:'1.2-2'}}</span>
+              <span style="margin-right:10px;display:inline-block;margin-bottom:10px;">
+                <span class="label label-zh-default">配送</span>¥{{order.payable_logistics_value|number:'1.2-2'}}</span>
+              <span style="margin-right:10px;display:inline-block;margin-bottom:10px;">
+                <span class="label label-zh-default">包装</span>¥{{order.package_fee|number:'1.2-2'}}</span>
+              <span style="margin-right:10px;display:inline-block;margin-bottom:10px;">
+                <span class="label label-zh-default">餐盒费</span>¥{{order.box_value|number:'1.2-2'}}</span>
+              <span style="margin-right:10px;display:inline-block;margin-bottom:10px;" *ngIf="order.commission_value">
+                <span class="label label-zh-default">平台佣金</span>¥{{order?.commission_value|number:'1.2-2'}}</span>
+              <span style="margin-right:10px;margin-bottom:10px;" class="zdyhstyle">
+                <span class="label label-zh-default ">整单总优惠:¥{{order.total_disc_value|number:'1.2-2'}}</span>
+                (
+                <span> 商家优惠:¥{{order.total_sj_disc|number:'1.2-2'}}</span>
+                <span> 平台优惠:¥{{order.total_pt_disc|number:'1.2-2'}}</span>)
+              </span>
+              <span style="margin-right:10px;margin-bottom:10px;    display: block;  margin-top: 8px;" class="zdyhstyle">
+                <span class="label label-zh-default ">单品总优惠:¥{{order.total_dp_disc|number:'1.2-2'}}</span>
+                (
+                <span> 商家优惠:¥{{order.total_sj_dp|number:'1.2-2'}}</span>
+                <span> 平台优惠:¥{{order.total_pt_dp|number:'1.2-2'}}</span> )
+              </span>
+              <span class="zh-qtfy" *ngIf="order.freight_value!==0||order.logistics_disc!==0||order.logistics_sj_disc!==0||order.logistics_pt_disc!==0">
+                <span class="label label-zh-default" style="cursor:pointer;">其它费用
+                  <span class="glyphicon glyphicon-chevron-right"></span>
+                </span>
+                <div class="zh-tip">
+                  <p *ngIf="order.freight_value!==0">商家运费收入:{{order?.freight_value}}</p>
+                  <p *ngIf="order.logistics_disc!==0">运费总优惠:{{order?.logistics_disc}}</p>
+                  <p *ngIf="order.logistics_sj_disc!==0">运费商家优惠:{{order?.logistics_sj_disc}}</p>
+                  <p *ngIf="order.logistics_pt_disc!==0">运费平台优惠:{{order?.logistics_pt_disc}}</p>
+                </div>
+              </span>
+            </td>
+            <td width="13%">订单序号：#{{order?.order_seq}}
+              <div>总件数:{{order.total_item_num}}</div>
+            </td>
+            <td width="30%">
+              收货人地址：{{order['receiver_address']}}
+            </td>
+            <td>
+              <p *ngIf="order.receive_time">接收时间:{{order.receive_time}}</p>
+              <p *ngIf="order.confirm_time">接单时间:{{order.confirm_time}}</p>
+              <p *ngIf="order.stocking_time">备货时间:{{order.stocking_time}}</p>
+              <p *ngIf="order.delivery_time">配送时间:{{order.delivery_time}}</p>
+              <p *ngIf="order.complete_time">完成时间:{{order.complete_time}}</p>
+              <p *ngIf="order.cancel_time">取消时间:{{order.cancel_time}}</p>
+              <p *ngIf="order.pos_time">核销时间:{{order.pos_time}}</p>
+            </td>
+          </tr>
+          <tr>
+            <td colspan="6" style="padding:3px 10px;line-height:20px;border-top:1px solid rgba(225, 225, 225, 0.3);">
+              <span style="margin-right:30px;">下单手机号:{{order.buyer_tel}}</span>备注:{{order.note}}
+            </td>
+          </tr>
+        </table>
+        <div class="zh-listchild" *ngIf="ordersdetailnew">
+          <span class="zh-detaillist">
+            <table>
+              <thead>
+                <tr *ngIf="ordersdetailnew.delivery">
+                  <th colspan="7" style="text-align: center;">送货人:{{ordersdetailnew.delivery[0].deliveryman}}/联系方式:{{ordersdetailnew.delivery[0].mobile}}</th>
+                </tr>
+                <tr>
+                  <th width="5%"></th>
+                  <!-- <th width="10%"></th> -->
+                  <th width="20%">商品</th>
+                  <th width="14%">商品编码/条码</th>
+                  <th width="5%">数量</th>
+                  <th width="14%">商品售价</th>
+                  <th>商品金额</th>
+                  <th width="8%">整单优惠</th>
+                  <th width="8%">单品优惠</th>
+                  <th width="8%">开票价格</th>
+                  <th width="8%">开票金额</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let detaillist of ordersdetailnew.order_details;let i=index">
+                  <td style="text-align: center;">{{i+1}}</td>
+                  <!-- <td><img src="{{detaillist.url}}" class="lazy commodity-img" style="width:30px;height:30px; border:0px;"
+                        /></td> -->
+                  <td>
+                    <nz-tag *ngIf="detaillist.sghx!==''&&detaillist.sghx" [nzColor]="'#f50'">超卖</nz-tag>{{detaillist.name}}
+                  </td>
+                  <td>{{detaillist.code}}/
+                    <div>{{detaillist.barcode}}</div>
+                  </td>
+                  <td>x{{detaillist.qty}}</td>
+                  <td>
+                    <span style="color:#a9a9a9;text-decoration:line-through;" [style.color]="detaillist.original_price!==detaillist.sale_price ? '#f00': '#a9a9a9'">¥{{detaillist.original_price}}</span>/¥{{detaillist.sale_price}}</td>
+                  <td>¥{{detaillist.sale_value}}</td>
+                  <td>商家:{{detaillist.disc_value}}
+                    <div>平台:{{detaillist.disc_value_pt}}</div>
+                  </td>
+                  <td>商家:{{detaillist.total_sj_dp}}
+                    <div>平台:{{detaillist.total_pt_dp}}</div>
+                  </td>
+                  <td>{{detaillist.billing_price}}</td>
+                  <td>{{detaillist.billing_value}}</td>
+                </tr>
+              </tbody>
+            </table>
+          </span>
+          <span class="zh-orderstauts">
+            <div class="zh-orderstautsdiv">
+              <h3>订单轨迹</h3>
+              <span *ngIf="!orderStatus||orderStatus.length===0" style="padding-left:10px;">暂无数据！</span>
+              <ul class="track-list" *ngIf="orderStatus">
+                <li class="first" *ngFor="let status of orderStatus;let i=index">
+                  <i class="node-icon"></i>
+                  <span class="txt">
+                    <div>
+                      <p>【{{status.channel_status_name}}】{{i===0?'订单号:'+status.channel_sheetno:''}}</p>
+                      <p>操作人:{{status.operName?status.operName:''}}</p>
+                      <p>{{status.operTime | date : 'yyyy-MM-dd HH:mm:ss'}}</p>
+                    </div>
+                  </span>
+                </li>
+              </ul>
+            </div>
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- 弹出框 -->
+<app-modal [modalwidth]="modalwidth" [modaltitle]="modaltitle" [isVisible]="modalstatus" [isConfirmLoading]="modalconfirloading"
+  [confirmisshow]="confirmisshow" (handleokemit)="handleokfun($event)" (handlecancelemit)="closemodal()">
+  <div *ngIf="this.modaltitle==='打印小票'">
+    <div class="printbox" *ngIf="ordersdetailprint">
+      <table class="toptable">
+        <tr class="zh-disnone">
+          <td style="height:70px;">
+            <input type="button" onclick="javascript:window.print();" value="打印" class="printbt" />
+          </td>
+        </tr>
+        <tr>
+          <td style="height:30px;vertical-align:top;">牵牛花</td>
+        </tr>
+        <tr>
+          <td style="height:25px;" class="zh-f22">拣货单</td>
+        </tr>
+        <tr>
+          <td style="height:25px;" class="zh-f22">#{{printorder?.order_seq}}</td>
+        </tr>
+        <tr>
+          <td style="height:20px;">(商家留存)</td>
+        </tr>
+        <tr>
+          <td style="height:100px;text-align: center;vertical-align: middle;">
+            <!-- <img src="{{ordersdetailnew.upc_url}}">   -->
+            <!-- <img src="http://images-m-glory.oss-cn-hangzhou.aliyuncs.com/barcode/1598053225070592400.png"> -->
+            <img style="width:226px;height:90px;" class="barcode" src="http://www.m-glory.net/oss/get/barcode?type=bar&format=jpg&width=520&height=212&code={{printorder?.channel_sheetno}}" />
+            {{printorder?.channel_sheetno}}
+          </td>
+        </tr>
+      </table>
+      <table class="table2">
+        <tr>
+          <td>下单时间:{{printorder?.order_time}}</td>
+        </tr>
+        <tr>
+          <td>订购人姓名:{{printorder?.receiver_name}}</td>
+        </tr>
+        <tr>
+          <td>订购人电话:{{printorder?.receiver_mobile}}</td>
+        </tr>
+      </table>
+      <table class="goodslist">
+        <tr>
+          <td style="border-top:1px dashed #000;border-bottom:1px dashed #000;padding:3px 0;">
+            <table style="width:100%;">
+              <tr>
+                <td>品名</td>
+                <td>数量</td>
+                <td>单价</td>
+                <td>金额</td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <table style="width:100%;" *ngFor="let orderdetail of ordersdetailprint.order_details;let i=index">
+              <tr>
+                <td colspan="3">{{i+1}}.{{orderdetail?.name}}</td>
+              </tr>
+              <tr>
+                <td colspan="3">编码:{{orderdetail?.code}}</td>
+              </tr>
+              <tr>
+                <td colspan="3">条码:{{orderdetail?.barcode}}</td>
+              </tr>
+              <tr>
+                <td>(x{{orderdetail?.qty}})</td>
+                <td>
+                  <span *ngIf="printorder?.channel_keyword!=='ELEM'">{{orderdetail?.sale_price}}</span>
+                  <span *ngIf="printorder?.channel_keyword==='ELEM'">{{orderdetail?.original_price}}</span>
+                </td>
+                <td>
+                  <span *ngIf="printorder?.channel_keyword!=='ELEM'">{{orderdetail?.sale_value}}</span>
+                  <span *ngIf="printorder?.channel_keyword==='ELEM'">{{orderdetail?.original_price*orderdetail?.qty|number:'1.2-2'}}</span>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+      </table>
+      <table class="table3">
+        <tr>
+          <td>商品金额:{{printorder?.total_item_value|number:'1.2-2'}}</td>
+        </tr>
+        <tr>
+          <td style="text-align:right;">
+            <span style="margin-right:10px;">商品优惠:{{ordersdetailprint?.total_disc_value|number:'1.2-2'}}</span>
+          </td>
+        </tr>
+        <tr>
+          <td>运费金额:{{printorder?.payable_logistics_value|number:'1.2-2'}}</td>
+        </tr>
+        <tr>
+          <td>总件数:{{printorder?.total_item_num}}</td>
+        </tr>
+        <tr>
+          <td style="font-size:20px;height:35px;text-align:right;">
+            <span style="margin-right:10px;">支付金额:{{printorder?.payable_value|number:'1.2-2'}}</span>
+          </td>
+        </tr>
+      </table>
+      <table class="table2">
+        <tr>
+          <td style="vertical-align:top;height:70px;border-top:1px dashed #000;border-bottom:1px dashed #000;">
+            备注:{{printorder?.note}}
+          </td>
+        </tr>
+      </table>
+      <table class="channeltoptable">
+        <tr>
+          <td [ngSwitch]="printorder?.channel_keyword" style="height:25px;">
+            <span *ngSwitchCase="'MTWM'">美团外卖</span>
+            <span *ngSwitchCase="'BDWM'">饿了么星选</span>
+            <span *ngSwitchCase="'ELEM'">饿了么</span>
+            <span *ngSwitchCase="'JDDJ'">京东到家</span>
+            <span *ngSwitchCase="'WSC'">福州电信</span>
+            <span *ngSwitchCase="'YINZUO'">银座云生活</span>
+          </td>
+        </tr>
+        <tr>
+          <td style="height:20px;">{{printorder?.region_name}}</td>
+        </tr>
+      </table>
+
+      <table class="table2">
+        <tr>
+          <td>订单编号:{{printorder?.channel_sheetno}}</td>
+        </tr>
+        <tr>
+          <td>客户姓名:{{printorder?.receiver_name}}</td>
+        </tr>
+        <tr>
+          <td>客户电话:{{printorder?.receiver_mobile}}</td>
+        </tr>
+        <tr>
+          <td style="border-top:1px dashed #000;padding-top:3px;line-height:16px;">客户地址:{{printorder?.receiver_address1}}</td>
+        </tr>
+      </table>
+      <table class="goodslist" *ngIf="ordersdetailprint">
+        <tr>
+          <td style="border-top:1px dashed #000;border-bottom:1px dashed #000;padding:3px 0;">
+            <table style="width:100%;">
+              <tr>
+                <td>品名</td>
+                <td>数量</td>
+                <td>单价</td>
+                <td>金额</td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <table style="width:100%;" *ngFor="let orderdetail of ordersdetailprint.order_details;let i=index">
+              <tr>
+                <td colspan="3">{{i+1}}{{orderdetail?.name}}</td>
+              </tr>
+              <tr>
+                <td>(x{{orderdetail?.qty}})</td>
+                <td>{{orderdetail?.sale_price}}</td>
+                <td>{{orderdetail?.sale_value}}</td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+      </table>
+      <table class="table3">
+        <tr>
+          <td>商品金额:{{printorder?.total_item_value|number:'1.2-2'}}</td>
+        </tr>
+        <tr>
+          <td style="text-align:right;">
+            <span style="margin-right:10px;">商品优惠:{{ordersdetailprint?.total_disc_value|number:'1.2-2'}}</span>
+          </td>
+        </tr>
+        <tr>
+          <td>运费金额:{{printorder?.payable_logistics_value|number:'1.2-2'}}</td>
+        </tr>
+        <tr>
+          <td>总件数:{{printorder?.total_item_num}}</td>
+        </tr>
+        <tr>
+          <td style="font-size:20px;height:35px;text-align:right;">
+            <span style="margin-right:10px;">支付金额:{{printorder?.payable_value|number:'1.2-2'}}</span>
+          </td>
+        </tr>
+      </table>
+
+      <table class="table2">
+        <tr>
+          <td style="vertical-align:top;height:70px;border-top:1px dashed #000;border-bottom:1px dashed #000;">
+            客户签名:
+          </td>
+        </tr>
+      </table>
+    </div>
+  </div>
+
+  <div *ngIf="this.modaltitle==='发票信息'">
+    <div style="width:100%;">
+      <span *ngIf="!invoiceobj">暂无数据！</span>
+      <div class="invoice-list" *ngIf="invoiceobj">
+        <p> 发票抬头 :
+          <span class="content">{{invoiceobj?.title}}</span>
+        </p>
+        <p> 发票信息 :
+          <span class="content">{{invoiceobj?.content}} </span>
+        </p>
+        <p> 纳税人识别号 :
+          <span class="content">{{invoiceobj?.duty_no}} </span>
+        </p>
+        <p> 发票金额 :
+          <span class="content">￥{{invoiceobj?.money}}</span>
+        </p>
+      </div>
+    </div>
+  </div>
+</app-modal>
+
+
+
+
+<!--新版页面-->
+<div class="zh_ordersbox" *ngIf="!newvision" style="font-size: 14px;">
+  <ul class="searchul black-muted-bg">
+    <li>
+      <span class="searchname" style="vertical-align: middle;">输入搜索</span>
+      <span class="searchtext">
+        <nz-input-group nzCompact>
+          <nz-select [(ngModel)]="selectsearchtype">
+            <nz-option [nzLabel]="'渠道订单号'" [nzValue]="1"></nz-option>
+            <nz-option [nzLabel]="'订单序号'" [nzValue]="2"></nz-option>
+            <nz-option [nzLabel]="'手机号'" [nzValue]="3"></nz-option>
+          </nz-select>
+          <input type="text" [(ngModel)]="selectsearchvalue" nz-input style="width: 200px;">
+          <button nz-button [nzShape]="'circle'" (click)="selectsearch(selectsearchtype,selectsearchvalue)">
+            <i class="anticon anticon-search"></i>
+          </button>
+        </nz-input-group>
+      </span>
+      <span class="storetext" *ngIf="stores">
+        <nz-select style="width: 180px;" [(ngModel)]="params.search.region_code" nzShowSearch nzAllowClear
+          nzPlaceHolder="请选择门店名称">
+          <nz-option *ngFor="let store of stores" [nzValue]="store.code" [nzLabel]="store.codename"></nz-option>
+        </nz-select>
+      </span>
+    </li>
+    <li>
+      <span class="searchname">选择日期</span>
+      <span style="display:inline-block;">
+        <nz-radio-group [(ngModel)]="params.search.time_type" (click)="getOrdersQuery()" style="display:inline-block;">
+          <label nz-radio nzValue="1">下单</label>
+          <label nz-radio nzValue="2">完成</label>
+          <label nz-radio nzValue="3">核销</label>
+        </nz-radio-group>
+        <span style="display: inline-block;width:280px;">
+          <my-daterange [_startDate]="_startDate" [_endDate]="_endDate" (startchange)="startchangenew($event)"
+            (endchange)="endchangenew($event)"></my-daterange>
+        </span>
+      </span>
+      <span style="display:inline-block;">
+        <nz-radio-group [(ngModel)]="dateValue" (click)="getdate(dateValue)">
+          <label nz-radio-button nzValue="1">今天</label>
+          <label nz-radio-button nzValue="2">昨天</label>
+          <label nz-radio-button nzValue="3">前天</label>
+          <label nz-radio-button nzValue="4">上周</label>
+          <label nz-radio-button nzValue="5">本月</label>
+        </nz-radio-group>
+      </span>
+    </li>
+    <li style="margin-top:16px;">
+      <span class="searchname">订单状态</span>
+      <span>
+        <nz-radio-group [(ngModel)]="params.search.order_status" (click)="getOrdersQuery()">
+          <label nz-radio nzValue="">全部</label>
+          <label nz-radio nzValue="1">已接收</label>
+          <label nz-radio nzValue="4">已释放</label>
+          <label nz-radio nzValue="6">已备货</label>
+          <label nz-radio nzValue="9">已配送</label>
+          <label nz-radio nzValue="11">已签收</label>
+          <label nz-radio nzValue="14">待取消</label>
+          <label nz-radio nzValue="15">已取消</label>
+          <!-- 增加已复核 对应值为8-->
+          <label nz-radio nzValue="8">已复核</label>
+
+        </nz-radio-group>
+        <label nz-checkbox [(ngModel)]="params.search.sghx" (ngModelChange)="gosearchnew()" style="margin-left:40px;">超卖</label>
+        <label nz-checkbox [(ngModel)]="params.search.pre_order" (ngModelChange)="gosearchnew()" style="margin-left:40px;">预订单</label>
+      </span>
+    </li>
+    <li style="margin-top:16px;">
+      <span class="searchname">订单类型</span>
+      <span>
+        <nz-radio-group [(ngModel)]="params.search.bill_type" (click)="getOrdersQuery()">
+          <label nz-radio nzValue="">全部</label>
+          <label nz-radio nzValue="1">销售单</label>
+          <label nz-radio nzValue="3">调整单</label>
+          <label nz-radio nzValue="4">直赔单</label>
+        </nz-radio-group>
+      </span>
+    </li>
+    <li style="margin-top:16px;">
+      <span class="searchname">核销状态</span>
+      <span>
+        <nz-radio-group [(ngModel)]="params.search.pos" (click)="getOrdersQuery()">
+          <label nz-radio nzValue="">全部</label>
+          <label nz-radio nzValue="1">已核销</label>
+          <label nz-radio nzValue="-1">未核销</label>
+        </nz-radio-group>
+      </span>
+    </li>
+    <button nz-button [nzType]="'primary'" [nzSize]="'small'" (click)="OrderRest()" style="position: absolute;right:20px;top:20px;">
+      <span>重置查询条件</span>
+    </button>
+    <a (click)="selectvision('0')" style="position: absolute;color:#f00;right:20px;top:50px;">切换到旧版本</a>
+  </ul>
+  <my-page [params]='params' [pagecount]='pageSize' [changecount]='changecount' (childparams)="childparams($event)"></my-page>
+  <ul class="zh-summary" *ngIf="orders">
+    <li>支付总金额：
+      <span>{{orders.paymoney|number:'1.2-2'}}</span>元</li>
+    <li>收入总金额：
+      <span>{{orders.inmoney|number:'1.2-2'}}</span>元</li>
+    <li>商品总金额：
+      <span>{{orders.itemmoney|number:'1.2-2'}}</span>元</li>
+    <li>优惠总金额：
+      <span>{{orders.discMoney|number:'1.2-2'}}</span>元</li>
+  </ul>
+  <div class="zh-channeltabs">
+    <nz-tabset [nzTabBarExtraContent]="tabBarExtraContent" [nzSelectedIndex]="selectedindex">
+      <nz-tab *ngFor="let channel of channels;let j = index;" [nzTitle]="channel.name" (nzClick)="channeltabs(channel.channel_keyword,j)">
+        <div *ngIf="orders&&selectedindex === j">
+          <my-ordercard *ngFor="let order of orders.rows;let i=index" [orderdate]='order' [orderprocessingswitch]="orderprocessingswitch"
+            [num]='i' (updatelist)="updatelist($event)"></my-ordercard>
+        </div>
+        <div *ngIf="orders&&orders.rows&&orders.rows.length === 0" style="color:#333;">未查询到数据!</div>
+      </nz-tab>
+    </nz-tabset>
+    <ng-template #tabBarExtraContent>
+      <button nz-button [nzType]="'primary'" (click)="addexport()">
+        <span>导出到CSV文件</span>
+      </button>
+    </ng-template>
+  </div>
+</div>

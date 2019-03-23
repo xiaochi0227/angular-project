@@ -1,0 +1,78 @@
+<div class="zh-serchbox">
+  <table class="table zh-serchtable black-muted-bg">
+    <tbody>
+      <tr>
+        <td>
+          <table class="table zh-serch-table">
+            <tr>
+              <td class="zh-zdname">商品名称</td>
+              <td class="zh-textbox">
+                <input nz-input placeholder="请输入商品名称" [(ngModel)]="params.search.name">
+              </td>
+            </tr>
+          </table>
+        </td>
+        <td>
+          <button nz-button nzType="primary" style="margin-right:10px;" (click)="search(params)">查询</button>
+          <button nz-button nzType="default" (click)="Reset()">重置</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+<!--<my-page [params]='params' [pagecount]='pageSize' [changecount]='changecount' (childparams)="childparams($event)"></my-page>-->
+<div class="horizontal-scroll">
+  <div class="zh-listhead1">
+    <button nz-button nzType="default" (click)="addexport()"><i nz-icon type="file-excel" theme="outline"></i>导出到CSV文件</button>
+  </div>
+  <nz-table #nzTable [nzData]="renamelists" [nzShowPagination]="false" [nzFrontPagination]="false" nzBordered>
+    <thead>
+      <tr class="tablehead">
+        <th>序号</th>
+        <th>线下名称</th>
+        <th>线上名称</th>
+        <th>重复数</th>
+        <th>操作</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let renamelist of nzTable.data;let i=index">
+        <td>{{i+1}}</td>
+        <td>{{renamelist.name}}</td>
+        <td>{{renamelist.m_desc}}</td>
+        <td>{{renamelist.count}}</td>
+        <td>
+          <button nz-button nzType="default" (click)="seedetails(renamelist)">查看详情</button>
+        </td>
+      </tr>
+    </tbody>
+  </nz-table>
+</div>
+
+<!-- 查看详情模态框（Modal） -->
+<app-modal [modalwidth]="modalwidth" [modaltitle]="modaltitle" [isVisible]="modalstatus" [isConfirmLoading]="modalconfirloading"
+  [confirmisshow]="confirmisshow" (handleokemit)="handleokfun($event)" (handlecancelemit)="closemodal()">
+  <nz-table #nzmodalTable [nzData]="detalrenames" [nzShowPagination]="false" [nzFrontPagination]="false" nzBordered>
+    <thead>
+      <tr class="tablehead">
+        <th width="7%">序号</th>
+        <th width="15%">商品编码</th>
+        <th width="20%">商品条码</th>
+        <th width="30%">线下名称</th>
+        <th>线上名称</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let detalrename of nzmodalTable.data;let i = index">
+        <td>{{i+1}}</td>
+        <td>{{detalrename?.code}}</td>
+        <td>{{detalrename?.barcode}}</td>
+        <td>{{detalrename?.name}}</td>
+        <td>
+          <input nz-input placeholder="请输入商品编码" style="width:70%;margin-right:3px;" [(ngModel)]="detalrename.m_desc">
+          <button nz-button nzType="primary" nzSize="small" (click)="updaterename(detalrename)">保存</button>
+        </td>
+      </tr>
+    </tbody>
+  </nz-table>
+</app-modal>

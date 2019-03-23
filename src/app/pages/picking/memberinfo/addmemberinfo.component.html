@@ -1,0 +1,72 @@
+<div nz-row class="top">
+  <div class="params-bar">
+    <div nz-col nzXs="12" nzSm="8" nzMd="8" nzLg="8" nzXl="8">
+      <label><span style="color:red">*</span> 用户名</label>
+      <input nz-input placeholder="请输入用户名" name="name" [(ngModel)]="params.name">
+    </div>
+    <div nz-col nzXs="12" nzSm="8" nzMd="8" nzLg="8" nzXl="8">
+      <label><span style="color:red">*</span> 账号</label>
+      <input [disabled]="params._id" nz-input placeholder="请输入账号" name="code" [(ngModel)]="params.code">
+    </div>
+
+    <div nz-col nzXs="12" nzSm="8" nzMd="8" nzLg="8" nzXl="8">
+      <label><span style="color:red">*</span> 密码</label>
+      <input nz-input placeholder="请输入密码" name="password" [(ngModel)]="params.password">
+    </div>
+
+    <div nz-col nzXs="12" nzSm="8" nzMd="8" nzLg="8" nzXl="8">
+      <label><span style="color:red">*</span> 门店编码</label>
+      <nz-select [nzPlaceHolder]="'点击下拉选择门店'" name="org_code" nzShowSearch='true' [(ngModel)]="params.org_code" nzAllowClear>
+        <nz-option *ngFor="let item of storelist" [nzValue]="item.code" [nzLabel]="item.codename"></nz-option>
+      </nz-select>
+    </div>
+
+
+    <div nz-col nzXs="12" nzSm="8" nzMd="8" nzLg="8" nzXl="8">
+      <label>用户状态</label>
+      <nz-select (ngModelChange)="ping()" name="status" nzShowSearch='true' [(ngModel)]="params.status" nzAllowClear>
+        <nz-option nzValue="1" nzLabel="启用"></nz-option>
+        <nz-option nzValue="-1" nzLabel="禁用"></nz-option>
+      </nz-select>
+    </div>
+
+
+    <div nz-col nzXs="12" nzSm="8" nzMd="8" nzLg="8" nzXl="8">
+      <label>是否在线</label>
+      <nz-select [nzDisabled]="params.status=='-1'" name="is_online" nzShowSearch='true' [(ngModel)]="params.is_online" nzAllowClear>
+        <nz-option [nzValue]="1" nzLabel="待接单"></nz-option>
+        <nz-option [nzValue]="0" nzLabel="暂不接单"></nz-option>
+      </nz-select>
+    </div>
+
+    <div nz-col nzXs="12" nzSm="8" nzMd="8" nzLg="8" nzXl="8">
+      <label><span style="color:red">*</span> 用户手机号</label>
+      <input nz-input placeholder="请输入用户手机号" name="mobileNo" [(ngModel)]="params.mobileNo">
+    </div>
+
+    <div nz-col nzXs="12" nzSm="8" nzMd="8" nzLg="8" nzXl="8">
+      <label>拣货时间</label>
+      <nz-select name="picker_time" nzShowSearch='true' [(ngModel)]="params.picker_time" nzAllowClear>
+        <nz-option [nzValue]="10" nzLabel="10"></nz-option>
+        <nz-option [nzValue]="20" nzLabel="20"></nz-option>
+        <nz-option [nzValue]="30" nzLabel="30"></nz-option>
+        <nz-option [nzValue]="40" nzLabel="40"></nz-option>
+        <nz-option [nzValue]="50" nzLabel="50"></nz-option>
+        <nz-option [nzValue]="60" nzLabel="60"></nz-option>
+
+      </nz-select>
+    </div>
+  </div>
+
+
+  <div class="btn-group">
+    <nz-radio-group>
+      <button nz-button *ngIf="!params._id" nzType="primary" (click)=submitAddmember()>提交</button>
+      <button nz-button *ngIf="params._id" nzType="primary" (click)=submitupdmember()>修改</button>
+
+      <!-- <input type="button" class="btn btn-success" (click)="submitupdmember()" *ngIf="btn===2" value="提交"> -->
+      <button nz-button nzType="default" onClick="javascript: history.go(-1);">返回</button>
+
+    </nz-radio-group>
+  </div>
+</div>

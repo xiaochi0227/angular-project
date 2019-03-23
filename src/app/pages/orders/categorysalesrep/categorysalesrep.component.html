@@ -1,0 +1,69 @@
+<div class="search-wrapper">
+  <div class="search-form">
+    <div nz-row [nzGutter]="24">
+      <div nz-col nzSpan="8">
+        <nz-form-item nzFlex>
+          <nz-form-label>选择时间</nz-form-label>
+          <nz-form-control>
+            <nz-range-picker [(ngModel)]="searchModel.dateRange" nzAllowClear="false"></nz-range-picker>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+      <div nz-col nzSpan="8">
+        <nz-form-item nzFlex>
+          <nz-form-label>选择月份</nz-form-label>
+          <nz-form-control style="width: 100%;">
+            <nz-select style="width: 100%;" nzAllowClear="false" [(ngModel)]="searchModel.month" nzPlaceHolder="选择月份">
+              <nz-option [nzValue]="mon.value" [nzLabel]="mon.value" *ngFor="let mon of monthlist"></nz-option>
+            </nz-select>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+      <div nz-col nzSpan="8">
+        <button nz-button nzType="primary" style="margin-right:10px;" (click)="search()">查询</button>
+        <button nz-button nzType="default" (click)="reset()">重置</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="export-wrapper textright" *ngIf="exportBtn">
+  <button nz-button nzType="default" (click)="addexport()"><i nz-icon type="file-excel" theme="outline"></i>导出到CSV文件</button>
+</div>
+<div class="table-wrapper">
+  <nz-table #groupingTable [nzData]="list" nzBordered nzSize="middle" [nzWidthConfig]="widthConfig" [nzScroll]="scrollConfig"
+    nzShowPagination="false" nzFrontPagination="false" [nzLoading]="loading">
+    <thead>
+      <tr>
+        <th [attr.rowspan]="saledetails.length>1?3:3" nzLeft="0px">一类</th>
+        <th [attr.rowspan]="saledetails.length>1?3:3" nzLeft="149px">二类</th>
+        <th [attr.colspan]="detailColSpan">{{showStartDate}}到{{showEndDate}}</th>
+        <th [attr.colspan]="monthColSpan">{{showMonth}}月月度销售合计</th>
+      </tr>
+      <tr>
+      <tr *ngIf="saledetails.length>1">
+        <th [attr.colspan]="saledetails.length" *ngFor="let detail of saledetails">{{detail.city}}</th>
+        <th [attr.colspan]="saledetailmonth.length" *ngFor="let detail of saledetailmonth">{{detail.city}}</th>
+      </tr>
+      <tr>
+        <ng-container *ngFor="let detail of saledetails;">
+          <th *ngFor="let channel of detail.channels">{{channel.name}}</th>
+        </ng-container>
+        <ng-container *ngFor="let detail of saledetailmonth;">
+          <th *ngFor="let channel of detail.channels">{{channel.name}}</th>
+        </ng-container>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let data of groupingTable.data">
+        <td nzLeft="0px">{{data.supName}}</td>
+        <td nzLeft="149px">{{data.name}}</td>
+        <ng-container *ngFor="let detail of saledetails">
+          <td *ngFor="let channel of detail.channels">{{data[detail.city+channel.code+'detailMoney']}}</td>
+        </ng-container>
+        <ng-container *ngFor="let detail of saledetailmonth">
+          <td *ngFor="let channel of detail.channels">{{data[detail.city+channel.code+'monthMoney']}}</td>
+        </ng-container>
+      </tr>
+    </tbody>
+  </nz-table>
+</div>

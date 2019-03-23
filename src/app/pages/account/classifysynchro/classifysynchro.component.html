@@ -1,0 +1,78 @@
+<div class="zh-serchbox">
+  <ul>
+    <li>
+      <label>
+        企业:
+      </label>
+      <nz-select style="width: calc(100% - 50px);" [(ngModel)]="entItem" (ngModelChange)="getStoreList(entItem)">
+        <!-- <nz-option nzValue="lucy" nzLabel="Lucy"></nz-option> -->
+        <nz-option *ngFor="let option of ents" [nzLabel]="option.name" [nzValue]="option.ent_id"></nz-option>
+
+      </nz-select>
+
+    </li>
+    <li>
+      <label>
+        门店:
+      </label>
+      <app-my-multipleselect (childparams)="viewSelectList($event)" [list]="storelist" [tableName]="'门店'"></app-my-multipleselect>
+    </li>
+    <li>
+      <label>
+        分类编码:
+      </label>
+      <input type="text" nz-input [(ngModel)]="params.cat_code" name="vip_price">
+    </li>
+    <li>
+      <label>
+        分类名称:
+      </label>
+      <input type="text" nz-input [(ngModel)]="params.name" name="name">
+    </li>
+
+    <li class="textcenter">
+      <nz-tooltip [nzTitle]="'商品没有同步到线上时使用'">
+        <button nz-tooltip type="submit" nz-button nzSize="small" (click)="onegoodsadd()">
+          添加商品
+        </button>
+      </nz-tooltip>
+      <nz-tooltip [nzTitle]="'线上商品任何信息不一致时使用'">
+        <button nz-tooltip type="submit" nz-button nzSize="small" (click)="onegoodsedit()">
+          更新商品
+        </button>
+      </nz-tooltip>
+      <nz-tooltip [nzTitle]="'线上价格不一致时使用'">
+        <button nz-tooltip type="submit" nz-button nzSize="small" (click)="onegoodsprice()">
+          更新商品价格
+        </button>
+      </nz-tooltip>
+      <nz-tooltip [nzTitle]="'线上库存不一致时使用'">
+        <button nz-tooltip type="submit" nz-button nzSize="small" (click)="onegoodsstock()">
+          更新商品库存
+        </button>
+      </nz-tooltip>
+      <nz-tooltip [nzTitle]="'线上上下架状态不一致时使用'">
+        <button nz-tooltip type="submit" nz-button nzSize="small" (click)="onegoodsonoff()">
+          更新商品上下架状态
+        </button>
+      </nz-tooltip>
+    </li>
+  </ul>
+  <table class="table table-bordered table-hover">
+    <thead>
+      <tr>
+        <td>返回结果</td>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let r of res;let i=index">
+        <td style="text-align: left;">
+          <span style="color:#f90;">{{r.region_code}}</span>
+          <div *ngIf="r.data">
+            <p *ngFor="let tip of r.data" style="margin-bottom: 0;">{{tip}}</p>
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

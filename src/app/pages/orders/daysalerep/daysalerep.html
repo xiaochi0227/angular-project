@@ -1,0 +1,101 @@
+<div class="zh-serchbox">
+  <table class="table zh-serchtable black-muted-bg">
+    <tbody>
+      <tr>
+        <td>
+          <table class="table zh-serch-table">
+            <tr>
+              <td class="zh-zdname">渠道</td>
+              <td class="zh-textbox">
+                <nz-select style="width: 180px;" [(ngModel)]="params.search.channel" nzShowSearch nzAllowClear
+                  nzPlaceHolder="请选择渠道">
+                  <nz-option nzValue="" nzLabel="请选择"></nz-option>
+                  <nz-option *ngFor="let channel of channels;" [nzValue]="channel.channel_keyword" [nzLabel]="channel.name"></nz-option>
+                </nz-select>
+              </td>
+              <td class="zh-zdname">下单日期</td>
+              <td class="zh-textbox">
+                <nz-date-picker [(ngModel)]="params.search.date" [nzAllowClear]='false' [nzPlaceHolder]="'Select date'"></nz-date-picker>
+                <!-- <input ng2-datetime-picker date-only="true" class="form-control" [(ngModel)]="params.search.date" placeholder="开始时间"> -->
+              </td>
+              <td class="zh-zdname">状态</td>
+              <td class="zh-textbox">
+                <nz-select style="width: 180px;" [(ngModel)]="params.search.channel" nzShowSearch nzAllowClear
+                  nzPlaceHolder="请选择">
+                  <nz-option nzValue="" nzLabel="请选择"></nz-option>
+                  <nz-option [nzValue]="'4'" [nzLabel]="'已释放'"></nz-option>
+                  <nz-option [nzValue]="'6'" [nzLabel]="'已备货'"></nz-option>
+                  <nz-option [nzValue]="'11'" [nzLabel]="'已签收'"></nz-option>
+                  <nz-option [nzValue]="'15'" [nzLabel]="'已取消'"></nz-option>
+                </nz-select>
+              </td>
+            </tr>
+          </table>
+        </td>
+        <td>
+          <button nz-button nzType="primary" style="margin-right:10px;" (click)="search(params.search)">查询</button>
+          <button nz-button nzType="default" (click)="Reset()">重置</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+<div class="horizontal-scroll">
+  <div class="zh-listhead" *ngIf="dcdcsvwj">
+    <button nz-button nzType="default" (click)="addexport()"><i nz-icon type="file-excel" theme="outline"></i>导出到CSV文件</button>
+  </div>
+  <div style="padding-right:5px;">
+    <nz-table #nzTable [nzData]="daysales" [nzShowPagination]="false" [nzFrontPagination]="false" nzBordered>
+      <thead>
+        <tr>
+          <th width="20%">店名</th>
+          <th width="13%">总订单</th>
+          <th width="13%">已释放</th>
+          <th width="13%">已备货</th>
+          <th width="13%">已签收</th>
+          <th width="13%">已取消</th>
+          <th>售后退货/退款单</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let daysale of nzTable.data;let i=index">
+          <td width="20%">{{daysale.region_name}}</td>
+          <td width="13%">
+            <span *ngIf="daysale.orderTotal">订单数:{{daysale.orderTotal}}</span>
+            <span *ngIf="daysale.sumMoney">顾客支付:{{daysale.sumMoney|number:'1.2-2'}}</span>
+          </td>
+          <td width="13%">
+            <span *ngIf="daysale.ysf.count">订单数:{{daysale.ysf.count}}</span>
+            <span *ngIf="daysale.ysf.payable_value">顾客支付:{{daysale.ysf.payable_value|number:'1.2-2'}}</span>
+            <span *ngIf="daysale.ysf.total_item_value">商品金额:{{daysale.ysf.total_item_value|number:'1.2-2'}}</span>
+            <span *ngIf="daysale.ysf.total_disc_value">优惠金额:{{daysale.ysf.total_disc_value|number:'1.2-2'}}</span>
+          </td>
+          <td width="13%">
+            <span *ngIf="daysale.ybh.count">订单数:{{daysale.ybh.count}}</span>
+            <span *ngIf="daysale.ybh.payable_value">顾客支付:{{daysale.ybh.payable_value|number:'1.2-2'}}</span>
+            <span *ngIf="daysale.ybh.total_item_value">商品金额:{{daysale.ybh.total_item_value|number:'1.2-2'}}</span>
+            <span *ngIf="daysale.ybh.total_disc_value">优惠金额:{{daysale.ybh.total_disc_value|number:'1.2-2'}}</span>
+          </td>
+          <td width="13%">
+            <span *ngIf="daysale.yqs.count">订单数:{{daysale.yqs.count}}</span>
+            <span *ngIf="daysale.yqs.payable_value">顾客支付:{{daysale.yqs.payable_value|number:'1.2-2'}}</span>
+            <span *ngIf="daysale.yqs.total_item_value">商品金额:{{daysale.yqs.total_item_value|number:'1.2-2'}}</span>
+            <span *ngIf="daysale.yqs.total_disc_value">优惠金额:{{daysale.yqs.total_disc_value|number:'1.2-2'}}</span>
+          </td>
+          <td width="13%">
+            <span *ngIf="daysale.yqx.count">订单数:{{daysale.yqx.count}}</span>
+            <span *ngIf="daysale.yqx.payable_value">顾客支付:{{daysale.yqx.payable_value|number:'1.2-2'}}</span>
+            <span *ngIf="daysale.yqx.total_item_value">商品金额:{{daysale.yqx.total_item_value|number:'1.2-2'}}</span>
+            <span *ngIf="daysale.yqx.total_disc_value">优惠金额:{{daysale.yqx.total_disc_value|number:'1.2-2'}}</span>
+          </td>
+          <td>
+            <span *ngIf="daysale.jdshd.count">订单数:{{daysale.jdshd.count}}</span>
+            <span *ngIf="daysale.jdshd.payable_value">退款金额:{{daysale.jdshd.payable_value|number:'1.2-2'}}</span>
+            <span *ngIf="daysale.jdshd.total_item_value">商品金额:{{daysale.jdshd.total_item_value|number:'1.2-2'}}</span>
+            <span *ngIf="daysale.jdshd.total_disc_value">优惠金额:{{daysale.jdshd.total_disc_value|number:'1.2-2'}}</span>
+          </td>
+        </tr>
+      </tbody>
+    </nz-table>
+  </div>
+</div>

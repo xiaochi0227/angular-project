@@ -1,0 +1,47 @@
+.table {
+  width: 100%;
+}
+.table tr td {
+  padding: 5px 0;
+}
+.table tr th {
+  padding: 5px 0;
+}
+.table tr .zh-zdname {
+  text-align: right;
+  padding-right: 10px;
+}
+.table_border {
+  border-top: 1px solid #ccc;
+  border-right: 1px solid #ccc;
+}
+.table_border tr td {
+  border-left: 1px solid #ccc;
+  border-bottom: 1px solid #ccc;
+  text-align: center;
+}
+.table_border tr td button {
+  margin-right: 2px;
+}
+.table_border tr th {
+  border-left: 1px solid #ccc;
+  border-bottom: 1px solid #ccc;
+  text-align: center;
+}
+.table_bgc tr th {
+  background-color: #cccccc78;
+}
+.w-listhead {
+  width: 100%;
+  padding: 10px;
+  text-align: center;
+}
+.table_main {
+  width: 100%;
+}
+.table_main tr td {
+  padding: 5px 0;
+}
+.table_main tr th {
+  padding: 5px 0;
+}

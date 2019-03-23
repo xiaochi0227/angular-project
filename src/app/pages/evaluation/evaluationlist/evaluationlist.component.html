@@ -1,0 +1,88 @@
+<app-search-bar #searchbar [queryList]='queryList' [searchStart]="searchStart" (searchSubOnlineCategories)="getSelection('online_cat_code',$event)"
+  (childemit)="search($event)">
+  <div>
+    <button nz-button nzSize="small" nzType="primary" (click)="getdate(1)" [ngStyle]="{'background':types==1?'#e7ba08':'#1890ff'}">近7天</button>
+    <button nz-button nzSize="small" nzType="primary" (click)="getdate(2)" [ngStyle]="{'background':types==2?'#e7ba08':'#1890ff'}">近1个月</button>
+    <button nz-button nzSize="small" nzType="primary" (click)="getdate(3)" [ngStyle]="{'background':types==3?'#e7ba08':'#1890ff'}">近3个月</button>
+  </div>
+</app-search-bar>
+<div class="zh-serchbox">
+  <button nz-button nzType="primary" (click)="addexport()">导出到CVS文件</button>
+</div>
+<div class="horizontal-scroll">
+  <my-page [params]='params' [pagecount]='pageSize' [changecount]='pageSize.count' (childparams)="childparams($event)"></my-page>
+  <div *ngFor="let evaluation of evaluations;let i=index" class="table-my">
+    <div class="list-header" nz-row>
+      <span nz-col nzSpan="8">
+        {{i+1}}
+        门店：{{evaluation.region_name}}({{evaluation.region_code}})
+      </span>
+      <span nz-col nzSpan="3">
+        <my-channeltags [getchannel]="evaluation.channel_keyword"></my-channeltags>
+      </span>
+      <span nz-col nzSpan="6">渠道订单号:{{evaluation.channel_sheetno}}</span>
+      <span nz-col nzSpan="3" *ngIf="evaluation.evaluat_sheetno">子评价号:{{evaluation.evaluat_sheetno}}</span>
+      <span nz-col nzSpan="4" nzOffset="3">时间:{{evaluation.establish_time}}</span>
+    </div>
+    <div class="list-body">
+      <div class="body-sjpj" nz-row>
+        <div class="body-sjpj-left" nz-col nzSpan="2">
+          <span>
+            商家评价
+          </span>
+        </div>
+        <div class="body-sjpj-right" nz-col nzSpan="22">
+          <div *ngIf="evaluation.sj_score">
+            <label>评价：</label>
+            <nz-rate [ngModel]="evaluation.sj_score" nzDisabled></nz-rate>
+          </div>
+          <div *ngIf="evaluation.sj_content">
+            <label>内容：</label>
+            <span>{{evaluation.sj_content}}</span>
+          </div>
+          <div *ngIf="evaluation.sj_tags&&evaluation.sj_tags.length>0">
+            <label>标签：</label>
+            <nz-tag [nzColor]="'#2db7f5'" *ngFor="let tags of evaluation.sj_tags">{{tags}}</nz-tag>
+          </div>
+          <div *ngIf="evaluation.WaresEvaluates&&evaluation.WaresEvaluates.goodEvaluate.length>0">
+            <label>好评商品： </label>
+            <i class="anticon anticon-like"></i>
+            <nz-tag [nzColor]="'orange'" *ngFor="let goodEvaluate of evaluation.WaresEvaluates.goodEvaluate">{{goodEvaluate}}</nz-tag>
+          </div>
+          <div *ngIf="evaluation.WaresEvaluates&&evaluation.WaresEvaluates.badEvaluate.length>0">
+            <label>差评商品：</label>
+            <i class="anticon anticon-dislike"></i>
+            <nz-tag [nzColor]="'red'" *ngFor="let badEvaluate of evaluation.WaresEvaluates.badEvaluate">{{badEvaluate}}</nz-tag>
+          </div>
+        </div>
+      </div>
+      <div class="body-sjhf" *ngIf="evaluation.sj_reply" nz-row>
+        <div class="body-sjpj-left" nz-col nzSpan="2">
+          商家回复
+        </div>
+        <div class="body-sjpj-right" nz-col nzSpan="22">
+          {{evaluation.sj_reply}}
+        </div>
+      </div>
+
+    </div>
+    <div class="return-btn">
+      <button *ngIf="!evaluation.sj_reply" nz-button nzType="primary" (click)="writereply(evaluation,showModal)">回复评价</button>
+    </div>
+
+  </div>
+
+</div>
+
+<ng-template #showModal>
+  <textarea rows="4" nz-input [(ngModel)]="showModal.replyText" nzPlaceHolder="回复内容会被公开展示并影响用户对门店的印象，一旦提交不可修改，请注意措辞，最多200字"></textarea>
+  <div style="padding:3px 0;">
+    输入内容不能超过
+    <span style="color:#f00;font-weight:bold;">200</span>
+    个文字
+    <span *ngIf="replyText&&replyText.length>0">，
+      您已经输入了
+      <span style="color:#f00;font-weight: bold;">{{showModal.replyText.length}}</span>
+      字</span>
+  </div>
+</ng-template>

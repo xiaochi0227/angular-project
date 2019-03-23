@@ -1,0 +1,79 @@
+:host ::ng-deep .trigger {
+    font-size: 18px;
+    line-height: 64px;
+    padding: 0 24px;
+    cursor: pointer;
+    transition: color .3s;
+  }
+
+  :host ::ng-deep .trigger:hover {
+    color: #1890ff;
+  }
+
+  :host ::ng-deep .logo {
+    height: 32px;
+    margin: 16px;
+    font-size: 16px;
+    font-weight: bold;
+    color: #fff;
+    vertical-align: middle;
+    .tit{margin-left:6px;}
+  }
+  .footer{
+    height: 48px;
+  }
+  .pagebody{background:rgba(245,245,245,1)};
+  nz-sider {
+    height: 100vh;
+    overflow: auto;
+  }
+
+  nz-header {
+    background: #fff;
+    padding: 0;
+    .username{
+      color:#666;margin-right:15px;
+      i{margin:0 6px;}
+    }
+    .bellicon{font-size: 18px;margin-right:15px;}
+  }
+
+  .mainbox {
+    height: 100vh;
+
+    .headerbox {
+      background: #fff;
+      padding: 0;
+    }
+
+  }
+
+  .contentbox {
+    height: calc(100vh - 48px);
+    .headerright{width:500px;float:right;padding-right:15px;text-align: right;}
+    .content {
+      overflow: auto;
+      position: relative;
+      padding:0 16px;
+    }
+  }
+  .nav-text{
+    outline: none;
+  }
+.menuitem{outline: none;}
+/*滚动条样式*/
+.al-sidebar-list::-webkit-scrollbar {/*滚动条整体样式*/
+  width: 8px;     /*高宽分别对应横竖滚动条的尺寸*/
+  height: 8px;
+}
+.al-sidebar-list::-webkit-scrollbar-thumb {/*滚动条里面小方块*/
+  border-radius: 5px;
+  -webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
+  background: rgba(255,255,255,0.4);
+}
+.al-sidebar-list::-webkit-scrollbar-track {/*滚动条里面轨道*/
+  -webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
+  border-radius: 0;
+  background: rgba(0,0,0,0.1);
+}
+

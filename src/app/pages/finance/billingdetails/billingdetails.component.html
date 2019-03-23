@@ -1,0 +1,168 @@
+<app-search-bar [queryList]='queryList' [searchStart]="searchStart" (searchSubOnlineCategories)="getSelection('online_cat_code',$event)"
+  (childemit)="search($event)">
+  <nz-radio-group [(ngModel)]="params.search.date_type">
+    <label nz-radio nzValue="settle_date">账单日期</label>
+    <label nz-radio nzValue="pos_time">核销日期</label>
+  </nz-radio-group>
+</app-search-bar>
+<div class="zh-serchbox" nz-row *ngIf="hzobj">
+
+  <div nz-col nzLg="21" nzXl="21">
+    <div nz-row class="show-div">
+      <div nz-col nzXs="12" nzSm="8" nzMd="8" nzLg="8" nzXl="8">
+        <label>合计结算金额:</label>
+        <span>￥{{hzobj.Hmoney}}</span>
+      </div>
+
+      <div nz-col nzXs="12" nzSm="8" nzMd="8" nzLg="8" nzXl="8">
+        <label>合计核销金额:</label>
+        <span>￥{{hzobj.HposMoney}}</span>
+      </div>
+
+      <div nz-col nzXs="12" nzSm="8" nzMd="8" nzLg="8" nzXl="8">
+        <label>合计差额:</label>
+        <span>￥{{hzobj.HcMoney}}</span>
+      </div>
+
+      <div nz-col nzXs="12" nzSm="8" nzMd="8" nzLg="8" nzXl="8">
+        <label>未核销金额合计:</label>
+        <span>￥{{hzobj.HnoposMoney}}</span>
+      </div>
+
+      <div nz-col nzXs="12" nzSm="8" nzMd="8" nzLg="8" nzXl="8">
+        <label>合计不参与核销金额:</label>
+        <span>￥{{hzobj.HnoposMoney}}</span>
+        <nz-tooltip [nzTitle]="exclude_pos_money_desc" [nzPlacement]="'top'" style="margin-right:25px;">
+          <i class="anticon anticon-question-circle-o" nz-tooltip></i>
+        </nz-tooltip>
+      </div>
+      <div nz-col nzXs="24" nzSm="24" nzMd="24" nzLg="24" nzXl="24" class="list-span">
+        <span>
+          (
+          <span *ngIf="hzobj?.total_item_value || hzobj.total_item_value === 0">商品金额汇总:{{hzobj.total_item_value}}</span>
+          <span *ngIf="hzobj?.pos_money || hzobj.pos_money === 0">核销金额:{{hzobj?.pos_money}}</span>
+          <span *ngIf="hzobj?.package_fee || hzobj.package_fee === 0">商家包装费:{{hzobj?.package_fee}}</span>
+          <span *ngIf="hzobj?.total_pt_dp || hzobj.total_pt_dp === 0">平台补贴(单品):{{hzobj?.total_pt_dp}}</span>
+          <span *ngIf="hzobj?.total_sj_disc || hzobj.total_sj_disc === 0">商家优惠(整单):{{hzobj?.total_sj_disc}}</span>
+          <span *ngIf="hzobj?.total_sj_dp || hzobj.total_sj_dp === 0">商家单品优惠:{{hzobj?.total_sj_dp}}</span>
+          <span *ngIf="hzobj?.total_sale_value || hzobj.total_sale_value === 0">收入金额:{{hzobj?.total_sale_value}}</span>
+          <span *ngIf="hzobj?.commission_value || hzobj.commission_value === 0">佣金:{{hzobj?.commission_value}}</span>
+          <span *ngIf="hzobj?.logistics_sj_value || hzobj.logistics_sj_value === 0">商家运费收入:{{hzobj?.logistics_sj_value}}</span>
+          <span *ngIf="hzobj?.logistics_sj_commission || hzobj.logistics_sj_commission === 0">运费佣金:{{hzobj?.logistics_sj_commission}}</span>
+          <span *ngIf="hzobj?.box_value || hzobj.box_value === 0">餐盒费:{{hzobj.box_value}}</span>
+          )
+        </span>
+      </div>
+
+
+
+
+    </div>
+  </div>
+  <div nz-col nzLg="3" nzXl="3">
+    <button nz-button nzType="primary" (click)="addexport()">账单导出</button>
+    <button nz-button nzType="primary" (click)="addexport()">账单详情导出</button>
+
+  </div>
+
+
+</div>
+<div class="horizontal-scroll">
+  <my-page [params]='params' [pagecount]='pageSize' [changecount]='pageSize.count' (childparams)="childparams($event)"></my-page>
+
+  <nz-table #nzTable [nzData]="statements" [nzShowPagination]="false" [nzFrontPagination]="false" [nzPageIndex]="pageIndex"
+    nzBordered>
+    <thead>
+      <tr>
+        <th nzWidth="5%">序号</th>
+        <th nzWidth="14%">日期</th>
+        <th nzWidth="24%" style="text-align: left;">订单信息</th>
+        <th nzWidth="8%">结算金额(线上)</th>
+        <th nzWidth="8%">核销金额(线下)</th>
+        <th nzWidth="8%">差额</th>
+        <th nzWidth="8%">未核销金额</th>
+        <th nzWidth="8%">不参与核销金额</th>
+        <th nzWidth="8%">明细项</th>
+        <th>操作</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let item of nzTable.data;let i=index" class="tbody-tr">
+        <td>
+          {{i+1}}
+          <nz-tag *ngIf="item.pre_order===true" [nzColor]="'#f50'">预订单</nz-tag>
+          <nz-tag *ngIf="item?.settle_date&&item?.pos_time&&item?.settle_date!==item?.pos_time" [nzColor]="'#f50'">跨天核销</nz-tag>
+          <nz-tag *ngIf="!item?.pos_success&&item.bill_type!==4" [nzColor]="'#f50'">未核销</nz-tag>
+          <nz-tag *ngIf="item.bill_type===4" [nzColor]="'#f0ad4e'">直赔单</nz-tag>
+          <nz-tag *ngIf="item.sghx==='1'" [nzColor]="'#f50'">超卖</nz-tag>
+          <nz-tag *ngIf="item.sghx==='2'" [nzColor]="'#f50'">超卖核销</nz-tag>
+          <nz-tag *ngIf="item.isservice==false" [nzColor]="'#f50'">牵牛花退单</nz-tag>
+        </td>
+        <td>
+          账单:{{item?.settle_date}}
+          <div>核销:{{item?.pos_time}}</div>
+        </td>
+        <td>
+          <div>
+            <my-channeltags [getchannel]="item?.channel_keyword"></my-channeltags>
+            <span style="margin-left: 15px;">订单序号:<span style="color:#f60;font-weight: bold;">#{{item?.order_seq}}</span></span>
+          </div>
+          <div>
+            [{{item?.region_code}}]{{item?.region_name}}
+            <span style="margin-left:10px;">{{item?.status}}/{{item?.order_type}}</span>
+          </div>
+          <div>订单号:{{item?.channel_sheetno}}</div>
+          <div *ngIf="item?.sheetno">关联订单号:{{item?.sheetno}}</div>
+        </td>
+        <td>
+          {{item?.total_sale_value}}
+        </td>
+        <td>{{item?.pos_money}}</td>
+        <td>{{item?.balance}}</td>
+        <td>{{item?.noposMoney}}</td>
+        <td>{{item?.exclude_pos_money}}</td>
+        <td>
+          <nz-dropdown>
+            <a class="ant-dropdown-link" nz-dropdown>
+              查看
+              <i class="anticon anticon-down"></i>
+            </a>
+            <ul nz-menu>
+              <li nz-menu-item>
+                商品金额:{{item?.total_item_value}}
+              </li>
+              <li nz-menu-item>
+                商家优惠(整单):{{item?.total_sj_disc}}
+              </li>
+              <li nz-menu-item>
+                商家单品优惠:{{item?.total_sj_dp}}
+              </li>
+              <li nz-menu-item>
+                平台补贴(单品):{{item?.total_pt_dp}}
+              </li>
+              <li nz-menu-item>
+                佣金:{{item?.commission_value}}
+              </li>
+              <li nz-menu-item>
+                商家包装费:{{item?.package_fee}}
+              </li>
+              <li nz-menu-item>
+                餐盒费:{{item?.box_value}}
+              </li>
+              <li nz-menu-item>
+                商家运费收入:{{item?.logistics_sj_value}}
+              </li>
+              <li nz-menu-item>
+                运费佣金:{{item?.logistics_sj_commission}}
+              </li>
+            </ul>
+          </nz-dropdown>
+        </td>
+
+        <td>
+          <button nz-button nzType="default" (click)="toview(item)">账单详情</button>
+
+      </tr>
+    </tbody>
+  </nz-table>
+</div>

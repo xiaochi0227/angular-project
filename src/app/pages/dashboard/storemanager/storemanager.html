@@ -1,0 +1,106 @@
+<nz-card>
+  <div nz-row>
+    <div nz-col nzSpan="6" class="dashboardtitle"><i nz-icon type="home" theme="outline"></i><span class="tittext">{{showdate}}</span></div>
+    <div nz-col nzSpan="6" style="position:relative">
+      <button nz-button nzType="default" #bt (click)="togglestore(bt)" (blur)="home(bt)" *ngIf="wxlmd">查看门店销售排行</button>
+      <div class="zh-wxlmd" *ngIf="wxlmd">
+        <p *ngFor="let saleranking of salerankings;let i=index" [class.storecolor]="saleranking.owner">{{i+1}}.[{{saleranking.code}}]{{saleranking.name}}
+          <span style="margin-left:10px;">{{saleranking.money}}元/{{saleranking.total}}单</span>
+        </p>
+      </div>
+    </div>
+    <div nz-col nzSpan="12" class="textright">
+      <nz-button-group>
+        <button nz-button (click)="getpredata(type)" [disabled]='dispre'>上一期</button>
+        <button nz-button nzType="types==1?'primary':'default'" (click)="getdata(1)">今日</button>
+        <button nz-button nzType="types==2?'primary':'default'" (click)="getdata(2)">本周</button>
+        <button nz-button nzType="types==3?'primary':'default'" (click)="getdata(3)">本月</button>
+        <button nz-button (click)="getnextdata(type)" [disabled]='dis'>下一期</button>
+        <button nz-button nzType="types==4?'primary':'default'" (click)="getdata(4)">近7天</button>
+        <button nz-button nzType="types==5?'primary':'default'" (click)="getdata(5)">近30天</button>
+      </nz-button-group>
+    </div>
+  </div>
+</nz-card>
+
+<div nz-row>
+  <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12">
+    <app-piechart [pieData]='datas'></app-piechart>
+  </div>
+</div>
+
+<div nz-row [nzGutter]="16">
+  <div nz-col [nzSpan]="16">
+    <nz-card nzTitle="销售趋势">
+      <div *ngIf="lineOption">
+        <my-echart [option]='lineOption' [echartcolor]="echartcolor"></my-echart>
+      </div>
+    </nz-card>
+  </div>
+  <div nz-col [nzSpan]="8">
+    <nz-card nzTitle="渠道销售占比统计">
+      <div *ngIf="pieoption">
+        <my-echart [option]='pieoption' [echartcolor]="echartcolor"></my-echart>
+      </div>
+    </nz-card>
+  </div>
+</div>
+
+<div nz-row [nzGutter]="16" style="margin-top:16px;">
+  <div nz-col [nzSpan]="12">
+    <nz-card nzTitle="待处理订单">
+      <nz-table #basicTable [nzData]="order1" [nzShowPagination]="false" [nzFrontPagination]="false">
+        <thead>
+          <tr class="black-muted-bg">
+            <th width="20%">门店</th>
+            <th width="10%">渠道</th>
+            <th width="20%">订单号</th>
+            <th width="15%">订单状态</th>
+            <th width="15%">支付金额/收入金额</th>
+            <th width="20%">下单时间</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let order of basicTable.data;let i=index">
+            <td>{{order.order.region_name}}</td>
+            <td ngClass="nowrap" [ngSwitch]="order.order.channel_keyword" class="zh-qd">
+              <my-channeltags [getchannel]="order.order.channel_keyword"></my-channeltags>
+            </td>
+            <td>{{order.order.channel_sheetno}}</td>
+            <td>{{order.order_status}}</td>
+            <td>{{order.total_sale_value}}/{{order.total_item_value}}</td>
+            <td>{{order.timestamp}}</td>
+          </tr>
+        </tbody>
+      </nz-table>
+    </nz-card>
+  </div>
+  <div nz-col [nzSpan]="12">
+    <nz-card nzTitle="异常订单">
+      <nz-table #basicTable2 [nzData]="order2" [nzShowPagination]="false" [nzFrontPagination]="false">
+        <thead>
+          <tr class="black-muted-bg">
+            <th width="20%">门店</th>
+            <th width="10%">渠道</th>
+            <th width="20%">订单号</th>
+            <th width="15%">订单状态</th>
+            <th width="15%">支付金额/收入金额</th>
+            <th width="20%">下单时间</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let order of basicTable2.data;let i=index">
+            <td>{{order.order.region_name}}</td>
+            <td ngClass="nowrap" [ngSwitch]="order.order.channel_keyword" class="zh-qd">
+              <my-channeltags [getchannel]="order.order.channel_keyword"></my-channeltags>
+            </td>
+            <td>{{order.order.channel_sheetno}}</td>
+            <td>{{order.order_status}}</td>
+            <td>{{order.order.total_sale_value}}/{{order.total_item_value}}</td>
+            <td>{{order.timestamp}}</td>
+          </tr>
+        </tbody>
+      </nz-table>
+    </nz-card>
+  </div>
+</div>

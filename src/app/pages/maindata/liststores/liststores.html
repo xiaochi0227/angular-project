@@ -1,0 +1,257 @@
+<!-- <nz-card baCardClass="with-scroll" *ngIf="stores"> -->
+<div class="zh-serchbox">
+
+  <table class="table zh-serch-table">
+    <tr>
+      <!--<td class="zh-zdname">编码</td>
+                      <td class="zh-textbox"><input type="text" class="form-control" [(ngModel)]="paras.search.code" placeholder="请输入编码"></td>-->
+      <td class="zh-zdname" width="10%">线下门店编码</td>
+      <td class="zh-textbox" width="15%">
+        <!-- <my-searchselect [selectlistarr]="storecode" (searchcode)="searchcode($event)" [gettextvalue]="paras.search.code"></my-searchselect> -->
+        <nz-select style="width: 200px;" nzShowSearch nzPlaceHolder="Choose" [(ngModel)]="paras.search.code">
+          <nz-option nzLabel="{{store.name}}" nzValue="{{store.code}}" *ngFor="let store of stores"></nz-option>
+        </nz-select>
+      </td>
+      <td class="zh-zdname" width="10%">门店名称</td>
+      <td class="zh-textbox" width="15%"><input nz-input [(ngModel)]="paras.search.name" placeholder="请输入名称"></td>
+      <td class="zh-zdname" width="10%">城市</td>
+      <td class="zh-textbox" width="15%"><input nz-input [(ngModel)]="paras.search.city" placeholder="请输入城市"></td>
+      <td rowspan="2">
+        <button nz-button nzType="primary"  (click)="search(paras)">查询</button>
+        <button nz-button nzType="primary" (click)="Reset()">重置</button>
+      </td>
+    </tr>
+    <tr>
+      <td class="zh-zdname">是否启用</td>
+      <td>
+        <nz-select style="width:200px;" [(ngModel)]="paras.search.status">
+          <!-- <nz-option> </nz-option> -->
+          <nz-option nzLabel="启用" nzValue='1'></nz-option>
+          <nz-option nzLabel="停用" nzValue='-1'></nz-option>
+        </nz-select>
+      </td>
+      <td class="zh-zdname">启用渠道</td>
+      <td>
+        <nz-select style="width:200px;" [(ngModel)]="paras.search.channel">
+          <!-- <nz-option> </nz-option> -->
+          <nz-option *ngFor="let channel of channels;" nzLabel="{{channel.name}}" nzValue="{{channel.channel_keyword}}"></nz-option>
+        </nz-select>
+      </td>
+    </tr>
+  </table>
+
+  
+
+</div>
+<my-page [params]='paras' [pagecount]='page' [changecount]='changecount' (childparams)="childparams($event)"></my-page>
+
+<div style="text-align:center; padding-bottom: 10px;">
+  <button nz-button *ngIf="xzmdxx" (click)="gotoaddstore()">新增门店信息</button>
+  <span *ngIf="mddrmb||plbdmdmb">
+    <nz-dropdown [nzPlacement]="'bottomLeft'">
+      <button nz-button nz-dropdown>下载模板</button>
+      <ul nz-menu>
+        <li nz-menu-item *ngIf="mddrmb">
+          <a (click)="download('门店导入模板')">门店导入模板</a>
+
+        </li>
+        <li nz-menu-item *ngIf="plbdmdmb">
+          <a href="javascript:;" (click)="download('批量绑定门店模板')">批量绑定门店模板</a>
+        </li>
+      </ul>
+    </nz-dropdown>
+  </span>
+  <nz-dropdown [nzPlacement]="'bottomLeft'">
+    <button nz-button nz-dropdown>导入</button>
+    <ul nz-menu>
+      <li nz-menu-item *ngIf="mddr" (click)="gettemplate(template)">
+        <app-upload [onUploaded]="storeinput" nzLimit="1" [uploadname]="'门店导入'" [uploadtype]="'text'"></app-upload>
+      </li>
+      <li nz-menu-item *ngIf="plbdmddrbt" (click)="gettemplate(template)">
+        <app-upload [onUploaded]="pldbmddr" nzLimit="1" [uploadname]="'批量绑定门店导入'" [uploadtype]="'text'"></app-upload>
+      </li>
+    </ul>
+  </nz-dropdown>
+  <button nz-button (click)="addexport()">导出到csv文件</button>
+</div>
+
+<nz-table>
+  <thead>
+    <tr>
+      <th width="44%" colspan="13" style="border-right:1px solid #cacaca;">门店基本信息</th>
+      <th width="8%" rowspan="2" style="vertical-align:middle;">操作</th>
+    </tr>
+    <tr>
+      <th>序号</th>
+      <th>是否启用</th>
+      <th>城市</th>
+      <th>线下门店编码</th>
+      <th>门店名称</th>
+      <th>门店地址</th>
+      <th>门店面积(㎡)</th>
+      <th>上线日期</th>
+      <th>启用渠道</th>
+      <th>启用配送渠道</th>
+      <th>库存共享率(%)</th>
+      <th>安全库存量</th>
+      <th>电话号码</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let store of stores; let i=index">
+      <td>{{cow+i+1}}</td>
+      <td style="text-align:center;" [ngSwitch]="store.status">
+        <i *ngSwitchCase="'1'" nz-icon type="check" theme="outline" style="color:green;font-weight: 800;"></i>
+        <i *ngSwitchCase="'-1'" nz-icon type="close" theme="outline" style="color:red;font-weight: 800;"></i>
+        <!-- <i *ngSwitchCase="'1'" class="ion-checkmark-round" style="padding:2px 3px;color:#5cb85c;background:#fff;border-radius:5px;"></i> -->
+        <!-- <i *ngSwitchCase="'-1'" class="ion-close-round" style="padding:2px 3px;color:#f00;background:#fff;border-radius:5px;"></i> -->
+      </td>
+      <td class="textcenter">{{store.city}}</td>
+      <td class="textcenter">{{store.code}}</td>
+      <td class="textcenter">{{store.name}}</td>
+      <td>{{store.address}}</td>
+      <td class="textcenter">{{store.area}}</td>
+      <td class="textcenter">{{store.sxrq}}</td>
+      <td class="textcenter"><span *ngFor="let channel of store.channels;" class="btn btn-xs btn-success" style="margin-right:5px;margin-bottom: 3px;">{{channel.channelname}}</span></td>
+      <td class="textcenter"><span *ngFor="let channel of store.channelDeliverys;" class="btn btn-xs btn-success" style="margin-right:5px;margin-bottom: 3px;">{{channel.channel_name}}</span></td>
+      <td class="textcenter">{{store.kcgxl}}</td>
+      <td class="textcenter">{{store.aqkcl}}</td>
+      <td class="textcenter">{{store.phone}}</td>
+      <td class="textcenter">
+        <button nz-button nzType="primary" nzGhost nzSize="small" (click)="setphone(store)">电话号码设置</button>
+        <button nz-button nzType="primary" nzGhost nzSize="small"  (click)="gotoeditliststores(store)" *ngIf="szbt">设置</button>
+        <button nz-button nzType="primary" nzGhost nzSize="small"  (click)="getStoresLog(store)" *ngIf="ckrzbt">查看日志</button>
+      </td>
+    </tr>
+
+  </tbody>
+</nz-table>
+
+<!-- </nz-card> -->
+
+
+<!-- 设置电话号码 -->
+<!-- <div class="modal fade" [class.in]="phone">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" (click)="closephone()">
+          &times;
+        </button>
+        <h4 class="modal-title" id="myModalLabel">
+          设置电话号码
+        </h4>
+      </div>
+      <form>
+        <p class="phone">
+          号码： <input type="text" class="form-control" style="width:65%" [(ngModel)]="phones.phone" id="m_spec" name="m_spec"
+            placeholder="电话号码">
+        </p>
+
+      </form>
+      <div class="modal-footer">
+        <input type="button" class="btn btn-info" (click)="savePhone()" value="保 存">
+        <input type="button" class="btn btn-default" (click)="closephone()" value="返 回">
+      </div>
+    </div>
+  </div>
+</div> -->
+
+<nz-modal [(nzVisible)]="phone" nzTitle="设置电话号码" (nzOnCancel)="closephone()" (nzOnOk)="savePhone()">
+  <form>
+    <p class="phone">
+      号码： <input type="text" class="form-control" style="width:65%" [(ngModel)]="phones.phone" id="m_spec" name="m_spec"
+        placeholder="电话号码">
+    </p>
+  </form>
+</nz-modal>
+<nz-modal [(nzVisible)]="totaldiv1" nzTitle="门店日志" (nzOnCancel)="closediv1()" (nzOnOk)="savePhone()" nzWidth="800">
+  <form>
+    <div class="modal-body" style="max-height: 560px;overflow-y: scroll; " *ngIf="storeslogs">
+      <div style="text-align: left;padding-left: 10px;padding-bottom:10px;font-weight: bold;">
+        <span style="margin-right:30px;">门店编码:<b style="color:#f00;">{{storeslogs[0]?.region_code}}</b></span>
+        <span style="margin-right:30px;">门店名称:<b style="color:#f00;">{{storeslogs[0]?.name}}</b></span>
+      </div>
+      <div class="row" style="padding:0 15px;">
+        <nz-table [nzBordered]="true">
+          <tr>
+            <td>修改时间</td>
+            <td>安全库存量</td>
+            <td>库存共享率</td>
+            <td>启用渠道</td>
+          </tr>
+          <tr *ngFor="let storeslog of storeslogs;">
+            <td>{{storeslog.timestamp}}</td>
+            <td>{{storeslog.aqkcl}}</td>
+            <td>{{storeslog.kcgxl}}</td>
+            <td>
+              <span *ngFor="let channel of storeslog.channels;" [ngSwitch]="channel.name">
+                <span *ngSwitchCase="'BDWM'" title="百度外卖">百度外卖</span>
+                <span *ngSwitchCase="'MTWM'" title="美团外卖">美团外卖</span>
+                <span *ngSwitchCase="'JDDJ'" title="京东到家">京东到家</span>
+                <span *ngSwitchCase="'ELEM'" title="饿了么">饿了么</span>
+                <span *ngSwitchCase="'YINZUO'" title="银座">银座</span>
+                <span *ngSwitchCase="'WSC'" title="微后勤">微后勤</span>
+              </span>
+            </td>
+          </tr>
+        </nz-table>
+      </div>
+    </div>
+  </form>
+</nz-modal>
+
+<!-- 门店日志 -->
+<!-- <div class="modal fade" [class.in]="totaldiv1">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" (click)="closediv1()">
+          &times;
+        </button>
+        <h4 class="modal-title" id="myModalLabel">
+          门店日志
+        </h4>
+      </div>
+      <form>
+        <div class="modal-body" style="max-height: 660px;overflow-y: scroll;" *ngIf="storeslogs">
+          <div style="text-align: left;padding-left: 10px;padding-bottom:10px;font-weight: bold;">
+            <span style="margin-right:30px;">门店编码:<b style="color:#f00;">{{storeslogs[0]?.region_code}}</b></span>
+            <span style="margin-right:30px;">门店名称:<b style="color:#f00;">{{storeslogs[0]?.name}}</b></span>
+          </div>
+          <div class="row" style="padding:0 15px;">
+            <table class="table table-bordered">
+              <tr>
+                <td>修改时间</td>
+                <td>安全库存量</td>
+                <td>库存共享率</td>
+                <td>启用渠道</td>
+              </tr>
+              <tr *ngFor="let storeslog of storeslogs;">
+                <td>{{storeslog.timestamp}}</td>
+                <td>{{storeslog.aqkcl}}</td>
+                <td>{{storeslog.kcgxl}}</td>
+                <td>
+                  <span *ngFor="let channel of storeslog.channels;" [ngSwitch]="channel.name">
+                    <span *ngSwitchCase="'BDWM'" title="百度外卖">百度外卖</span>
+                    <span *ngSwitchCase="'MTWM'" title="美团外卖">美团外卖</span>
+                    <span *ngSwitchCase="'JDDJ'" title="京东到家">京东到家</span>
+                    <span *ngSwitchCase="'ELEM'" title="饿了么">饿了么</span>
+                    <span *ngSwitchCase="'YINZUO'" title="银座">银座</span>
+                    <span *ngSwitchCase="'WSC'" title="微后勤">微后勤</span>
+                  </span>
+                </td>
+              </tr>
+            </table>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div> -->
+
+
+
+<ng-template #template let-notification>
+  <import-tip [importres]="results"></import-tip>
+</ng-template>

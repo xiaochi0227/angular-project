@@ -1,0 +1,15 @@
+.charts{
+    padding:16px;padding-right:0;
+    .chartitembox{width:25%;display: inline-block;}
+    .chartitem{
+        padding:0;margin:0;background: #fff;border-radius:5px;
+        list-style: none;margin-right:16px;padding:12px;
+        .tit{
+            color:#999;position: relative;margin-bottom:5px;
+            i{position: absolute;right:15px;top:3px;}
+        }
+        .data{font-size: 22px;color:#333;}
+        .chartbox{border-bottom: 1px solid #e9e9e9;padding:12px 0;}
+        .compareddata{padding-top:12px;}
+    }
+}

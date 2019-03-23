@@ -1,0 +1,217 @@
+<div class="zh-serchbox">
+  <table class="table zh-serchtable black-muted-bg">
+    <tbody>
+      <tr>
+        <td>
+          <table class="table zh-serch-table">
+            <tr>
+              <td class="zh-zdname">商品编码</td>
+              <td class="zh-textbox">
+                <input nz-input placeholder="请输入商品编码" [(ngModel)]="params.search.item_code">
+              </td>
+              <td class="zh-zdname">商品条码</td>
+              <td class="zh-textbox">
+                <input nz-input placeholder="请输入商品条码" [(ngModel)]="params.search.barcode">
+              </td>
+              <td class="zh-zdname">商品名称</td>
+              <td class="zh-textbox">
+                <input nz-input placeholder="请输入商品名称" [(ngModel)]="params.search.name">
+              </td>
+            </tr>
+            <tr>
+              <td class="zh-zdname">状态</td>
+              <td class="zh-textbox">
+                <nz-select style="width: 150px;" [(ngModel)]="params.search.status" nzAllowClear>
+                  <nz-option nzValue="" nzLabel="请选择"></nz-option>
+                  <nz-option nzValue="1" nzLabel="有效"></nz-option>
+                  <nz-option nzValue="-1" nzLabel="无效"></nz-option>
+                </nz-select>
+              </td>
+            </tr>
+          </table>
+        </td>
+        <td>
+          <button nz-button nzType="primary" (click)="search()">查询</button>
+          <button nz-button nzType="default" (click)="Reset()">重置</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+<my-page [params]='params' [pagecount]='pageSize' [changecount]='changecount' (childparams)="childparams($event)">
+</my-page>
+<div class="horizontal-scroll">
+  <div class="zh-serchbox textcenter">
+    <button nz-button nzType="default" (click)="addAutoShelf(editModal,modalFooter)">添加</button>
+    <button nz-button nzType="default" (click)="download('自动上下架导入模板')">下载模板</button>
+    <span style="display: inline-block">
+      <app-upload [uploadtype]="'button'" [onUploaded]="onUploaded" [uploadname]="'自动上下架清单导入'"></app-upload>
+    </span>
+    <button nz-button nzType="default" (click)="addexport()"><i nz-icon type="file-excel"
+        theme="outline"></i>导出到CSV文件</button>
+  </div>
+  <nz-table #nzTable [nzData]="autoshelfs" [nzShowPagination]="false" [nzFrontPagination]="false" nzBordered>
+    <thead>
+      <tr class="tablehead">
+        <th>序号</th>
+        <th>状态</th>
+        <th>门店编码</th>
+        <th>商品编码</th>
+        <th>商品条码</th>
+        <th>商品名称</th>
+        <th>开始结束日期</th>
+        <th>上下架时间(时)</th>
+        <th>上架数量</th>
+        <th>操作</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let autoshelf of autoshelfs;let i=index">
+        <td>{{cow+i+1}}</td>
+        <td style="text-align:center;" [ngSwitch]="autoshelf.status">
+          <i *ngSwitchCase="'-1'" nz-icon type="close-circle" theme="outline" style="color:#f50;"></i>
+          <i *ngSwitchCase="'1'" nz-icon type="check-circle" theme="outline" style="color:#87d068;"></i>
+
+        <td>{{autoshelf.region_code}}</td>
+        <td>{{autoshelf.item_code}}</td>
+        <td>{{autoshelf.barcode}}</td>
+        <td>{{autoshelf.name}}</td>
+        <td>
+          <div><span class="label label-success">开始时间</span>{{autoshelf.startdate}}</div>
+          <div><span class="label label-default">结束时间</span>{{autoshelf.enddate}}</div>
+        </td>
+        <td>
+          <div><span class="label label-success">上架时间</span>{{autoshelf.ontime}}</div>
+          <div><span class="label label-default">下架时间</span>{{autoshelf.offtime}}</div>
+        </td>
+        <td class="textright">{{autoshelf.onnum}}</td>
+        <td>
+          <button type="button" nz-button nzType="primary"
+            (click)="editAutoShelf(autoshelf,editModal,modalFooter)">修改</button>
+          <button type="button" nz-button nzType="default"
+            (click)="getitemregionstatus(autoshelf,saleTypeModal)">查看门店商品状态</button>
+        </td>
+      </tr>
+    </tbody>
+  </nz-table>
+</div>
+
+
+<!-- 添加 -->
+<ng-template #editModal>
+  <div nz-row class="search-bar">
+    <div nz-col nzSpan="12">
+      <label>编码</label>
+      <input type="text" nz-input [disabled]="editbm" [(ngModel)]="autoshelf.item_code" name="item_code"
+        placeholder="请输入编码">
+    </div>
+    <div nz-col nzSpan="12">
+      <label>条码</label>
+      <input type="text" nz-input [disabled]="editbm" [(ngModel)]="autoshelf.barcode" name='barcode'
+        placeholder="请输入条码">
+    </div>
+    <div nz-col nzSpan="12">
+      <label>门店编码</label>
+      <input type="text" nz-input [disabled]="editbm" [(ngModel)]="autoshelf.region_code" name='region_code'
+        placeholder="请输入门店编码">
+    </div>
+    <div nz-col nzSpan="12">
+      <label>名称</label>
+      <input type="text" nz-input [disabled]="editbm" [(ngModel)]="autoshelf.name" name='name' placeholder="请输入名称">
+    </div>
+    <div nz-col nzSpan="12">
+      <label>开始日期</label>
+      <nz-date-picker [nzStyle]="{width:'100%'}" [(ngModel)]="autoshelf.startdate"></nz-date-picker>
+    </div>
+    <div nz-col nzSpan="12">
+      <label>结束日期</label>
+      <nz-date-picker [nzStyle]="{width:'100%'}" [(ngModel)]="autoshelf.enddate"></nz-date-picker>
+    </div>
+    <div nz-col nzSpan="12">
+      <label>上架时间</label>
+      <nz-select [(ngModel)]="autoshelf.ontime">
+        <nz-option *ngFor="let option of timeList" [nzLabel]="option" [nzValue]="option"></nz-option>
+      </nz-select>
+    </div>
+    <div nz-col nzSpan="12">
+      <label>下架时间</label>
+      <nz-select [(ngModel)]="autoshelf.offtime">
+        <nz-option *ngFor="let option of timeList" [nzLabel]="option" [nzValue]="option"></nz-option>
+      </nz-select>
+    </div>
+    <div nz-col nzSpan="12">
+      <label>数量</label>
+      <input type="text" nz-input [(ngModel)]="autoshelf.onnum" name='name' placeholder="请输入数量">
+    </div>
+    <div nz-col nzSpan="12">
+      <label>状态</label>
+      <nz-select [(ngModel)]="autoshelf.status">
+        <nz-option nzValue="1" nzLabel="有效"></nz-option>
+        <nz-option nzValue="-1" nzLabel="无效"></nz-option>
+      </nz-select>
+    </div>
+
+
+  </div>
+
+</ng-template>
+<ng-template #modalFooter>
+  <button nz-button nzType="default" (click)="handleCancel()">取消</button>
+  <button nz-button nzType="primary" (click)="saveAddshelf(autoshelf)" [nzLoading]="isConfirmLoading">确认</button>
+</ng-template>
+
+
+<!-- 商品售卖状态 -->
+<ng-template #saleTypeModal>
+  <nz-table nzSize="small" nzHideOnSinglePage="true" #baseTable [nzData]="itemregionstatus">
+    <thead>
+      <tr>
+        <th>门店编码/名称</th>
+        <th>商品编码</th>
+        <th>商品条码</th>
+        <th>商品名称</th>
+        <th>售卖状态</th>
+        <th>上下架状态</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let items of baseTable.data;let i=index">
+        <td>{{items.region_code}}/{{items.region_name}} </td>
+        <td>{{items.item_code}}</td>
+        <td>{{items.barcode}}</td>
+        <td>{{items.item_name}}</td>
+        <td>
+          <span *ngIf="items.status==='1'">售卖</span>
+          <span *ngIf="items.status==='-1'">停售</span>
+        </td>
+        <td>
+          <span *ngIf="items.sale_status===1">上架</span>
+          <span *ngIf="items.sale_status===2">下架</span>
+        </td>
+      </tr>
+    </tbody>
+  </nz-table>
+
+</ng-template>
+
+
+<!-- 导入状态提示 -->
+<div class="modal fade" [class.in]="importtip" *ngIf="results">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" (click)="closeimportip()">
+          &times;
+        </button>
+        <h4 class="modal-title" id="myModalLabel">
+          导入状态
+        </h4>
+      </div>
+      <form>
+        <div class="modal-body" style="max-height: 660px;overflow-y: scroll;">
+          <!-- <import-tip [importres]="results"></import-tip> -->
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

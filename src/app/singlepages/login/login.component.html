@@ -1,0 +1,107 @@
+<div class="authmain">
+  <!--登录界面 start-->
+  <app-logincard title="牵牛花运营平台" *ngIf="editpass">
+    <form nz-form [formGroup]="validateForm" class="login-form" (ngSubmit)="submitForm()">
+      <div class="loginbox">
+        <div class="logincontent">
+          <ul>
+            <li><input type="text" class="logintext" formControlName="code" placeholder="用户名" /></li>
+            <li class="password"><input type="text" class="logintext" formControlName="pwd" placeholder="密码" /><i
+                nz-icon type="eye" class="icon_eye" theme="outline"></i></li>
+            <li>
+              <span><label nz-checkbox>自动登录</label></span>
+              <a class="wjmm" (click)="editpass = !editpass">忘记密码</a>
+            </li>
+            <li>
+              <button nz-button nzType="primary" class="loginbt" nzBlock>登 录</button>
+            </li>
+          </ul>
+          <!--操作提示-->
+          <span class="logintip" *ngIf="validateForm.get('code').dirty && validateForm.get('code').errors">
+            <span [hidden]="!validateForm.hasError('required','code')">用户名是必填的</span>
+            <span [hidden]="!validateForm.hasError('minlength','code')">用户名最小长度是6</span>
+            <span [hidden]="validateForm.hasError('required','code') || !validateForm.hasError('only','code')">用户名只能是字母、数字和下划线</span>
+            <span *ngIf="validateForm.get('pwd').dirty && validateForm.get('pwd').errors">请输入密码</span>
+          </span>
+        </div>
+
+        <div class="loginbottom">
+          <div class="hzhblogolist">
+            <span class="hzhblogo img1-1"></span>
+            <span class="hzhblogo img1-2"></span>
+            <span class="hzhblogo img1-3"></span>
+            <span class="hzhblogo img1-4"></span>
+            <span class="hzhblogo img1-5"></span>
+            <span class="hzhblogo img1-6"></span>
+          </div>
+          <p>北京腾赋网络科技有限公司&nbsp;|&nbsp;服务热线&nbsp;|&nbsp;京ICP备16052428号-1</p>
+        </div>
+      </div>
+    </form> 
+  </app-logincard>
+
+  <!--登录界面 end-->
+  <!--修改密码界面 start-->
+  <app-logincard title="重置密码" *ngIf="!editpass">
+    <div class="resetpassbox">
+      <!--修改成功提示-->
+      <span class="editmsg" *ngIf="editmsg">修改成功</span>
+      <!--修改成功提示-->
+      <ul>
+        <li><input type="text" class="logintext" placeholder="请输入已绑定的手机号码" /></li>
+        <li class="yzm">
+          <input type="text" class="logintext" placeholder="请输入手机验证码" />
+          <button nz-button nzType="primary" class="getyzmbt" nzSize="small">获取验证码</button>
+        </li>
+        <li class="password">
+          <input type="text" class="password" class="logintext" placeholder="8-16位数字、字母或组合的新密码">
+          <i nz-icon type="eye" class="icon_eye" theme="outline"></i>
+        </li>
+        <li>
+          <button nz-button nzType="primary" class="loginbt" nzBlock (click)=confirm()>确认修改</button>
+        </li>
+        <li class="gologin"><a (click)="editpass = !editpass">去登录</a></li>
+      </ul>
+    </div>
+
+  </app-logincard>
+  <!--修改密码界面 start-->
+  <img [src]="bg" class="bg">
+</div>
+
+
+<!-- <form nz-form [formGroup]="validateForm" class="login-form" (ngSubmit)="submitForm()">
+  <nz-form-item>
+    <nz-form-control>
+      <nz-input-group [nzPrefix]="prefixUser">
+        <input type="text" nz-input formControlName="code" placeholder="请输入用户名">
+      </nz-input-group>
+      <nz-form-explain *ngIf="validateForm.get('code').dirty && validateForm.get('code').errors">
+        <p [hidden]="!validateForm.hasError('required','code')">用户名是必填的</p>
+        <p [hidden]="!validateForm.hasError('minlength','code')">用户名最小长度是6</p>
+        <p [hidden]="validateForm.hasError('required','code') || !validateForm.hasError('only','code')">用户名只能是字母、数字和下划线</p>
+      </nz-form-explain>
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-control>
+      <nz-input-group [nzPrefix]="prefixLock">
+        <input type="password" nz-input formControlName="pwd" placeholder="请输入用户密码">
+      </nz-input-group>
+      <nz-form-explain *ngIf="validateForm.get('pwd').dirty && validateForm.get('pwd').errors">请输入密码</nz-form-explain>
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-control>
+      <label nz-checkbox formControlName="remember">
+        <span>Remember me</span>
+      </label>
+      <a class="login-form-forgot" class="login-form-forgot">Forgot password</a>
+      <button nz-button class="login-form-button" [nzType]="'primary'">Log in</button>
+      Or
+      <a href="">register now!</a>
+    </nz-form-control>
+  </nz-form-item>
+</form>
+<ng-template #prefixUser><i nz-icon type="user"></i></ng-template>
+<ng-template #prefixLock><i nz-icon type="lock"></i></ng-template> -->

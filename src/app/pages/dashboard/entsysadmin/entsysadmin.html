@@ -1,0 +1,130 @@
+<nz-card>
+  <div nz-row>
+    <div nz-col nzSpan="8" class="dashboardtitle"><i nz-icon type="home" theme="outline"></i><span class="tittext">{{showdate}}</span></div>
+    <div nz-col nzSpan="16" class="textright">
+      <nz-button-group>
+        <button nz-button (click)="getpredata(type)" [disabled]='dispre'>上一期</button>
+        <button nz-button nzType="types==1?'primary':'default'" (click)="getdata(1)">今日</button>
+        <button nz-button nzType="types==2?'primary':'default'" (click)="getdata(2)">本周</button>
+        <button nz-button nzType="types==3?'primary':'default'" (click)="getdata(3)">本月</button>
+        <button nz-button (click)="getnextdata(type)" [disabled]='dis'>下一期</button>
+        <button nz-button nzType="types==4?'primary':'default'" (click)="getdata(4)">近7天</button>
+        <button nz-button nzType="types==5?'primary':'default'" (click)="getdata(5)">近30天</button>
+      </nz-button-group>
+    </div>
+  </div>
+</nz-card>
+
+
+<div nz-row>
+  <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12">
+    <app-piechart [pieData]='datas'></app-piechart>
+  </div>
+</div>
+<div nz-row [nzGutter]="16">
+  <div nz-col [nzSpan]="16">
+    <nz-card nzTitle="品类销售趋势" [nzExtra]="extraTemplate">
+      <div *ngIf="lineOption">
+        <my-echart [option]='lineOption' [echartcolor]="echartcolor"></my-echart>
+      </div>
+    </nz-card>
+    <ng-template #extraTemplate style="position:relative;">
+      <span class="selecttop">
+        类别TOP
+        <nz-select [(ngModel)]="categoryTopNum" (ngModelChange)="setcategorytop(myDate,type,categoryTopNum)">
+          <nz-option *ngFor="let cateopt of totalCategoryNum;let i = index" [nzLabel]="cateopt" [nzValue]="cateopt"></nz-option>
+        </nz-select>
+      </span>
+    </ng-template>
+  </div>
+  <div nz-col [nzSpan]="8">
+    <nz-card nzTitle="渠道销售占比统计">
+      <div *ngIf="pieoption">
+        <my-echart [option]='pieoption' [echartcolor]="echartcolor"></my-echart>
+      </div>
+    </nz-card>
+  </div>
+</div>
+<div nz-row [nzGutter]="16" style="margin-top:16px;">
+  <div nz-col [nzSpan]="8">
+    <nz-card nzTitle="门店销量排名" *ngIf="storerankings" [nzExtra]="extraTemplatestore">
+      <nz-table #basicTable [nzData]="storerankings" [nzShowPagination]="false" [nzFrontPagination]="false">
+        <thead>
+          <tr>
+            <th>排名</th>
+            <th>门店名称</th>
+            <th>金额/订单数</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let store of basicTable.data;let i=index" (click)="goorder(store)">
+            <td>{{i+1}}</td>
+            <td>{{store.name}}</td>
+            <td>{{store.money|number:'1.0-0'}}元/{{store.total}}单</td>
+          </tr>
+        </tbody>
+      </nz-table>
+    </nz-card>
+    <ng-template #extraTemplatestore style="position:relative;">
+      <span class="selecttop">
+        <nz-button-group>
+          <button nz-button nz-popover nzTitle="无销量门店" #bt (click)="togglestore(bt)" (blur)="home(bt)" [nzContent]="contentTemplate"
+            nzTrigger="click">查看无销量门店</button>
+          <button nz-button #bt1 nzType="default" (click)="togglestore1(bt1)">
+            <span *ngIf="clickcount1 === 0">展开全部<i nz-icon type="down" theme="outline"></i></span>
+            <span *ngIf="clickcount1 ===1">收起<i nz-icon type="up" theme="outline"></i></span>
+          </button>
+          <ng-template #contentTemplate>
+            <div *ngIf="wxlmd">
+              <p *ngIf="!orderdaytotalent.unsale_stores||orderdaytotalent?.unsale_stores.length===0">(空)</p>
+              <p *ngFor="let nosale of orderdaytotalent?.unsale_stores;let i=index">{{i+1}}.[{{nosale.code}}]{{nosale.name}}</p>
+            </div>
+          </ng-template>
+        </nz-button-group>
+      </span>
+    </ng-template>
+  </div>
+  <div nz-col [nzSpan]="8">
+    <nz-card nzTitle="热销商品排名" *ngIf="orderdaytotalent">
+      <nz-table #basicTable [nzData]="orderdaytotalent.items" [nzShowPagination]="false" [nzFrontPagination]="false">
+        <thead>
+          <tr>
+            <th>排名</th>
+            <th>商品名称</th>
+            <th>金额/订货数</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of basicTable.data;let i=index">
+            <td>{{i+1}}</td>
+            <td>{{item.name}}</td>
+            <td>{{item.money|number:'1.0-0'}}元/{{item.total}}</td>
+          </tr>
+        </tbody>
+      </nz-table>
+    </nz-card>
+  </div>
+  <div nz-col [nzSpan]="8">
+    <nz-card nzTitle="客户消费排名" *ngIf="orderdaytotalent">
+      <nz-table #basicTable [nzData]="orderdaytotalent.guests" [nzShowPagination]="false" [nzFrontPagination]="false">
+        <thead>
+          <tr>
+            <th>排名</th>
+            <th>姓名</th>
+            <th>金额/订单数</th>
+            <th>手机号</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let guest of basicTable.data;let i=index" (click)="goorder(guest)">
+            <td>{{i+1}}</td>
+            <td>{{guest.name}}</td>
+            <td>{{guest.money|number:'1.0-0'}}元/{{guest.total}}单</td>
+            <td>
+              <span class="glyphicon glyphicon-phone"></span>{{guest.mobile}}</td>
+          </tr>
+        </tbody>
+      </nz-table>
+    </nz-card>
+  </div>
+</div>

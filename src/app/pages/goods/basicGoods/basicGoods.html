@@ -1,0 +1,1321 @@
+<div *ngIf="!pm_modify">
+  <div *ngIf="!pm_iscydgg">
+    <div class="widgets">
+      <div class="row">
+        <div class="zh-serchbox" *ngIf="commodities">
+          <table class="table zh-serchtable black-muted-bg">
+            <tbody>
+              <tr>
+                <td>
+                  <table class="table zh-serch-table">
+                    <tr>
+                      <td class="zh-zdname" width="10%">线下编码</td>
+                      <td class="zh-textbox" width="23%">
+                        <input nz-input placeholder="请输入线下编码" [(ngModel)]="params.search.code">
+                      </td>
+                      <td class="zh-zdname" width="10%">商品条码</td>
+                      <td class="zh-textbox" width="23%">
+                        <input nz-input placeholder="请输入条码" [(ngModel)]="params.search.barcode">
+                      </td>
+                      <td class="zh-zdname" width="10%">商品名称</td>
+                      <td class="zh-textbox" width="24%">
+                        <input nz-input placeholder="请输入名称" [(ngModel)]="params.search.name">
+                      </td>
+                    </tr>
+                    <tr *ngIf="hidesearch">
+                      <td class="zh-zdname">售卖状态</td>
+                      <td class="zh-textbox">
+                        <nz-select [(ngModel)]="params.search.status" nzAllowClear>
+                          <nz-option nzValue="" nzLabel="请选择"></nz-option>
+                          <nz-option nzValue="1" nzLabel="售卖"></nz-option>
+                          <nz-option nzValue="-1" nzLabel="停售"></nz-option>
+                        </nz-select>
+                      </td>
+                      <!--<td class="zh-zdname">线下品类</td>
+                        <td class="zh-textbox"><input type="text" class="form-control" [(ngModel)]="params.search.source_cat_name" id="source_cat_name"
+                            placeholder="请输入线下品类"></td>-->
+                      <td class="zh-zdname">数据来源</td>
+                      <td class="zh-textbox">
+                        <input nz-input placeholder="请输入数据来源" [(ngModel)]="params.search.source_type_keyword">
+                      </td>
+                      <td class="zh-zdname">线上品类</td>
+                      <td class="zh-textbox">
+                        <div>
+                          <nz-select style="width: 120px;" [(ngModel)]="params.search.online_sup_code" nzAllowClear
+                            (ngModelChange)="getSubOnlineCategories(params.search.online_sup_code)">
+                            <nz-option *ngFor="let category of firstCategories;" [nzValue]="category.code"
+                              [nzLabel]="category.name"></nz-option>
+                          </nz-select>
+                          <nz-select style="width: 120px;" [(ngModel)]="params.search.online_cat_code" nzAllowClear>
+                            <nz-option *ngFor="let category of subCategories;" [nzValue]="category.code"
+                              [nzLabel]="category.name"></nz-option>
+                          </nz-select>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr *ngIf="hidesearch">
+                      <td class="zh-zdname">规格</td>
+                      <td class="zh-textbox">
+                        <input nz-input placeholder="请输入规格" [(ngModel)]="params.search.norm">
+                      </td>
+                      <td class="zh-zdname">单位</td>
+                      <td class="zh-textbox">
+                        <input nz-input placeholder="请输入单位" [(ngModel)]="params.search.base_uom_name">
+                      </td>
+                    </tr>
+                    <tr *ngIf="hidesearch">
+                      <td colspan="6" style="text-align:center;" class="zh-searchcheck">
+                        <label nz-checkbox [(ngModel)]="params.search.spec"
+                          (ngModelChange)="getItemList(params)">规格为空</label>
+                        <label nz-checkbox [(ngModel)]="params.search.unit"
+                          (ngModelChange)="getItemList(params)">单位为空</label>
+                        <label nz-checkbox [(ngModel)]="params.search.gross_weight"
+                          (ngModelChange)="getItemList(params)">重量为零或空</label>
+                        <label nz-checkbox [(ngModel)]="params.search.fl"
+                          (ngModelChange)="getItemList(params)">线上分类为空</label>
+                        <label nz-checkbox [(ngModel)]="params.search.img"
+                          (ngModelChange)="getItemList(params)">图片为空</label>
+                        <label nz-checkbox [(ngModel)]="params.search.testwh"
+                          (ngModelChange)="getItemList(params)">牵牛花维护</label>
+                        <label nz-checkbox [(ngModel)]="params.search.is_spec"
+                          (ngModelChange)="getItemList(params)">多规格商品</label>
+                      </td>
+                    </tr>
+                  </table>
+                </td>
+                <td>
+                  <button nz-button nzType="primary" style="margin-right:10px;" (click)="search(params)">查询</button>
+                  <button nz-button nzType="default" (click)="Reset()">重置</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <input value="展开更多↓" type="button" (click)="togglesearch($event)"
+            style="display:block;width:100%;color:#333;background:rgba(240, 240, 240, 0.2);border: 1px solid rgba(225, 225, 225, 0.3);text-align: center;padding:3px 0;cursor: pointer;" />
+        </div>
+        <span *ngIf="!pm_iscydgg">
+          <span *ngIf="!pm_modify">
+            <my-page [params]='params' [pagecount]='pageSize' [changecount]='changecount'
+              (childparams)="childparams($event)"></my-page>
+          </span>
+        </span>
+        <div>
+          <div class="zh-listhead" style="position: relative;">
+            <span style="position: absolute;left:5px;top:20px;"
+              *ngIf="selectcurrentcount">您已选择了当前页{{selecteditems.length}}条商品</span>
+            <nz-dropdown>
+              <button nz-button nz-dropdown><span>批量修改状态</span> <i nz-icon type="down"></i></button>
+              <ul nz-menu>
+                <li nz-menu-item (click)="batchvoid(commodities,1)">
+                  售卖
+                </li>
+                <li nz-menu-item (click)="batchvoid(commodities,2)">
+                  停售
+                </li>
+              </ul>
+            </nz-dropdown>
+            <nz-dropdown>
+              <button nz-button nz-dropdown><span>商品导入(excel)</span> <i nz-icon type="down"></i></button>
+              <ul nz-menu>
+                <li nz-menu-item (click)="gettemplate(template)">
+                  <app-upload [onUploaded]="datainput" nzLimit="1" [uploadname]="'商品主档(新增/修改)导入'" [uploadtype]="'text'">
+                  </app-upload>
+                </li>
+                <li nz-menu-item (click)="gettemplate(template)">
+                  <app-upload [onUploaded]="xsspfl" nzLimit="1" [uploadname]="'设置商品线上分类'" [uploadtype]="'text'">
+                  </app-upload>
+                </li>
+                <li nz-menu-item (click)="gettemplate(template)">
+                  <app-upload [onUploaded]="itemBaseStatus" nzLimit="1" [uploadname]="'商品主档售卖状态'" [uploadtype]="'text'">
+                  </app-upload>
+                </li>
+                <li nz-menu-item (click)="gettemplate(template)">
+                  <app-upload [onUploaded]="dwzhxsimports" nzLimit="1" [uploadname]="'单位转换系数导入'" [uploadtype]="'text'">
+                  </app-upload>
+                </li>
+                <li nz-menu-item (click)="gettemplate(template)">
+                  <app-upload [onUploaded]="bmspimports" nzLimit="1" [uploadname]="'必卖商品导入'" [uploadtype]="'text'">
+                  </app-upload>
+                </li>
+                <li nz-menu-item (click)="gettemplate(template)">
+                  <app-upload [onUploaded]="spxxfl" nzLimit="1" [uploadname]="'商品线下分类'" [uploadtype]="'text'">
+                  </app-upload>
+                </li>
+                <li nz-menu-item (click)="gettemplate(template)">
+                  <app-upload [onUploaded]="freshtolead" nzLimit="1" [uploadname]="'生鲜商品导入'" [uploadtype]="'text'">
+                  </app-upload>
+                </li>
+                <li nz-menu-item (click)="gettemplate(template)" *ngIf="sole">
+                  <app-upload [onUploaded]="barcodeupdate" nzLimit="1" [uploadname]="'修改商品条码'" [uploadtype]="'text'">
+                  </app-upload>
+                </li>
+                <li nz-menu-item (click)="gettemplate(template)">
+                  <app-upload [onUploaded]="subtitleimports" nzLimit="1" [uploadname]="'导入商品副标题'" [uploadtype]="'text'">
+                  </app-upload>
+                </li>
+                <li nz-menu-item (click)="gettemplate(template)">
+                  <app-upload [onUploaded]="psyqimports" nzLimit="1" [uploadname]="'导入配送要求'" [uploadtype]="'text'">
+                  </app-upload>
+                </li>
+                <li nz-menu-item (click)="gettemplate(template)">
+                  <app-upload [onUploaded]="isfoodimports" nzLimit="1" [uploadname]="'餐饮商品导入'" [uploadtype]="'text'">
+                  </app-upload>
+                </li>
+                <li nz-menu-item (click)="gettemplate(template)">
+                  <app-upload [onUploaded]="taxcodeimports" nzLimit="1" [uploadname]="'商品税码导入'" [uploadtype]="'text'">
+                  </app-upload>
+                </li>
+              </ul>
+            </nz-dropdown>
+
+            <nz-dropdown>
+              <button nz-button nz-dropdown><span>批量导入图片</span> <i nz-icon type="down"></i></button>
+              <ul nz-menu>
+                <li nz-menu-item (click)="batchmodalbox(1)">
+                  批量上传图片
+                  <!-- <app-upload [onUploaded]="datainput" nzLimit="3" [uploadname]="'商品主档(新增/修改)导入'" [uploadtype]="'text'"></app-upload> -->
+                </li>
+                <li nz-menu-item>
+                  <app-upload [onUploaded]="batchimportcsvInput" nzLimit="3" [uploadname]="'批量导入图片(excel)'"
+                    [uploadtype]="'text'"></app-upload>
+                </li>
+                <li nz-menu-item (click)="batchmodalbox(2)">
+                  批量上传详情图片
+                  <!-- <app-upload [onUploaded]="datainput" nzLimit="3" [uploadname]="'商品主档(新增/修改)导入'" [uploadtype]="'text'"></app-upload> -->
+                </li>
+                <li nz-menu-item (click)="getImgAlls()" *ngIf="imgstate==='1'" title="网拍天下">
+                  批量拉取图片
+                  <!-- <app-upload [onUploaded]="datainput" nzLimit="3" [uploadname]="'商品主档(新增/修改)导入'" [uploadtype]="'text'"></app-upload> -->
+                </li>
+              </ul>
+            </nz-dropdown>
+            <nz-dropdown *ngIf="dccsv||dcsgxjjlb">
+              <button nz-button nz-dropdown><span>导出</span> <i nz-icon type="down"></i></button>
+              <ul nz-menu>
+                <li nz-menu-item *ngIf="dccsv" (click)="addexport()">
+                  导出到CSV文件
+                </li>
+                <li nz-menu-item *ngIf="dcsgxjjlb" (click)="addexportsgxj()">
+                  手工下架记录表导出
+                </li>
+              </ul>
+            </nz-dropdown>
+            <button nz-button nzType="default" *ngIf="xzmb" style="margin-right:2px;"
+              (click)="location.href='http://www.m-glory.net/newadmin/templete/商品主档模板.zip'">下载模板</button>
+            <button nz-button nzType="default" *ngIf="dccydgg" (click)="newspecifications()">新建餐饮多规格商品</button>
+            <span style="position: absolute;right:5px;top:12px;">
+              <span class="item dot-top"></span>线上属性&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+              <span class="item dot-bottom"></span>线下属性
+            </span>
+          </div>
+          <div class="zh-bglistbox">
+            <table class="zh-bglisthead">
+              <tr>
+                <td width="5%">
+                  <label nz-checkbox [(ngModel)]="currentgoods.sfxz"
+                    (ngModelChange)="setcurrentgoods($event)">全选</label>
+                </td>
+                <td width="28%">商品</td>
+                <td width="8%">规格</td>
+                <td width="7%">单位</td>
+                <td width="8%">包装含量</td>
+                <td width="10%">单位转换系数</td>
+                <td width="7%">重量</td>
+                <td width="11%">品类</td>
+                <td width="11%">同步时间</td>
+                <td>
+
+                </td>
+              </tr>
+            </table>
+
+            <div>
+              <div class="zh-bglistcardbox" *ngFor="let commodity of commodities;let i=index;trackBy: trackByIndex">
+                <div class="zh-bgcardhead">
+                  <table>
+                    <tr>
+                      <td width="25%">
+                        <span class="zh-xh">{{cow+i+1}}</span> 状态：
+                        <!-- <span *ngIf="commodity.status==='售卖'" style="color:#00FF00;">{{commodity?.status}}</span>
+                          <span *ngIf="commodity.status==='停售'" style="color:#FF0000;">{{commodity?.status}}</span> -->
+                        <input type="button" class="zh-btnlink" (click)="editstatus(commodity)"
+                          [class.zh-bright]="commodity.status==='售卖'" [value]="commodity.status" />
+                        <label class="label label-danger label-xs" *ngIf="commodity?.must_sale">必卖</label>
+                        <nz-tag *ngIf="commodity.set_combo==='1'" [nzColor]="'rgb(39,109,197)'"
+                          style="margin-bottom:2px; cursor: auto;">餐饮多规格商品</nz-tag>
+                      </td>
+                      <td *ngIf="!commodity.set_combo" width="13%" [ngSwitch]="commodity.testwh">
+                        来源：
+                        <span *ngSwitchCase="1">牵牛花</span>
+                        <span *ngSwitchDefault>{{commodity?.source_type_keyword}}</span>
+                      </td>
+                      <td width="18%">
+                        <span>线下编码：</span>
+                        {{commodity?.code}}
+                      </td>
+                      <td width="25%">商品条码：{{commodity?.barcode}}</td>
+                      <td>
+                        <span class="zh-btns">
+                          <nz-button-group>
+                            <button nz-button nzType="primary" *ngIf="imgstate==='1'&&!commodities[i].master_img_url"
+                              (click)="getImages(commodity)" title="网拍天下">拉取图片</button>
+                            <button nz-button nzType="default" (click)="pm_modifydgg(commodity)"
+                              *ngIf="commodity.set_combo==='1'">修改</button>
+                            <button nz-button nzType="default" (click)="gotoeditgoods(commodity.bid)"
+                              *ngIf="commodity.set_combo!=='1'">修改</button>
+                            <button nz-button nzType="default"
+                              (click)="deletegoods(commodity.code, commodity.barcode,commodity.status,commodity?.m_desc)">设置门店商品</button>
+                            <button nz-button nzType="default" (click)="geItemLog(commodity)">商品主档日志</button>
+                            <button nz-button nzType="default" (click)="pm_deldgg(commodity)"
+                              *ngIf="commodity.set_combo==='1'">删除</button>
+                          </nz-button-group>
+                        </span>
+                      </td>
+                    </tr>
+                  </table>
+                </div>
+                <div class="zh-bgcardcontent">
+                  <table>
+                    <tr>
+                      <td width="5%">
+                        <label class="checkbox-inline custom-checkbox nowrap">
+                          <input type="checkbox" name="sfxz" [(ngModel)]="commodity.sfxz"
+                            (click)="setcheckbox(commodity)" />
+                          <span>&nbsp;</span>
+                        </label>
+                      </td>
+                      <td width="28%">
+                        <span *ngIf="commodity.master_img_url" style="float: left;">
+                          <img class="lazy commodity-img"
+                            style="width:50px;height:50px;border:1px solid transparent;margin:0 auto;"
+                            [src]="commodities[i].master_img_url">
+                        </span>
+                        <span class="zh-spcontent" style="display:block;margin-top:5px;">
+                          <div class="zh-mb5" *ngIf="commodity.m_desc">
+                            <span class="item dot-top"></span>{{commodity?.m_desc}}</div>
+                          <div *ngIf="commodity.name">
+                            <span class="item dot-bottom"></span>{{commodity?.name}}</div>
+                        </span>
+                      </td>
+                      <td width="8%">
+                        <span class="zh-spcontent">
+                          <div class="zh-mb5" *ngIf="commodity.m_spec">
+                            <span class="item dot-top"></span>{{commodity?.m_spec}}</div>
+                          <div *ngIf="commodity.spec">
+                            <span class="item dot-bottom"></span>{{commodity?.spec}}</div>
+                        </span>
+                      </td>
+                      <td width="7%">
+                        <span class="zh-spcontent">
+                          <div class="zh-mb5" *ngIf="commodity.m_base_uom_name">
+                            <span class="item dot-top"></span>{{commodity?.m_base_uom_name}}</div>
+                          <div *ngIf="commodity.base_uom_name">
+                            <span class="item dot-bottom"></span>{{commodity?.base_uom_name}}</div>
+                        </span>
+                      </td>
+                      <td width="8%">{{commodity?.pk_number}}</td>
+                      <td width="10%">{{commodity?.dwzhxs}}</td>
+                      <td width="7%">{{commodity?.gross_weight}}</td>
+                      <td width="11%">
+                        <span class="zh-spcontent">
+                          <div class="zh-mb5" *ngIf="commodity.online_cat_name">
+                            <span class="item dot-top"></span>{{commodity?.online_cat_name}}</div>
+                          <div *ngIf="commodity.source_cat_name">
+                            <span class="item dot-bottom"></span>{{commodity?.source_cat_name}}</div>
+                        </span>
+                      </td>
+                      <td width="11%">
+                        <span class="zh-spcontent">
+                          <div *ngIf="commodity.timestamp">
+                            <span class="item dot-bottom"></span>{{commodity?.timestamp}}</div>
+                        </span>
+                      </td>
+                      <td>
+                        <!-- 查看多规格 -->
+                        <span *ngIf="commodity.set_combo==='1'">
+                          <a class="goodstoggle" (click)="pm_toggledetail(commodity,$event,i)">
+                            <span *ngIf="!pm_zsdgg[i]"> 查看多规格
+                              <!-- <i class="anticon anticon-down"></i> -->
+                            </span>
+                            <span *ngIf="pm_zsdgg[i]"> 收起多规格
+                              <!-- <i class="anticon anticon-up"></i> -->
+                            </span>
+                          </a>
+                        </span>
+
+                      </td>
+                    </tr>
+                  </table>
+                </div>
+                <!-- 商品多规格start -->
+                <div *ngIf="pm_zsdgg[i]">
+                  <div *ngFor="let item of commodity.spec_items">
+                    <div class="zh-bgcardhead">
+                      <table>
+                        <tr>
+                          <td width="20%" style="padding-left:54px;">
+                            规格名称:{{item.spec_name}}
+                          </td>
+                          <td width="13%">
+                            <!-- 来源 -->
+                          </td>
+                          <td width="18%">线下编码：{{item.code}}</td>
+                          <td width="25%">商品条码：{{item.barcode}}</td>
+                          <td>
+                            <span class="zh-btns">
+                              <!--<button type="button" class="btn btn-info btn-xs" (click)="showImg(commodity)">图片上传</button>
+                                  <div class="zh-dropdown1" *ngIf="imgbox" [class.zh-selected]="commodity === selectedcomm">
+                                    <button type="button" class="close" (click)="hideimg()">
+                                          &times;
+                                        </button>
+                                        <span *ngFor="let img of imgs;let a=index" class="zh-imglist">
+                                              <img #newSrc src="{{img}}"><a (click)="deleteImg(commodity.bid,commodity.barcode,img,a,i)">删除</a>
+                                        </span>
+                                  <span class="zh-imgupload"><i class="ion-plus"></i>
+                                                <input type="file" #newImg (change)="uploadImg(newImg,commodity.code,commodity.barcode,i)" style="width:104px;height:104px;position:absolute;left:0;opacity: 0;cursor:pointer;">
+                                        </span>
+                          </div>-->
+                              <span *ngIf="imgstate==='1'">
+                                <button type="button" class="btn btn-info btn-xs" *ngIf="!commodities[i].master_img_url"
+                                  (click)="getImages(commodity)" title="网拍天下">拉取图片</button>
+                              </span>
+                              <button type="button" class="btn btn-info btn-xs" (click)="gotoeditgoods(item.bid)"
+                                *ngIf="xgbtn">修改</button>
+                              <!-- <button type="button" class="btn btn-info btn-xs" *ngIf="commodity.testwh=='1'&&kcjgxg" style="display:none;"
+                                      (click)="gotoeditinvenpri(commodity.code,commodity.barcode,commodity.status)">库存价格修改</button>
+                                    <button type="button" class="btn btn-info btn-xs" (click)="deletegoods(commodity.code, commodity.barcode,commodity.status,commodity?.m_desc)"
+                                      *ngIf="szmdsp">设置门店商品</button> -->
+                              <button type="button" class="btn btn-info btn-xs" (click)="geItemLog(item)"
+                                *ngIf="spzdrz">商品主档日志</button>
+                            </span>
+                          </td>
+                        </tr>
+                      </table>
+                    </div>
+                    <div class="zh-bgcardcontent">
+                      <table>
+                        <tr>
+                          <td width="5%">
+
+                          </td>
+                          <td width="28%">
+                            <span *ngIf="item.master_img_url" style="float: left;">
+                              <img class="lazy commodity-img"
+                                style="width:50px;height:50px;border:1px solid transparent;margin:0 auto;"
+                                [src]="item.master_img_url">
+                            </span>
+                            <span class="zh-spcontent" style="display:block;margin-top:5px;">
+                              <div class="zh-mb5" *ngIf="item.m_desc">
+                                <span class="item dot-top"></span>{{item?.m_desc}}</div>
+                              <div *ngIf="item.name">
+                                <span class="item dot-bottom"></span>{{item?.name}}</div>
+                            </span>
+                          </td>
+                          <td width="8%">
+                            <span class="zh-spcontent">
+                              <div class="zh-mb5" *ngIf="item.m_spec">
+                                <span class="item dot-top"></span>{{item?.m_spec}}</div>
+                              <div *ngIf="item.spec">
+                                <span class="item dot-bottom"></span>{{item?.spec}}</div>
+                            </span>
+                          </td>
+                          <td width="7%">
+                            <span class="zh-spcontent">
+                              <div class="zh-mb5" *ngIf="item.m_base_uom_name">
+                                <span class="item dot-top"></span>{{item?.m_base_uom_name}}</div>
+                              <div *ngIf="item.base_uom_name">
+                                <span class="item dot-bottom"></span>{{item?.base_uom_name}}</div>
+                            </span>
+                          </td>
+                          <td width="8%">{{item?.pk_number}}</td>
+                          <td width="10%"></td>
+                          <td width="7%">{{item?.gross_weight}}</td>
+                          <td width="11%">
+                            <span class="zh-spcontent">
+                              <div class="zh-mb5" *ngIf="commodity.online_cat_name">
+                                <span class="item dot-top"></span>{{item?.online_cat_name}}</div>
+                              <div *ngIf="item.source_cat_name">
+                                <span class="item dot-bottom"></span>{{item?.source_cat_name}}</div>
+                            </span>
+                          </td>
+                          <td width="11%">
+                            <span class="zh-spcontent">
+                              <div *ngIf="item.timestamp">
+                                <span class="item dot-bottom"></span>{{item?.timestamp}}</div>
+                            </span>
+                          </td>
+                          <td>
+
+                          </td>
+                        </tr>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+                <!-- 商品多规格end -->
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+      <!-- 导入状态提示 -->
+      <ng-template #template let-notification>
+        <import-tip [importres]="results"></import-tip>
+      </ng-template>
+
+
+      <!-- 弹出框 -->
+      <app-modal [modalwidth]="modalwidth" [modaltitle]="modaltitle" [isVisible]="modalstatus"
+        [isConfirmLoading]="modalconfirloading" [confirmisshow]="confirmisshow" (handleokemit)="handleokfun($event)"
+        (handlecancelemit)="closemodal()">
+        <app-goods-uploadimg [type]="uploadTypeModal"
+          *ngIf="this.modaltitle==='批量上传图片' || this.modaltitle==='批量上传详情图片'"></app-goods-uploadimg>
+
+        <div *ngIf="this.modaltitle==='商品资料'">
+          <div *ngIf="goods">
+            <table class="zh-modaltable">
+              <tbody>
+                <tr>
+                  <td class="zh-zdname">商品图片:</td>
+                  <td colspan="3" class="zh-textbox">
+                    <span *ngIf="imgs">
+                      <span *ngFor="let img of imgs;let a=index" class="zh-imglist">
+                        <img #newSrc src="{{img.url}}">
+                        <a>
+                          <button nz-button [nzSize]="'small'" nzType="primary" (click)="showImg(img)">设置为主图</button>
+                          <button nz-button [nzSize]="'small'" nzType="danger" (click)="deleteImg(img)">删除</button>
+                        </a>
+                      </span>
+                    </span>
+                    <span class="zh-imgupload">
+                      <app-upload [onUploaded]="uploadImg" [uploadtype]="'picture'"></app-upload>
+                    </span>
+                  </td>
+                </tr>
+                <tr>
+                  <td class="zh-zdname">详情图片:</td>
+                  <td colspan="3" class="zh-textbox">
+                    <span *ngIf="goods.picture_detail">
+                      <span *ngFor="let img of goods.picture_detail;let a=index" class="zh-imglist">
+                        <img #newSrc src="{{img.url}}">
+                        <a>
+                          <button nz-button [nzSize]="'small'" nzType="danger"
+                            (click)="deleteDetailImg(img)">删除</button>
+                        </a>
+                      </span>
+                    </span>
+                    <span class="zh-imgupload">
+                      <app-upload [onUploaded]="uploadDetailImg" [uploadtype]="'picture'"></app-upload>
+                    </span>
+                  </td>
+                </tr>
+                <tr>
+                  <td class="zh-zdname" width="15%">线下名称:</td>
+                  <td class="zh-textbox" width="25%">{{goods.name}}</td>
+                  <td class="zh-zdname" width="15%">线上名称:</td>
+                  <td class="zh-textbox">
+                    <input nz-input placeholder="点击修改线上名称" [(ngModel)]="goods.m_desc" style="width:65%"
+                      (keyup)="checktext($event)" />
+                  </td>
+                </tr>
+                <tr>
+                  <td class="zh-zdname">线下编码:</td>
+                  <td class="zh-textbox">{{goods.code}}</td>
+                  <td class="zh-zdname">商品条码:</td>
+                  <td class="zh-textbox">{{goods.barcode}}</td>
+                </tr>
+                <tr>
+                  <td class="zh-zdname">线下规格:</td>
+                  <td class="zh-textbox">{{goods.spec}}</td>
+                  <td class="zh-zdname">线上规格:</td>
+                  <td class="zh-textbox">
+                    <input nz-input placeholder="点击修改线上规格" [(ngModel)]="goods.m_spec" style="width:65%" />
+                  </td>
+                </tr>
+                <tr>
+                  <td class="zh-zdname">线下计量单位:</td>
+                  <td class="zh-textbox">{{goods.base_uom_name}}</td>
+                  <td class="zh-zdname">线上计量单位:</td>
+                  <td class="zh-textbox">
+                    <input nz-input placeholder="点击修改线上计量单位" id="m_base_uom_name" style="width:65%"
+                      [(ngModel)]="goods.m_base_uom_name" />
+                  </td>
+                </tr>
+                <tr>
+                  <td class="zh-zdname">线下重量:</td>
+                  <td class="zh-textbox">
+                    <span *ngIf="goods.m_gross_weight">{{goods.m_gross_weight}}</span>
+                  </td>
+                  <td class="zh-zdname">线上重量:</td>
+                  <td class="zh-textbox">
+                    <input nz-input placeholder="点击修改重量" id="gross_weight" style="width:65%"
+                      [(ngModel)]="goods.gross_weight" />g
+                  </td>
+                </tr>
+                <tr>
+                  <td class="zh-zdname">是否牵牛花维护</td>
+                  <td class="zh-textbox">
+                    <input type="radio" name="testwh" (change)="goods.testwh=1" [checked]="goods.testwh==='1'">是
+                    <input type="radio" name="testwh" (change)="goods.testwh=-1" [checked]="goods.testwh!=='1'">否
+                  </td>
+                  <td class="zh-zdname">是否必卖</td>
+                  <td class="zh-textbox">
+                    <input type="radio" name="must_sale" (change)="goods.must_sale=true"
+                      [checked]="goods.must_sale===true">是
+                    <input type="radio" name="must_sale" (change)="goods.must_sale=false"
+                      [checked]="goods.must_sale!==true">否
+                  </td>
+                </tr>
+                <tr>
+                  <td class="zh-zdname">是否生鲜商品</td>
+                  <td class="zh-textbox">
+                    <input type="radio" name="is_fresh" (change)="goods.is_fresh=true"
+                      [checked]="goods.is_fresh===true">是
+                    <input type="radio" name="is_fresh" (change)="goods.is_fresh=false"
+                      [checked]="goods.is_fresh!==true">否
+                  </td>
+                  <td class="zh-zdname">是否餐饮商品:</td>
+                  <td class="zh-textbox">
+                    <input type="radio" name="is_food" (change)="goods.is_food=true" [checked]="goods.is_food===true">是
+                    <input type="radio" name="is_food" (change)="goods.is_food=false" [checked]="goods.is_food!==true">否
+                  </td>
+                </tr>
+                <tr>
+                  <td class="zh-zdname">线下分类:</td>
+                  <td class="zh-textbox zh-dwzh">
+                    {{goods?.source_cat_name}}
+                  </td>
+                  <td class="zh-zdname">线上品类:</td>
+                  <td class="zh-textbox">
+                    <div>
+                      <nz-select [(ngModel)]="goods.online_sup_code" [disabled]="goods.set_combo =='2'"
+                        class="form-control" name="online_sup_code" style="width:48%;display:inline-block;"
+                        (change)="mgetSubOnlineCategories(goods.online_sup_code,$event.target.selectedOptions[0].innerHTML)">
+                        <option *ngFor="let firstCategorie of mfirstCategories;" [value]="firstCategorie.code">
+                          {{firstCategorie.name}}</option>
+                      </nz-select>
+                      <nz-select [(ngModel)]="goods.online_cat_code" [disabled]="goods.set_combo =='2'"
+                        class="form-control" name="online_cat_code" style="width:48%;display:inline-block;"
+                        (change)="changeOnlineCategory( $event.target.selectedOptions[0].innerHTML)">
+                        <option *ngFor="let subCategorie of msubCategories;" [value]="subCategorie.code">
+                          {{subCategorie.name}}</option>
+                      </nz-select>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td class="zh-zdname">线下品牌:</td>
+                  <td class="zh-textbox zh-dwzh">
+                    {{goods?.brand_name}}
+                  </td>
+                  <td class="zh-zdname">单位转换系数:</td>
+                  <td class="zh-textbox zh-dwzh" style="position: relative;">
+                    <input style="width:40%;display:inline-block;" nz-input placeholder="单位转换系数 = 线上规格(g)/线下规格(g)"
+                      (keyup)="getdwzh(goods)" [(ngModel)]="goods.dwzhxs" id="dwzhxs" name="dwzhxs" />
+                    <span class="zh-tip1" *ngIf="goods.dwzhxs"
+                      style="font-size:12px;">示例门店:{{goods.region_name}}/修改后售价:{{price|number:'1.2-2'}}</span>
+                    <button nz-button nzType="primary" [nzSize]="'small'" (click)="editDwzhxs( goods )"
+                      style="display:inline-block;vertical-align: top;">保存</button>
+                    <p class="zh-tip">提示： 线下售卖规格1000g，线上售卖200g，即：单位转换系数（0.2）= 线上规格（200g） / 线下规格（1000g）</p>
+                  </td>
+                </tr>
+                <tr>
+                  <td class="zh-zdname">产地:</td>
+                  <td class="zh-textbox zh-dwzh">
+                    {{goods?.origin1}}
+                  </td>
+                  <td class="zh-zdname">包装含量:</td>
+                  <td class="zh-textbox">
+                    {{goods?.pk_number}}
+                  </td>
+                </tr>
+                <tr>
+                  <td class="zh-zdname">保质期:</td>
+                  <td class="zh-textbox">
+                    {{goods?.warranty}}
+                  </td>
+                  <td class="zh-zdname">餐盒费:</td>
+                  <td class="zh-textbox">
+                    <input nz-input placeholder="点击修改餐盒费" style="width:65%" [(ngModel)]="goods.lunch_box_fee"
+                      id="lunch_box_fee" />
+                  </td>
+                </tr>
+                <tr>
+                  <td class="zh-zdname">线上描述:</td>
+                  <td class="zh-textbox">
+                    <textarea style="margin:5px;height: 60px;" nz-input [(ngModel)]="goods.m_xsms"  id="m_xsms"
+                      placeholder="点击修改线上描述"></textarea>
+                  </td>
+                  <td class="zh-zdname">商品副标题:</td>
+                  <td class="zh-textbox" style="position: relative;">
+                    <textarea style="margin:5px;height: 60px;width:65%;" nz-input [(ngModel)]="goods.sub_title"
+                       id="sub_title" placeholder="点击修改商品副标题"></textarea>
+                    <p style="position: absolute;top:5px;left: 66%;width: 150px;margin:0;line-height: 22px; ">
+                      提示：自建渠道适用，长度少于100个汉字
+                    </p>
+                  </td>
+                </tr>
+                <tr>
+                  <td class="zh-zdname">配送要求:</td>
+                  <td class="zh-textbox" colspan="3">
+                    <nz-radio-group [(ngModel)]="psyqstorage" name="psyqstorage">
+                      <label nz-radio [nzValue]="'1'">
+                        <span>常温</span>
+                      </label>
+                      <label nz-radio [nzValue]="'2'">
+                        <span>冷藏</span>
+                      </label>
+                      <label nz-radio [nzValue]="'3'">
+                        <span>冷冻</span>
+                      </label>
+                    </nz-radio-group>
+                    <span style="vertical-align: middle;margin-right:15px;"
+                      *ngFor="let co of checkOptionspsyqs;let i = index;">
+                      <label (click)="selectco(co)">
+                        <input type="checkbox" style="vertical-align: -2px;margin-right:12px;" value="co.value"
+                          [checked]="co.sfxz" name="i" />{{co.label}}</label>
+                    </span>
+
+                  </td>
+                </tr>
+                <tr>
+                  <td class="zh-zdname">商品税码/税率:</td>
+                  <td class="zh-textbox" colspan="3">
+                    {{goods?.item_tax_code}}/{{goods?.tax_rate}}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div *ngIf="this.modaltitle==='设置门店商品'&&liststores">
+          <div style="text-align: left;padding-left: 10px;padding-bottom:10px;font-weight: bold;">
+            <span style="margin-right:30px;">商品名:
+              <b style="color:#f00;" *ngIf="m_desc">{{m_desc}}</b>
+              <b style="color:#f00;" *ngIf="!m_desc">{{liststores[0]?.item_name}}</b>
+            </span>
+            <span style="margin-right:30px;">商品编码:
+              <b style="color:#f00;">{{liststores[0]?.item_code}}</b>
+            </span>
+            <span>商品条码:
+              <b style="color:#f00;">{{liststores[0]?.barcode}}</b>
+            </span>
+          </div>
+          <div class="row">
+            <nz-table #nzTable [nzData]="liststores" [nzShowPagination]="false" [nzFrontPagination]="false" nzBordered>
+              <thead>
+                <tr>
+                  <th width="8%">序号</th>
+                  <th>门店名称</th>
+                  <th>
+                    <label style="margin-right: 30px;">
+                      <input type="checkbox" [checked]="smqx" (click)="qxsm($event)" />全选售卖</label>
+                    <label style="margin-right: 30px;">
+                      <input type="checkbox" [checked]="sjsm" (click)="qxsj($event)" />全选上架</label>
+                    <label style="margin-right: 30px;">
+                      <input type="checkbox" [checked]="jsxxjg" (click)="qxtxskc($event)" />全选接价格</label>
+                    <label style="margin-right: 30px;">
+                      <input type="checkbox" [checked]="jsxxkc" (click)="qxjsxxkc($event)" />全选接库存</label>
+                    <label> 门店售价/库存</label>
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let liststore of nzTable.data;let i=index">
+                  <td>{{i+1}}</td>
+                  <td>[{{liststore.region_code}}]{{liststore.region_name}}</td>
+                  <td>
+                    <label style="margin-right: 30px;">
+                      <input type="checkbox" [checked]="liststore?.status=='1'"
+                        (click)="sfqycheckbox($event,i)" />售卖</label>
+                    <label style="margin-right: 30px;">
+                      <input type="checkbox" [checked]="liststore?.sale_status==1"
+                        (click)="sfsxjcheckbox($event,i)" />上架</label>
+                    <label style="margin-right: 30px;">
+                      <input type="checkbox" [checked]="liststore?.receive_price=='1'"
+                        (click)="sfjsjgcheckbox($event,i)" />接收线下价格</label>
+                    <label style="margin-right: 30px;">
+                      <input type="checkbox" [checked]="liststore?.receive_stock=='1'"
+                        (click)="sfjskccheckbox($event,i)" />接收线下库存</label>
+                    <label> {{liststore.sale_price}}/{{liststore.available_qty}}</label>
+                  </td>
+                </tr>
+              </tbody>
+            </nz-table>
+          </div>
+        </div>
+
+        <div *ngIf="this.modaltitle==='商品主档日志'&&itemlogs">
+          <div style="text-align: left;padding-left: 10px;padding-bottom:10px;font-weight: bold;">
+            <span style="margin-right:30px;">商品编码:
+              <b style="color:#f00;">{{itemlogs[0]?.item_code}}</b>
+            </span>
+            <span style="margin-right:30px;">商品条码:
+              <b style="color:#f00;">{{itemlogs[0]?.barcode}}</b>
+            </span>
+            <span style="margin-right:30px;">商品名称:
+              <b style="color:#f00;" *ngIf="!itemlogsm_desc">{{itemlogs[0]?.item_name}}</b>
+              <b style="color:#f00;" *ngIf="itemlogsm_desc">{{itemlogsm_desc}}</b>
+            </span>
+          </div>
+          <div class="row" style="padding:0 15px;">
+            <nz-table #nzTable [nzData]="itemlogs" [nzShowPagination]="false" [nzFrontPagination]="false" nzBordered>
+              <thead>
+                <tr>
+                  <th>修改时间</th>
+                  <th>规格</th>
+                  <th>计量单位</th>
+                  <th>重量</th>
+                  <th>分类名称</th>
+                  <th>商品名称</th>
+                  <th>状态</th>
+                  <th>多规格子商品编码/条码</th>
+                  <th>修改人</th>
+                  <th>操作备注</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let itemlog of nzTable.data;let i=index">
+                  <td>{{itemlog.timestamp}}</td>
+                  <td>{{itemlog.m_spec}}</td>
+                  <td>{{itemlog.base_uom_name}}</td>
+                  <td>{{itemlog.gross_weight}}</td>
+                  <td>{{itemlog.online_cat_name}}</td>
+                  <td>{{itemlog.m_desc}}</td>
+                  <td [ngSwitch]="itemlog.item_status">
+                    <span *ngSwitchCase="'1'" style="color:#1da130;">↑售卖</span>
+                    <span *ngSwitchCase="'-1'" style="color: #FF0000;">↓停售</span>
+                  </td>
+                  <td class="pm_short">{{itemlog.spec_item}}</td>
+                  <td>{{itemlog.oper_user}}</td>
+                  <td>{{itemlog.comment}}</td>
+                </tr>
+              </tbody>
+            </nz-table>
+          </div>
+        </div>
+      </app-modal>
+      <!-- 新建多规格 -->
+      <div
+        style="width:100%; background-image: -webkit-radial-gradient(60em 70em ellipse at 37% 85%, rgb(115, 193, 215), rgb(64, 103, 168));
+  background-image: radial-gradient(60em 70em ellipse at 37% 85%, rgb(115, 193, 215), rgb(64, 103, 168));
+  will-change: transform; z-index:100; position:absolute; left:0px; top:67px; overflow: hidden; padding:10px; min-height:705px;"
+        *ngIf="pm_iscydgg">
+        <div class="clearfix visible-xs-block"></div>
+        <div class="row">
+          <div class="col-sm-7 col-7"
+            style=" font-size:14px; position:relative; border: 1px solid white; padding-right:0;">
+            <div class="row pm_form">
+              <div class="col-sm-1 col-1 pm_order">商品名称</div>
+              <div class="col-sm-2 col-2"><input type="text" class="form-control" [(ngModel)]="searchitem.search.name">
+              </div>
+              <div class="col-sm-1 col-1 pm_order">商品编码</div>
+              <div class="col-sm-2 col-2"><input type="text" class="form-control" [(ngModel)]="searchitem.search.code">
+              </div>
+              <div class="col-sm-1 col-1 pm_order">商品条码</div>
+              <div class="col-sm-2 col-2"><input type="text" class="form-control"
+                  [(ngModel)]="searchitem.search.barcode"></div>
+              <div class="col-sm-1 col-1"><button class="btn btn-info btn-sm active"
+                  (click)="pm_finditems()">查询</button></div>
+              <div class="col-sm-1 col-1"><button class="btn btn-info btn-sm active" (click)="pm_reset()">重置</button>
+              </div>
+            </div>
+            <div style="padding:0 22px 35px;" class="row pm_form">
+              <table class="table table-hover table-bordered">
+                <thead>
+                  <tr>
+                    <th style="text-align:left">商品名称</th>
+                    <th>商品编码</th>
+                    <th>商品条码</th>
+                    <th>操作</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let item of pm_items let j = index">
+                    <td style="text-align:left">{{item.name}}</td>
+                    <td>{{item.code}}</td>
+                    <td>{{item.barcode}}</td>
+                    <td><a href="javascript:;" (click)="additem(item,j)" class="pm_link">添加</a></td>
+                  </tr>
+                </tbody>
+              </table>
+              <my-page [pagetheme]="true" [params]='searchitem' [pagecount]='pm_pageSize' [changecount]='pm_count'
+                (childparams)="pm_childparams($event)"></my-page>
+            </div>
+          </div>
+          <div class="col-sm-5 col-5"
+            style="font-size:14px;padding-top:28px;border: 1px solid white; padding-left:0; padding-right:0;">
+            <h4 style="padding-left:10px;">新建餐饮多规格商品</h4>
+            <div class="row pm_form">
+              <div class="col-sm-3 col-3"> <span class="pm_must">*</span>商品名称</div>
+              <div class="col-sm-9 col-9"><input type="text" name="" id="" class="form-control"
+                  [(ngModel)]="dggitem.name"></div>
+            </div>
+            <div class="row pm_form">
+              <div class="col-sm-3 col-3"><span class="pm_must">*</span>商品分类</div>
+              <div class="col-sm-9 col-9">
+                <select class="form-control" [(ngModel)]="dggitem.category_code" name="category_code"
+                  (change)="getcatename(dggitem.category_code,$event.target.selectedOptions[0].innerHTML)">
+                  <option [value]="item.code" *ngFor="let item of categorys;let i = index">{{item.name}}</option>
+                </select>
+              </div>
+            </div>
+            <div class="row pm_form">
+              <div class="col-sm-3 col-3">&nbsp;&nbsp;商品描述</div>
+              <div class="col-sm-9 col-9">
+                <textarea nz-input [(ngModel)]="dggitem.m_xsms" rows="'2'" placeholder="'请输入商品描述,不超过50字'"
+                  maxlength="50"></textarea>
+              </div>
+            </div>
+            <div class="row pm_form">
+              <div class="col-sm-3 col-3"><span class="pm_must">*</span>商品图片</div>
+              <div class="col-sm-9 col-9 ">
+                <div class="pm-imgupload" *ngIf="!imgsinfo">
+                  <i class="ion-plus"></i>
+                  <!-- <input type="file" #newImg (change)="uploadImgtwo(goods)" ng2FileSelect [uploader]="uploader" style="width:104px;height:104px;position:absolute;left:0;opacity: 0;cursor:pointer;"> -->
+                </div>
+                <div class="pm-imgupload" *ngIf="imgsinfo">
+                  <img src="{{imgsinfo.remote_url}}" alt="" style="width:102px; height:102px;">
+                </div>
+              </div>
+            </div>
+            <div class="row pm_form">
+              <div class="col-sm-3 col-3"><span class="pm_must">*</span>商品规格</div>
+              <div class="col-sm-9 col-9">
+                请在左侧商品资料中找到要添加的商品，然后点击“添加”按钮添加商品规格
+              </div>
+            </div>
+            <!-- 多规格展示 -->
+            <div class="row pm_form" style="padding:15px; position:relative;"
+              *ngFor="let item of additemgoods let i = index">
+              <a href="javascript:;" (click)="delitem(item, i)">
+                <div style="position:absolute; right:8px; top:8px;">
+                  <img src="{{deldggUrl}}" alt="" width="18px;">
+                </div>
+              </a>
+              <div style="border:1px solid white;">
+                <div class="row pm_dggform">
+                  <div class="col-sm-4 col-4" style="padding-left:22px;">规格名称</div>
+                  <div class="col-sm-4 col-4">子商品名称</div>
+                  <div class="col-sm-4 col-4">条码</div>
+                </div>
+                <div class="row pm_dggform">
+                  <div class="col-sm-4 col-4" style="padding-left:22px;"><input type="text" class="form-control"
+                      [(ngModel)]="item.spec_name"></div>
+                  <div class="col-sm-4 col-4" style="opacity:0.7;">{{item.name}}</div>
+                  <div class="col-sm-4 col-4" style="opacity:0.7;">{{item.barcode}}</div>
+                </div>
+                <div class="row pm_dggform">
+                  <div class="col-sm-4 col-4" style="padding-left:22px;">编码</div>
+                  <div class="col-sm-4 col-4">餐盒费</div>
+                  <div class="col-sm-4 col-4"><a href="javascript:;" class="pm_editinfo"
+                      (click)="gotoeditdgggoods(item.bid)">修改其他信息</a></div>
+                </div>
+                <div class="row pm_dggform">
+                  <div class="col-sm-4 col-4" style="padding-left:22px;opacity:0.7;">{{item.code}}</div>
+                  <div class="col-sm-4 col-4" style="opacity:0.7;">{{item.lunch_box_fee}}</div>
+                  <div class="col-sm-4 col-4"></div>
+                </div>
+
+              </div>
+            </div>
+            <div class="row pm_form">
+              <div class="col-sm-6 col-6 " style="padding-left:11%"><button style="width:150px;" class="btn btn-info"
+                  (click)="pm_savespceitem()" [disabled]="btn_forbid">保存</button></div>
+              <div class="col-sm-6 col-6 " style="padding-left:13%"><button style="width:150px;"
+                  class="btn btn-default " (click)="pm_close()">取消</button></div>
+            </div>
+          </div>
+          <div class="clearfix visible-xs-block"></div>
+        </div>
+      </div>
+      <!-- 修改多规格 -->
+      <div
+        style="width:100%; background-image: -webkit-radial-gradient(60em 70em ellipse at 37% 85%, rgb(115, 193, 215), rgb(64, 103, 168));
+  background-image: radial-gradient(60em 70em ellipse at 37% 85%, rgb(115, 193, 215), rgb(64, 103, 168));
+  will-change: transform; z-index:100; position:absolute; left:0px; top:67px; overflow: hidden; padding:10px; min-height:705px;"
+        *ngIf="pm_modify">
+        <div class="clearfix visible-xs-block"></div>
+
+        <div class="row">
+          <!-- <div style="border:1px solid white"> -->
+          <div class="col-sm-7 col-7" style=" font-size:14px; position:relative; padding-right:0">
+            <div style="border:1px solid white;">
+              <div class="row pm_form">
+                <div class="col-sm-1 col-1 pm_order">商品名称</div>
+                <div class="col-sm-2 col-2"><input type="text" class="form-control"
+                    [(ngModel)]="searchitem.search.name"></div>
+                <div class="col-sm-1 col-1 pm_order">商品编码</div>
+                <div class="col-sm-2 col-2"><input type="text" class="form-control"
+                    [(ngModel)]="searchitem.search.code"></div>
+                <div class="col-sm-1 col-1 pm_order">商品条码</div>
+                <div class="col-sm-2 col-2"><input type="text" class="form-control"
+                    [(ngModel)]="searchitem.search.barcode"></div>
+                <div class="col-sm-1 col-1"><button class="btn btn-info btn-sm active"
+                    (click)="pm_finditems()">查询</button></div>
+                <div class="col-sm-1 col-1"><button class="btn btn-info btn-sm active" (click)="pm_reset()">重置</button>
+                </div>
+              </div>
+              <div style="padding:0 22px 35px;" class="row pm_form">
+                <table class="table table-hover table-bordered">
+                  <thead>
+                    <tr>
+                      <th style="text-align:left">商品名称</th>
+                      <th>商品编码</th>
+                      <th>商品条码</th>
+                      <th>操作</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let item of pm_items let j = index">
+                      <td style="text-align:left">{{item.name}}</td>
+                      <td>{{item.code}}</td>
+                      <td>{{item.barcode}}</td>
+                      <td><a href="javascript:;" (click)="modify_additem(item,j)" class="pm_link">添加</a></td>
+                    </tr>
+                  </tbody>
+                </table>
+                <my-page [pagetheme]="true" [params]='searchitem' [pagecount]='pm_pageSize' [changecount]='pm_count'
+                  (childparams)="pm_childparams($event)"></my-page>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-5 col-5" style="font-size:14px; padding-left:0">
+            <div style="border:1px solid white; padding-top:28px;">
+              <h4 style="padding-left:10px;">修改餐饮多规格商品</h4>
+              <div class="row pm_form">
+                <div class="col-sm-3 col-3"> <span class="pm_must">*</span>商品名称</div>
+                <div class="col-sm-9 col-9"><input type="text" class="form-control" [(ngModel)]="temporary.m_desc">
+                </div>
+              </div>
+              <div class="row pm_form">
+                <div class="col-sm-3 col-3"><span class="pm_must">*</span>商品分类</div>
+                <div class="col-sm-9 col-9">
+                  <select class="form-control" [(ngModel)]="temporary.online_cat_code" name="online_cat_code"
+                    (change)="getcatenametwo(temporary.online_cat_code,$event.target.selectedOptions[0].innerHTML)">
+                    <option [value]="item.code" *ngFor="let item of categorys;let i = index">{{item.name}}</option>
+                  </select>
+                </div>
+              </div>
+              <div class="row pm_form">
+                <div class="col-sm-3 col-3">&nbsp;&nbsp;商品描述</div>
+                <div class="col-sm-9 col-9">
+                  <textarea nz-input [(ngModel)]="temporary.m_xsms" rows="'2'" placeholder="'请输入商品描述'"></textarea>
+                </div>
+              </div>
+              <div class="row pm_form">
+                <div class="col-sm-3 col-3"><span class="pm_must">*</span>商品图片</div>
+                <div class="col-sm-9 col-9 ">
+                  <div>
+                    <span *ngIf="pm_dggimgs">
+                      <div class="pm-imgupload" *ngFor="let img of pm_dggimgs">
+                        <img src="{{img.url}}" alt="" style="width:102px; height:102px;">
+                      </div>
+                    </span>
+                    <div class="pm-imgupload" *ngIf="!imgsinfo">
+                      <i class="ion-plus"></i>
+                      <!-- <input type="file" #newImg (change)="uploadImgtwo(goods)" ng2FileSelect [uploader]="uploader" style="width:104px;height:104px;position:absolute;left:0;opacity: 0;cursor:pointer;"> -->
+                    </div>
+                    <div class="pm-imgupload" *ngIf="imgsinfo">
+                      <img src="{{imgsinfo.remote_url}}" alt="" style="width:102px; height:102px;">
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="row pm_form">
+                <div class="col-sm-3 col-3"><span class="pm_must">*</span>商品规格</div>
+                <div class="col-sm-9 col-9">
+                  请在左侧商品资料中找到要添加的商品，然后点击“添加”按钮添加商品规格
+                </div>
+              </div>
+              <!-- 多规格展示 -->
+              <div class="row pm_form" style="padding:15px; position:relative;"
+                *ngFor="let item of pm_modifylist let i = index">
+                <a href="javascript:;" (click)="delectitem(item, i)">
+                  <div style="position:absolute; right:8px; top:8px;">
+                    <img src="{{deldggUrl}}" alt="" width="18px;">
+                  </div>
+                </a>
+
+                <div style="border:1px solid white;">
+                  <div class="row pm_dggform">
+                    <div class="col-sm-4 col-4" style="padding-left:22px;">规格名称</div>
+                    <div class="col-sm-4 col-4">子商品名称</div>
+                    <div class="col-sm-4 col-4">条码</div>
+                  </div>
+                  <div class="row pm_dggform">
+                    <div class="col-sm-4 col-4" style="padding-left:22px;">
+                      <!-- {{item.spec_name}} -->
+                      <input type="text" class="form-control" [(ngModel)]="item.spec_name">
+                    </div>
+                    <div class="col-sm-4 col-4" style="opacity:0.7">{{item.name}}</div>
+                    <div class="col-sm-4 col-4" style="opacity:0.7">{{item.barcode}}</div>
+                  </div>
+                  <div class="row pm_dggform">
+                    <div class="col-sm-4 col-4" style="padding-left:22px;">编码</div>
+                    <div class="col-sm-4 col-4">餐盒费</div>
+                    <div class="col-sm-4 col-4"><a href="javascript:;" class="pm_editinfo"
+                        (click)="gotoeditdgggoods(item.bid)">修改其他信息</a></div>
+                  </div>
+                  <div class="row pm_dggform">
+                    <div class="col-sm-4 col-4" style="padding-left:22px; opacity:0.7">{{item.code}}</div>
+                    <div class="col-sm-4 col-4" style="opacity:0.7;">{{item.lunch_box_fee}}</div>
+                    <div class="col-sm-4 col-4"></div>
+                  </div>
+                </div>
+              </div>
+              <div class="row pm_form ">
+                <div class="col-sm-6 col-6 " style="padding-left:11%"><button style="width:150px;" class="btn btn-info"
+                    (click)="pm_savespceitemtwo()">保存</button></div>
+                <div class="col-sm-6 col-6 " style="padding-left:13%"><button style="width:150px;"
+                    class="btn btn-default " (click)="pm_closetwo()">取消</button></div>
+              </div>
+            </div>
+            <div class="clearfix visible-xs-block"></div>
+            <!-- </div> -->
+          </div>
+          <!-- <div style="position:absolute; bottom:10px; left:10px; width:516px;">
+
+      </div> -->
+        </div>
+      </div>
+      <!-- 多规格商品资料修改 -->
+      <nz-modal [nzVisible]="isVisible" [nzTitle]="modalTitle" [nzContent]="modalContent" [nzFooter]="modalFooter"
+        [nzWidth]="1013" (nzOnCancel)="handleCancel($event)">
+        <ng-template #modalTitle>
+          商品资料其他信息
+        </ng-template>
+        <ng-template #modalContent>
+          <form>
+            <div class="pm-body" style="max-height: 500px;overflow-y: scroll;">
+              <table class="table zh-serch-table" style="color:black;">
+                <tbody>
+                  <tr>
+                    <td class="zh-zdname">商品图片:</td>
+                    <td colspan="3" class="zh-textbox">
+                      <!-- <span *ngIf="imgs" [sortablejs]="imgs" [sortablejsOptions]="sortoptions">
+                    <span *ngFor="let img of imgs;let a=index" class="zh-imglist">
+                      <img #newSrc src="{{img.url}}">
+                      <a>
+                        <input type="button" (click)="showImg(img)" class="btn btn-default btn-xs" value="设置为主图" />
+                        <input type="button" (click)="deleteImg(img)" class="btn btn-warning btn-xs" value="删除" />
+                      </a>
+                    </span>
+                  </span> -->
+                      <span class="zh-imgupload">
+                        <i class="ion-plus"></i>
+                        <!-- <input type="file" #newImg (change)="uploadImg(newImg,goods.bid)" style="width:104px;height:104px;position:absolute;left:0;opacity: 0;cursor:pointer;"> -->
+                        <!-- <input type="file" [disabled]="dgg_goods.set_combo ==='2'" #newImg (change)="uploadImg(dgg_goods)" ng2FileSelect [uploader]="uploader" style="width:104px;height:104px;position:absolute;left:0;opacity: 0;cursor:pointer;"> -->
+                      </span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="zh-zdname" width="15%">线下名称:</td>
+                    <td class="zh-textbox" width="25%">{{dgg_goods.name}}</td>
+                    <td class="zh-zdname" width="15%">线上名称:</td>
+                    <td class="zh-textbox" style="padding-top: 10px;">
+
+                      <!-- <input type="text" class="form-control" style="width:65%; color:black;" (keyup)="checktext($event)" [(ngModel)]="dgg_goods.m_desc"
+                    id="m_desc" name="m_desc" placeholder="点击修改线上名称" > -->
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="zh-zdname">线下编码:</td>
+                    <td class="zh-textbox">{{dgg_goods.code}}</td>
+                    <td class="zh-zdname">商品条码:</td>
+                    <td class="zh-textbox">{{dgg_goods.barcode}}</td>
+                  </tr>
+                  <tr>
+                    <td class="zh-zdname">线下规格:</td>
+                    <td class="zh-textbox">{{dgg_goods.spec}}</td>
+                    <td class="zh-zdname">线上规格:</td>
+                    <td class="zh-textbox" style="padding-top: 10px;">
+                      <!-- <input type="text" class="form-control" style="width:65%; color:black;" [(ngModel)]="dgg_goods.m_spec" id="m_spec" name="m_spec"
+                    placeholder="点击修改线上规格"> -->
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="zh-zdname">线下计量单位:</td>
+                    <td class="zh-textbox">{{dgg_goods.base_uom_name}}</td>
+                    <td class="zh-zdname">线上计量单位:</td>
+                    <td class="zh-textbox">
+                      <input type="text" class="form-control" maxlength="10"
+                        style="width:65%;margin-right:3px;display:inline-block; color:black;"
+                        [(ngModel)]="dgg_goods.m_base_uom_name" id="m_base_uom_name" name="m_base_uom_name"
+                        placeholder="点击修改线上计量单位">
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="zh-zdname">线下重量:</td>
+                    <td class="zh-textbox">
+                      <span *ngIf="dgg_goods.m_gross_weight">{{dgg_goods.m_gross_weight}}</span>
+                    </td>
+                    <td class="zh-zdname">线上重量:</td>
+                    <td class="zh-textbox">
+                      <input type="text" class="form-control"
+                        style="width:65%;margin-right:3px;display:inline-block; color:black;"
+                        [(ngModel)]="dgg_goods.gross_weight" id="gross_weight" name="gross_weight"
+                        placeholder="点击修改重量">g</td>
+                  </tr>
+                  <tr>
+                    <td class="zh-zdname">是否牵牛花维护</td>
+                    <td class="zh-textbox">
+                      <input type="radio" name="testwh" (change)="dgg_goods.testwh=1" [checked]="dgg_goods.testwh==='1'">是
+                      <input type="radio" name="testwh" (change)="dgg_goods.testwh=-1" [checked]="dgg_goods.testwh!=='1'">否
+                    </td>
+                    <td class="zh-zdname">是否必卖</td>
+                    <td class="zh-textbox">
+                      <input type="radio" name="must_sale" (change)="dgg_goods.must_sale=true"
+                        [checked]="dgg_goods.must_sale===true">是
+                      <input type="radio" name="must_sale" (change)="dgg_goods.must_sale=false"
+                        [checked]="dgg_goods.must_sale!==true">否
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="zh-zdname">是否生鲜商品</td>
+                    <td class="zh-textbox">
+                      <input type="radio" name="is_fresh" (change)="dgg_goods.is_fresh=true"
+                        [checked]="dgg_goods.is_fresh===true">是
+                      <input type="radio" name="is_fresh" (change)="dgg_goods.is_fresh=false"
+                        [checked]="dgg_goods.is_fresh!==true">否
+                    </td>
+                    <td class="zh-zdname">是否餐饮商品:</td>
+                    <td class="zh-textbox">
+                      <input type="radio" name="is_food" (change)="dgg_goods.is_food=true"
+                        [checked]="dgg_goods.is_food===true">是
+                      <input type="radio" name="is_food" (change)="dgg_goods.is_food=false"
+                        [checked]="dgg_goods.is_food!==true">否
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="zh-zdname">线下分类:</td>
+                    <td class="zh-textbox zh-dwzh">
+                      {{dgg_goods?.source_cat_name}}
+                    </td>
+                    <td class="zh-zdname">线上品类:</td>
+                    <td class="zh-textbox">
+                      <div>
+                        <select [disabled]="dgg_goods.set_combo =='2'" [(ngModel)]="dgg_goods.online_sup_code"
+                          class="form-control" name="online_sup_code"
+                          style="width:48%;display:inline-block; color:black;border:1px solid #d9d9d9;"
+                          (change)="mgetSubOnlineCategories(dgg_goods.online_sup_code,$event.target.selectedOptions[0].innerHTML)">
+                          <option *ngFor="let firstCategorie of mfirstCategories;" [value]="firstCategorie.code">
+                            {{firstCategorie.name}}</option>
+                        </select>
+                        <select [disabled]="dgg_goods.set_combo =='2'" [(ngModel)]="dgg_goods.online_cat_code"
+                          class="form-control" name="online_cat_code" style="width:48%;display:inline-block;"
+                          (change)="changeOnlineCategory( $event.target.selectedOptions[0].innerHTML)">
+                          <option *ngFor="let subCategorie of msubCategories;" [value]="subCategorie.code">
+                            {{subCategorie.name}}</option>
+                        </select>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="zh-zdname">线下品牌:</td>
+                    <td class="zh-textbox zh-dwzh">
+                      {{goods?.brand_name}}
+                    </td>
+                    <td class="zh-zdname">单位转换系数:</td>
+                    <td class="zh-textbox zh-dwzh" style="position: relative;">
+                      <input style="width:40%;display:inline-block; color:black;" type="number" class="form-control"
+                        (keyup)="getdwzh(dgg_goods)" [(ngModel)]="dgg_goods.dwzhxs" id="dwzhxs" name="dwzhxs"
+                        placeholder="单位转换系数 = 线上规格(g)/线下规格(g)">
+                      <span class="zh-tip1" *ngIf="dgg_goods.dwzhxs"
+                        style="font-size:12px;">示例门店:{{dgg_goods.region_name}}/修改后售价:{{price|number:'1.2-2'}}</span>
+                      <input type="button" style="display:inline-block;vertical-align: top; color:white;"
+                        class="btn btn-info btn-xs" (click)="editDwzhxs( dgg_goods )" value="保存">
+                      <p class="zh-tip">提示： 线下售卖规格1000g，线上售卖200g，即：单位转换系数（0.2）= 线上规格（200g） / 线下规格（1000g）</p>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="zh-zdname">产地:</td>
+                    <td class="zh-textbox zh-dwzh">
+                      {{dgg_goods?.origin1}}
+                    </td>
+                    <td class="zh-zdname">包装含量:</td>
+                    <td class="zh-textbox">
+                      {{dgg_goods?.pk_number}}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="zh-zdname">保质期:</td>
+                    <td class="zh-textbox">
+                      {{dgg_goods?.warranty}}
+                    </td>
+                    <td class="zh-zdname">餐盒费:</td>
+                    <td class="zh-textbox">
+                      <input type="text" class="form-control"
+                        style="width:65%;margin-right:3px;display:inline-block; color:black;"
+                        [(ngModel)]="dgg_goods.lunch_box_fee" id="lunch_box_fee" name="lunch_box_fee"
+                        placeholder="点击修改餐盒费">
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="zh-zdname">线上描述:</td>
+                    <td class="zh-textbox">
+                      <textarea style="margin:5px;height: 60px;"  class="form-control"  [(ngModel)]="dgg_goods.m_xsms"
+                         id="m_xsms"  name="m_xsms"  placeholder="点击修改线上描述"></textarea>
+                    </td>
+                    <td class="zh-zdname">商品副标题:</td>
+                    <td class="zh-textbox" style="position: relative;">
+                      <textarea style="margin:5px;height: 60px;width:65%; border:1px solid #d9d9d9 ;  color: black;"
+                         class="form-control"  [(ngModel)]="dgg_goods.sub_title"  id="sub_title"  name="sub_title"
+                         placeholder="点击修改商品副标题"></textarea>
+                      <p style="position: absolute;top:5px;left: 66%;width: 150px;margin:0;line-height: 22px; ">
+                        提示：自建渠道适用，长度少于100个汉字
+                      </p>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="zh-zdname">配送要求:</td>
+                    <td class="zh-textbox" colspan="3">
+                      <nz-radio-group [(ngModel)]="psyqstorage" name="psyqstorage">
+                        <label nz-radio [nzValue]="'1'">
+                          <span>常温</span>
+                        </label>
+                        <label nz-radio [nzValue]="'2'">
+                          <span>冷藏</span>
+                        </label>
+                        <label nz-radio [nzValue]="'3'">
+                          <span>冷冻</span>
+                        </label>
+                      </nz-radio-group>
+                      <span style="vertical-align: middle;margin-right:15px;"
+                        *ngFor="let co of checkOptionspsyqs;let i = index;">
+                        <label (click)="selectco(co)"><input type="checkbox"
+                            style="vertical-align: -2px;margin-right:12px;" value="co.value" [checked]="co.sfxz"
+                            name="i" />{{co.label}}</label>
+                        <!-- <label nz-checkbox [(ngModel)]="co.sfxz">
+                            <span>{{co.label}}</span>
+                          </label> -->
+                      </span>
+
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="zh-zdname">商品税码/税率:</td>
+                    <td class="zh-textbox" colspan="3">
+                      {{dgg_goods?.item_tax_code}}/{{dgg_goods?.tax_rate}}
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </form>
+        </ng-template>
+        <ng-template #modalFooter>
+          <button nz-button [nzType]="'primary'" [nzSize]="'large'" (click)="updatedggGoods(dgg_goods, imgs )"
+            [nzLoading]="isConfirmLoading">
+            保 存
+          </button>
+          <button nz-button [nzType]="'default'" [nzSize]="'large'" (click)="handleCancel($event)">
+            返 回
+          </button>
+        </ng-template>
+      </nz-modal>
+    </div>

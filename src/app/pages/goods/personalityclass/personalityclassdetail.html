@@ -1,0 +1,266 @@
+<div class="row">
+  <div class="zh-serchbox">
+    <table class="table zh-serchtable black-muted-bg">
+      <tbody>
+        <tr>
+          <td>
+            <table class="table zh-serch-table">
+              <tr>
+                <td class="zh-zdname" width="12%"><span style="font-size:16px; color:red;">*</span> 个性分类名称</td>
+                <td class="zh-textbox" width="16%">
+                  <input nz-input placeholder="请输入个性分类名称" [(ngModel)]="newactivity.activity_name">
+                </td>
+                <td class="zh-zdname" width="12%"><span style="font-size:16px; color:red;">*</span> 上线渠道</td>
+                <td class="zh-textbox">
+                  <nz-select style="width:100%;" [nzMode]="'multiple'" [nzPlaceHolder]="'请选择渠道'" [(ngModel)]="selectedMultipleOption"
+                    [nzNotFoundContent]="'无法找到'">
+                    <nz-option *ngFor="let option of searchOptions" [nzLabel]="option.channel_name" [nzValue]="option.channel_code"></nz-option>
+                  </nz-select>
+                </td>
+              </tr>
+              <tr>
+                <td class="zh-zdname"><span style="font-size:16px; color:red;">*</span> 所属门店</td>
+                <td class="zh-textbox" colspan="2">
+                  <nz-select style="width:100%;" [nzDisabled]="disabledvalue" [nzPlaceHolder]="'请选择所属门店'" [(ngModel)]="userstores"
+                    nzShowSearch [nzNotFoundContent]="'无法找到'">
+                    <nz-option *ngFor="let item of stores" [nzLabel]="item.region_name" [nzValue]="item.region_code"></nz-option>
+                  </nz-select>
+                  <!-- <select [(ngModel)]="newactivity.group_code" class="form-control">
+                    <option *ngFor="let item of storegroup" [value]="item.group_code">{{item.group_name}}</option>
+                  </select> -->
+                  <!-- <my-multipleselect [selectlistarr]="stores" [isdisabled] = "disabledvalue" (searchcode)="searchcodeagain($event)" [userstores]="userstores">
+                  </my-multipleselect> -->
+                </td>
+                <td colspan="3" class="zh-textbox">请先确认门店已在上线渠道完成绑店，否则数据无法同步</td>
+              </tr>
+              <tr>
+                <td colspan="6">
+                  <button nz-button nzType="primary" (click)="saveavtivity()">保存个性分类</button>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div class="horizontal-scroll" *ngIf="savestatus" style="background:#fff;">
+  <table class="table table-bordered" style="width:100%;">
+    <thead>
+      <tr>
+        <th colspan="2">
+          <button nz-button nzType="default" style="margin-right:2px;" (click)="addexport_class()">导出个性分类</button>
+          <button nz-button nzType="default" style="margin-right:2px;" (click)="pm_mangagealss()">管理分类</button>
+          <span style="display:inline-block;">
+            <app-upload [onUploaded]="uploadexcel" nzLimit="1" [uploadname]="'导入商品分类'" [uploadtype]="'button'"></app-upload>
+          </span>
+          <button nz-button nzType="default" style="margin-right:2px;" (click)="download('商品白名单导入模板')">下载模板</button>
+          <a href="http://www.m-glory.net/newadmin/templete/门店个性分类商品导入模板.xlsx">
+            <button nz-button nzType="default" style="margin-right:2px;">下载门店个性分类商品导入模板</button>
+          </a>
+          <button nz-button nzType="default" (click)="addexport_goods()">导出分类下商品</button>
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td style="width: 40%;text-align: left;vertical-align: top!important;padding:0!important;">
+          <table class="zh-caterows table-hover">
+            <!-- <tbody [sortablejs]="categories.rows" [sortablejsOptions]="options"> -->
+            <tbody>
+              <tr>
+                <td style="border-bottom:1px solid rgba(255, 255, 255, 0.3);padding-left:5px;">分类列表</td>
+              </tr>
+
+              <tr>
+                <td style="border-bottom:1px solid rgba(255, 255, 255, 0.3);padding-left:5px;" [class.selected]="selectlev==='0'"
+                  (click)="getnocategory()">待分类商品</td>
+              </tr>
+
+              <!--一级分类循环start-->
+              <tr class="glyphiconmove" *ngFor="let item of categoryslists;let i = index;">
+                <td class="zh-bordertd">
+                  <div style="max-height:550px;overflow-y: auto;">
+                    <table class="zh-level">
+                      <tr>
+                        <td>
+                          <input type="button" class="zh-toggleicon" (click)="getlevel2(item.code,$event,i)" value="+" />
+                          <span class="zh-catename" (click)="getactivityitems(item.code,0,false)">{{item.name}}[{{item.code}}]</span>
+                        </td>
+                        <!-- <td style="text-align: right;padding-right:5px;">
+                            商品数:10
+                        </td> -->
+                      </tr>
+                    </table>
+                    <table class="table" *ngIf="selectedbts[i]">
+                      <!-- <tbody [sortablejs]="showlevel2[i]" [sortablejsOptions]="options"> -->
+                      <tbody>
+                        <!--二级分类循环start-->
+                        <tr *ngFor="let lev of showlevel2[i]" [class.selected]="lev===selectlev" (click)="getactivityitems(lev.code,lev,false)">
+                          <td style="text-align: left;padding-left:50px;">
+                            {{lev.name}}[{{lev.code}}]
+                          </td>
+                          <!-- <td style="text-align: right;padding-right:5px;margin-right:0!important;">
+                              商品数:10
+                          </td> -->
+                        </tr>
+                        <!--二级分类循环end-->
+                        <tr *ngIf="showlevel2[i]&&showlevel2[i].length === 0">
+                          <td>暂无二级分类!</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </td>
+              </tr>
+              <!--一级分类循环end-->
+
+              <tr *ngIf="categoryslists&&categoryslists.length === 0">
+                <td style="padding-left:5px;">暂无分类信息!</td>
+              </tr>
+            </tbody>
+          </table>
+        </td>
+        <td style="padding:0!important;vertical-align: top;">
+          <table class="zh-righttable" style="background:rgba(0, 0, 0, 0.1);">
+            <thead>
+              <tr>
+                <th colspan="6" style="padding-left:5px;">商品信息</th>
+              </tr>
+              <tr>
+                <!-- <th width="10%" style="padding:0 3px;">
+
+                </th> -->
+                <th width="20%">
+                  <label *ngIf="selectlev==='0'" style="margin:0 3px;" nz-checkbox [(ngModel)]="allchecked"
+                    (ngModelChange)="allcheckedfun(allchecked)">
+                  </label>
+                </th>
+                <th>商品名称</th>
+                <th width="15%">商品编码</th>
+                <th width="20%">商品条码</th>
+                <th width="20%">操作</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!--商品循环start-->
+              <tr *ngFor="let commodity of activityitems;let i = index">
+                <!-- <td style="padding:0 3px;">
+
+                </td> -->
+                <td width="20%">
+                  {{cow1+i+1}}
+                  <label *ngIf="selectlev==='0'" style="margin:0 3px;" nz-checkbox [(ngModel)]="commodity.sfxz"
+                    (ngModelChange)="selectitem()">
+                  </label>
+                  <img [src]="commodity.master_img_url" style="width:60px;height:60px;margin:5px;" /></td>
+                <td>{{commodity.item_name}}</td>
+                <td width="15%">{{commodity.item_code}}</td>
+                <td width="20%">{{commodity.barcode}}</td>
+                <td width="20%">
+                  <!-- <a style="color:#00FF00;">修改</a> -->
+                  <button nz-button nzType="primary" *ngIf="selectlev!=='0'" (click)="editgoodsfun(commodity)">修改</button>
+                  <button nz-button nzType="danger" *ngIf="selectlev==='0'" (click)="delgoods(commodity)">删除商品</button>
+                  <button nz-button nzType="danger" *ngIf="selectlev!=='0'" (click)="removegoods(commodity)">移出商品</button>
+
+                  <!-- <a style="color:#f00;">删除</a> -->
+                </td>
+              </tr>
+              <!--商品循环end-->
+              <tr>
+                <td colspan="6" *ngIf="activityitems&&activityitems.length === 0" style="padding-left:5px;">暂无商品信息!</td>
+              </tr>
+              <tr>
+                <td colspan="6">
+                  <my-page [pagetheme]="true" [params]='addgoodstocategory' [pagecount]='pageSize' [changecount]='changestorecount'
+                    (childparams)="storechildparams($event)"></my-page>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="bottomset" *ngIf="selectlev==='0'">
+            已选择{{selecteditemarr.length}}个商品，添加到
+            <nz-select style="width: 130px;" [(ngModel)]="addgoodstocategory.search.parentcode" nzShowSearch
+              nzAllowClear>
+              <nz-option nzValue="" nzLabel="选择一级分类"></nz-option>
+              <nz-option *ngFor="let item of categoryslists" [nzValue]="item.code" [nzLabel]="item.name"></nz-option>
+            </nz-select>
+            <nz-select style="width: 130px;" [(ngModel)]="addgoodstocategory.search.parentcode" nzShowSearch
+              nzAllowClear>
+              <nz-option nzValue="" nzLabel="选择二级分类"></nz-option>
+              <nz-option *ngFor="let item of leverlists" [nzValue]="item.code" [nzLabel]="item.name"></nz-option>
+            </nz-select>
+            <button nz-button nzType="primary" (click)="savecategory()">确认</button>
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+</div>
+<div style="text-align:center;padding-top:10px;">
+  <button nz-button nzType="default" (click)="goBack()">返 回</button>
+</div>
+
+
+<!-- 导入状态提示 -->
+<ng-template #template let-notification>
+  <import-tip [importres]="results"></import-tip>
+</ng-template>
+
+<!-- 弹出框 -->
+<app-modal [modalwidth]="modalwidth" [modaltitle]="modaltitle" [isVisible]="modalstatus" [isConfirmLoading]="modalconfirloading"
+  [confirmisshow]="confirmisshow" (handleokemit)="handleokfun($event)" (handlecancelemit)="closemodal()">
+  <div *ngIf="this.modaltitle==='修改商品'">
+    <div *ngIf="editgoods" class="editgoods">
+      <table class="table zh-serchtable table_b">
+        <tbody>
+          <tr>
+            <td>
+              商品图片
+            </td>
+            <td>
+              <img [src]="editgoods.master_img_url" style="width:60px;height:60px;margin:5px;" />
+            </td>
+          </tr>
+          <tr>
+            <td>
+              商品名称
+            </td>
+            <td>
+              {{editgoods.item_name}}
+            </td>
+          </tr>
+          <tr>
+            <td>线下编码</td>
+            <td>
+              {{editgoods.item_code}}
+            </td>
+          </tr>
+          <tr>
+            <td>商品条码</td>
+            <td>
+              {{editgoods.barcode}}
+            </td>
+          </tr>
+          <tr>
+            <td>个性分类</td>
+            <td>
+              <select [(ngModel)]="editgoods.parent" style="width:130px;height:28px;display:inline-block;margin:3px;"
+                (change)="getlever2(editgoods.parent,'2')">
+                <option value="">选择一级分类</option>
+                <option *ngFor="let item of categoryslists" [value]="item.code">{{item.name}}</option>
+              </select>
+              <select [(ngModel)]="editgoods.code" style="width:130px;height:28px;display:inline-block;margin:3px;">
+                <option value="">选择二级分类</option>
+                <option *ngFor="let item of leverlists" [value]="item.code">{{item.name}}</option>
+              </select>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</app-modal>

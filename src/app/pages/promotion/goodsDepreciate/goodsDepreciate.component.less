@@ -1,0 +1,631 @@
+/** 表格公共样式 **/
+.zh-dsrtable {
+  border: 1px solid rgba(225, 225, 225, 0.2);
+  border-top: none;
+}
+
+.zh-dsrtable span {
+  text-align: center;
+}
+
+.zh-dsrtable td,
+.zh-dsrtable th {
+  text-align: center;
+  overflow: hidden;
+  vertical-align: middle;
+}
+
+.zh-dsrtable th {
+  background: rgba(63, 122, 188, 0.5);
+  color: #fff;
+  font-weight: bold;
+  word-wrap: break-word !important;
+  white-space: normal !important;
+  word-break: break-all !important;
+}
+
+/** 翻页公共样式 **/
+.zh-pages {
+  padding: 3px 20px;
+  display: block;
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  margin-left: 180px;
+  background: #3f7abc;
+  border-top: 1px solid #f1f1f1;
+}
+
+.zh-pages .zh-select {
+  width: 60px;
+  height: 30px;
+  line-height: 30px;
+  vertical-align: middle;
+  padding: 0;
+  text-align: center;
+}
+
+.zh-pages .zh-text {
+  width: 60px;
+  height: 30px;
+  line-height: 30px;
+  vertical-align: middle;
+  padding: 0;
+  text-align: center;
+}
+
+.zh-pages .zh-totpage {
+  margin-left: 20px;
+  vertical-align: middle;
+  line-height: 30px;
+}
+
+.zh-pages .zh-count {
+  vertical-align: middle;
+  line-height: 30px;
+  float: right;
+}
+
+.zh-pages select.form-control:not([size]):not([multiple]) {
+  height: 30px;
+  padding: 0;
+}
+
+.w-page .zh-totpage {
+  float: right;
+  width: auto;
+}
+
+// 表格行间距
+.table>tbody>tr>td {
+  line-height: 26px;
+}
+
+/** 列表公共样式 **/
+ul li {
+  float: left;
+}
+
+ul:first-child {
+  margin-top: 0;
+}
+
+ul {
+  margin-top: 20px;
+}
+
+/** 新增商品降价按钮 **/
+.ng-btn {
+  height: 35px;
+}
+
+/** 卡片内容样式 **/
+
+
+
+
+.ng-input {
+  width: 100%;
+  height: 30px;
+  margin-left: 4px;
+}
+
+// 右侧按钮
+
+
+.card-right button {
+  width: 60px;
+  height: 28px;
+}
+
+// 详情页面表格内容
+
+.modal-input {
+  border: none;
+  border-bottom: 1px solid #d9d9d9;
+  border-radius: 0;
+  background-color: transparent;
+}
+
+.modal-input:focus {
+  // 去掉 input 阴影
+  box-shadow: 0 0 0 #fff;
+}
+
+// 新增页面
+.card-new {
+  display: block;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// 查询条件布局
+.w-card {
+  margin-top: 20px;
+  box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.15);
+  display: flex;
+  background: #fff;
+  position: relative;
+
+  .card-left {
+    width: 80%;
+
+    .card-content {
+      display: flex;
+      align-items: center;
+      flex-direction: row;
+
+      .left-grow {
+        flex-grow: 1;
+        flex-basis: 0;
+        display: flex;
+        align-items: center;
+        // justify-content: flex-end;
+
+        >span {
+          width: 120px;
+          text-align: right;
+        }
+
+        .left-input {
+          width: 60%;
+        }
+      }
+    }
+  }
+
+  .card-right {
+    width: 20%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .card-btn {
+    position: absolute;
+    left: 48%;
+    bottom: 5px;
+    color: #108ee9;
+
+    span {
+      cursor: pointer;
+
+      i {
+        margin-left: 12px;
+        transition: transform .6s ease;
+      }
+    }
+
+    :hover {
+      color: rgba(16, 142, 233,0.7);
+    }
+  }
+}
+.fold-content {
+  // height: 0;
+  transition: height .6s ease;
+}
+// 查询条件布局结束
+
+
+
+// 表单布局
+.new-body-border {
+  margin: 30px 0 0 180px;
+  width: 60%;
+}
+
+.new-body {
+  display: flex;
+  margin-top: 28px;
+  align-items: baseline;
+}
+
+.new-body-left {
+  width: 20%;
+  text-align: right;
+  padding-right: 10px;
+  // font-size: 16px;
+
+  span {
+    color: #f00;
+  }
+}
+
+.new-body-right {
+  width: 80%;
+
+  .hint {
+    font-size: 10px;
+    color: #f00;
+    margin-top: 4px;
+  }
+}
+
+.form-btn {
+  display: flex;
+  // justify-content: center;
+  margin: 40px 0 0 320px;
+}
+
+// 表单布局结束
+
+// 文件上传样式
+.file-body {
+  margin: 30px 0 0 17%;
+
+  .file-one {
+    display: flex;
+    align-items: center;
+
+    .file-border {
+      border: 1px solid #f0f0f0;
+      padding: 10px 20px;
+
+      label {
+        line-height: 30px;
+      }
+
+      input {
+        display: none;
+      }
+    }
+  }
+
+  .file-span {
+    color: #999999;
+  }
+
+  .file-two {
+    margin-top: 10px;
+  }
+}
+
+// 文件上传样式结束
+
+// 表格布局
+.table-body {
+  width: 66%;
+  margin: 25px auto 0 auto;
+  position: relative;
+
+  .table-body-top {
+    display: flex;
+    justify-content: space-between;
+    font-size: 15px;
+
+    .title-left {
+      width: 40%;
+      display: flex;
+    }
+
+    .title-right {
+      width: 60%;
+      display: flex;
+      justify-content: space-between;
+    }
+  }
+}
+
+// 表格布局结束
+
+// 搜索内容布局
+.search-card {
+  display: flex;
+  margin: 35px auto 0 auto;
+  width: 86%;
+
+  .search-left {
+    display: flex;
+    width: 80%;
+
+    .search-content {
+      flex-grow: 1;
+
+      input {
+        width: 90%;
+      }
+    }
+  }
+
+  .search-right {
+    display: flex;
+    width: 20%;
+  }
+}
+
+// 搜索内容布局结束
+
+// 活动规则外边框
+.chooseBorder {
+  border: 1px solid #f0f0f0;
+  padding: 15px;
+}
+
+// 底部说明
+.bottom-state {
+  width: 80%;
+  margin: 70px auto 0 auto;
+  border-top: 1px dashed #ccc;
+  color: #666;
+  padding-top: 24px;
+}
+
+// 信息标题
+.onnlineTitle {
+  width: 80%;
+  margin: 40px auto 0 auto;
+  padding-bottom: 8px;
+  font-weight: 600;
+  font-size: 16px;
+  border-bottom: 1px dashed #ccc;
+  display: flex;
+  align-items: center;
+
+  .online-icon {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #2078bb;
+    margin-right: 10px;
+  }
+}
+
+// 选择数量
+.chooseTitle {
+  position: absolute;
+  font-size: 12px;
+  color: #666;
+  bottom: 23px;
+  left: 0;
+}
+
+// 选择数量/记录
+.chooseCount {
+  margin-top: 8px;
+  display: flex;
+  justify-content: space-between;
+}
+
+// 操作文字
+.link {
+  color: #0e6eb8;
+  cursor: pointer;
+}
+
+.delete {
+  color: #f2001c;
+}
+
+.link:hover {
+  text-decoration: underline; // 下划线
+}
+
+.disable {
+  color: rgba(68, 138, 243, 0.5);
+  cursor: not-allowed;
+}
+
+// 批量设置模板
+.modal-info {
+  padding: 15px 80px 0 80px;
+
+  .info {
+    font-size: 12px;
+    color: #ccc;
+    margin-top: 5px;
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.jdbody {
+  display: flex;
+}
+
+.impose-body {
+  display: flex;
+  align-items: center;
+}
+
+.annotation {
+  display: flex;
+  justify-content: center;
+  font-size: 12px;
+  margin-top: 20px;
+  color: #cccccc;
+}
+
+.account-title {
+  border-bottom: 1px dashed #e9e9e9;
+  display: flex;
+  align-items: center;
+  color: #fff;
+  font-size: 16px;
+  padding-bottom: 12px;
+  margin-top: 30px;
+}
+
+.account-title span {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #0e6eb8;
+  margin-right: 10px;
+}
+
+.center {
+  display: flex;
+  justify-content: center;
+}
+
+.center-vertical {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.tick {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: #00c617;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.tick span {
+  width: 32px;
+  height: 32px;
+  background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMiIgaGVpZ2h0PSIzMiIgdmlld0JveD0iMCAwIDMyIDMyIj4KICA8ZGVmcz4KICAgIDxzdHlsZT4KICAgICAgLmNscy0xIHsKICAgICAgICBmaWxsOiAjZmZmOwogICAgICB9CiAgICA8L3N0eWxlPgogIDwvZGVmcz4KICA8cGF0aCBpZD0iY2hlbmdnb25nIiBjbGFzcz0iY2xzLTEiIGQ9Ik0yNS4yODgsMzUuMzcybC04LjAwOC04LjFMMTIsMzIuMzEyQTQ1LjQ0NCw0NS40NDQsMCwwLDEsMjUuODI4LDQ0QzI5LjA4NCwzNy44OCwzOS4xMiwyNS4zNiw0NCwyNC4yNGMtLjc4OC0zLjE1Ni0xLjIzMi05LjA4LDAtMTIuMjRDMzMuOTkyLDE4LjYsMjUuMjg4LDM1LjM3MiwyNS4yODgsMzUuMzcyWiIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoLTEyIC0xMikiLz4KPC9zdmc+Cg==");
+}
+
+.success-body {
+  padding: 10px 20px;
+  background: rgba(255, 255, 255, 0.9);
+  margin-top: 40px;
+  border-radius: 4px;
+  font-size: 12px;
+}
+
+.success-body tr td:first-child {
+  color: #666;
+  text-align: right;
+}
+
+.success-body tr td:nth-child(2) {
+  color: #333;
+  white-space: nowrap; // 不换行
+}
+
+.agree {
+  color: #0e6eb8;
+  cursor: pointer;
+}
+
+.agree:hover {
+  text-decoration: underline;
+}
+
+.main-info {
+  // background: #fafafa;
+  // padding: 16px;
+  padding-bottom: 30px;
+  padding-top: 0;
+  color: #666;
+  font-size: 14px;
+}
+
+// .modal-info {
+//     display: flex;
+//     justify-content: center;
+//     padding: 20px 0;
+//     width: 100%;
+//     flex-direction: column;
+//     align-items: center;
+// }

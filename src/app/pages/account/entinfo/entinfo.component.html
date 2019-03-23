@@ -1,0 +1,313 @@
+<div class="widgets">
+  <div class="row">
+    <nz-table #basicTable *ngIf="entinfo" nzNoResult=" ">
+      <!-- <table class="table zh-table" *ngIf="entinfo"> -->
+      <tbody>
+        <tr>
+          <td width="15%" style="text-align: right;">企业LOGO:</td>
+          <td width="25%">
+            <span class="zh-imglist">
+              <img src="{{entinfo.logo}}" style="background:#f1f1f1;">
+            </span>
+            <!--
+              <span class="zh-imgupload">
+                <i class="ion-plus"></i>
+                <input type="file" ng2FileSelect [uploader]="uploader" #file1 (change)="addImage(1)" style="width:104px;height:104px;position:absolute;left:0;opacity: 0;cursor:pointer;">
+              </span>
+              -->
+          </td>
+          <td width="15%" style="text-align: right;">商品默认图片:</td>
+          <td style="text-align: left;">
+            <span class="zh-imglist">
+              <img src="{{entinfo.default_item_image}}" style="background:#f1f1f1;">
+            </span>
+            <!--
+              <span class="zh-imgupload">
+                <i class="ion-plus"></i>
+                <input type="file" ng2FileSelect [uploader]="uploader" #file (change)="addImage(2)" style="width:104px;height:104px;position:absolute;left:0;opacity: 0;cursor:pointer;">
+              </span>
+              -->
+          </td>
+        </tr>
+        <tr>
+          <td style="text-align: right;">配置接单助手:</td>
+          <td>
+            <label class="checkbox-inline custom-checkbox nowrap" (change)="setpcreceipt(pzpc_receipt)">
+              <input type="checkbox" name="pcjdzs" [disabled]="true" [(ngModel)]="pzpc_receipt">
+              <span>PC接单器</span>
+            </label>
+            <label class="checkbox-inline custom-checkbox nowrap" (change)="setandroid(pzandroid_receipt)">
+              <input type="checkbox" name="jdzs" [disabled]="true" [(ngModel)]="pzandroid_receipt">
+              <span>安卓接单器</span>
+            </label>
+          </td>
+          <td style="text-align: right;">配置拣货助手:</td>
+          <td>
+            <label class="checkbox-inline custom-checkbox nowrap" (change)="setpicking(pzpicking)">
+              <input type="checkbox" name="jhzs" [disabled]="true" [(ngModel)]="pzpicking">
+              <span>安卓拣货助手</span>
+            </label>
+          </td>
+        </tr>
+        <tr>
+          <td style="text-align: right;">经营渠道 :</td>
+          <td colspan="3">
+            <div class="zh-channelbox">
+              <div class="zh-channelitem" *ngFor="let jyqd of jyqds;let i=index">
+                <h3>
+                  <label class="checkbox-inline custom-checkbox nowrap" style="width:185px;display:inline-block;">
+                    <input type="checkbox" name="channel_keyword" value="jyqd.channel_keyword" [disabled]="true"
+                      (change)="onchange($event,jyqd)" [checked]="jyqd.sfxz">
+                    <span>{{jyqd.name}}</span>
+                  </label>
+                  <label class="checkbox-inline custom-checkbox nowrap" *ngIf="(pzpc_receipt&&jyqd.sfxz)||(pzandroid_receipt&&jyqd.sfxz)"
+                    style="margin-left:60px;">
+                    <input type="checkbox" name="receipt" value="jyqd.receipt" [disabled]="true" (change)="setchannelreceipt($event,jyqd)"
+                      [checked]="jyqd.receipt === '1'">
+                    <span>是否启用接单助手</span>
+                  </label>
+                  <label class="checkbox-inline custom-checkbox nowrap" *ngIf="jyqd.sfxz&&pzpicking">
+                    <input type="checkbox" name="channel_keyword" [disabled]="true" value="jyqd.picking" (change)="setchannelpicking($event,jyqd)"
+                      [checked]="jyqd.picking ==='1'">
+                    <span>是否启用拣货助手</span>
+                  </label>
+                  <span class="zh-bts">
+                    <input type="button" nz-button nzType="primary" value="查看" #ckbt (click)="toview(jyqd,$event,i)">
+                  </span>
+                </h3>
+                <div class="zh-optlist" *ngIf="selectedbts[i]">
+                  <ul *ngIf="jyqd.channeloptarr">
+                    <li *ngFor="let copt of jyqd.channeloptarr; let j = index">
+                      <!--  增加渠道主题账号 -->
+                      <span class="zh-infoname">渠道主体账号</span>
+                      <span class="zh-channeltext">
+                        <input type="text" [(ngModel)]="copt.account" [disabled]="true" class="form-control" name="account" />
+                      </span>
+                      <span class="zh-infoname">appid</span>
+                      <span class="zh-channeltext">
+                        <input type="text" [(ngModel)]="copt.appid" [disabled]="true" class="form-control" name="appid" />
+                      </span>
+                      <span class="zh-infoname">secret</span>
+                      <span class="zh-channeltext">
+                        <input type="text" [(ngModel)]="copt.secret" [disabled]="true" class="form-control" name="secret" />
+                      </span>
+                      <span class="zh-infoname" [hidden]="jyqd.channel_keyword==='MTWM'||jyqd.channel_keyword==='BDWM'">token</span>
+                      <span class="zh-channeltext" [hidden]="jyqd.channel_keyword==='MTWM'||jyqd.channel_keyword==='BDWM'">
+                        <input type="text" [(ngModel)]="copt.token" [disabled]="true" class="form-control" name="token" />
+                      </span>
+                      <span *ngIf="jyqd.channel_keyword=='ELEM'||jyqd.channel_keyword =='ELEMFOOD'" class="zh-infoname">refreshtoken</span>
+                      <span *ngIf="jyqd.channel_keyword=='ELEM'||jyqd.channel_keyword =='ELEMFOOD'" class="zh-channeltext">
+                        <input type="text" [(ngModel)]="copt.refreshToken" [disabled]="true" class="form-control" name="refreshToken" />
+                      </span>
+                      <span class="zh-infoname">备注</span>
+                      <span class="zh-channeltext">
+                        <input type="text" [(ngModel)]="copt.memo" [disabled]="true" class="form-control" name="memo" />
+                      </span>
+                      <span class="zh-infoname">调价比例(%)</span>
+                      <span class="zh-channeltext">
+                        <input type="text" [(ngModel)]="copt.adjust_rate" [disabled]="true" class="form-control" name="adjust_rate" />
+                      </span>
+                      <span class="zh-infoname">舍入方式</span>
+                      <span class="zh-channeltext">
+                        <select class="form-control" [disabled]="true" [(ngModel)]="copt.rounding">
+                          <option value="0" selected="selected">四舍五入</option>
+                          <option value="1">截取</option>
+                          <option value="2">向上取整</option>
+                        </select>
+                      </span>
+                      <span class="zh-infoname">价格精度</span>
+                      <span class="zh-channeltext">
+                        <select class="form-control" [disabled]="true" [(ngModel)]="copt.accuracy" name="accuracy">
+                          <option value="F" selected="selected">分</option>
+                          <option value="J">角</option>
+                          <option value="Y">元</option>
+                        </select>
+                      </span>
+                      <div style="margin-top:10px;">
+                        <span class="zh-infoname">渠道价格</span>
+                        <span class="zh-channeltext">
+                          <select class="form-control" [disabled]="true" [(ngModel)]="copt.price_field" name="accuracy">
+                            <option *ngIf="jyqd.set_channel==='1' || jyqd.set_channel===''" value="sale_price">按促销价(线上)</option>
+                            <option *ngIf="jyqd.set_channel==='2'" value="erp_reference_price">按线下原价</option>
+                            <option *ngIf="jyqd.set_channel==='1' || jyqd.set_channel===''" value="reference_price">按原价（线上）</option>
+                            <option *ngIf="jyqd.set_channel==='2'" value="erp_price">按线下售价</option>
+                          </select>
+                        </span>
+                      </div>
+                      <!-- <a class="zh-sx" (click)=del(i,j,ckbt)>删除</a> -->
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </td>
+        </tr>
+
+        <tr>
+          <td style="text-align: right;">配送渠道 :</td>
+          <td colspan="3">
+            <div class="zh-channelbox">
+              <div class="zh-channelitem" *ngFor="let psqd of psqds;let i=index">
+                <h3>
+                  <label class="checkbox-inline custom-checkbox nowrap" style="width:185px;display:inline-block;">
+                    <input type="checkbox" name="channel_keyword" [disabled]="true" (change)="psqdonchange($event,psqd)"
+                      [(ngModel)]="psqd.sfxz">
+                    <span>{{psqd.delivery_name}}</span>
+                  </label>
+                  <span class="zh-bts">
+                    <input type="button" nz-button nzType="primary" value="查看" #psckbt (click)="psqdtoview(psqd,$event,i)">
+                    <!-- <input type="button" class="btn btn-info btn-xs" value="增加" (click)="psqdaddoption(psqd)"> -->
+                  </span>
+                </h3>
+                <div class="zh-optlist" *ngIf="psqdselectedbts[i]">
+                  <ul *ngIf="psqd.deliveryAccounts">
+                    <li *ngFor="let copt of psqd.deliveryAccounts; let j = index">
+                      <!--  增加渠道主题账号 -->
+                      <span class="zh-infoname">主体名称</span>
+                      <span class="zh-channeltext">
+                        <input type="text" [(ngModel)]="copt.main_name" [disabled]="true" class="form-control" name="main_name" />
+                      </span>
+                      <span class="zh-infoname">主体账号</span>
+                      <span class="zh-channeltext">
+                        <input type="text" [(ngModel)]="copt.main_account" [disabled]="true" class="form-control" name="main_account" />
+                      </span>
+                      <span class="zh-infoname" *ngIf="psqd.channel_delivery_keyword==='MTPS'">Appkey</span>
+                      <span class="zh-infoname" *ngIf="psqd.channel_delivery_keyword==='FNPS'">App Id</span>
+                      <span class="zh-infoname" *ngIf="psqd.channel_delivery_keyword==='DADA'">商户ID</span>
+                      <span class="zh-channeltext">
+                        <input type="text" [(ngModel)]="copt.appid" class="form-control" [disabled]="true" name="appid" />
+                      </span>
+                      <span class="zh-infoname" *ngIf="psqd.channel_delivery_keyword==='MTPS'">secret</span>
+                      <span class="zh-infoname" *ngIf="psqd.channel_delivery_keyword==='FNPS'">Secret Key</span>
+                      <span class="zh-infoname" *ngIf="psqd.channel_delivery_keyword==='DADA'">商户名称</span>
+                      <span class="zh-channeltext">
+                        <input type="text" [(ngModel)]="copt.secret" class="form-control" [disabled]="true" name="secret" />
+                      </span>
+                      <span class="zh-infoname">备注</span>
+                      <span class="zh-channeltext">
+                        <input type="text" [(ngModel)]="copt.memo" class="form-control" [disabled]="true" name="memo" />
+                      </span>
+                      <span class="zh-infoname">配送渠道重量上限</span>
+                      <span class="zh-channeltext">
+                        <input type="text" [(ngModel)]="copt.weight_limit" class="form-control" disabled name="weight_limit" />
+                      </span>
+                      <span class="zh-infoname" *ngIf="psqd.channel_delivery_keyword ==='MTPS'||psqd.channel_delivery_keyword ==='FNPS'">配送服务类型</span>
+                      <span class="zh-channeltext" *ngIf="psqd.channel_delivery_keyword ==='MTPS'||psqd.channel_delivery_keyword ==='FNPS'"
+                        style="width:350px;">
+                        <!-- <nz-checkbox-group [(ngModel)]="copt.delivery_service_type" (ngModelChange) = "checkpsfwlx(copt.delivery_service_type,copt)"></nz-checkbox-group> -->
+                        <span *ngFor="let item of copt.delivery_service_type;let i=index;" style="margin-right:20px;">
+                          <label><input type="checkbox" [disabled]="true" [(ngModel)]="item.checked" style="width:20px;vertical-align:-3px;"
+                              (change)="checkpsfwlx(item,$event)">{{item.label}}</label>
+                        </span>
+
+                      </span>
+                      <!-- <span class="zh-channeltext" *ngIf="psqd.channel_delivery_keyword ==='FNPS'" style="width:320px;">
+                          <nz-checkbox-group [(ngModel)]="copt.delivery_service_type"></nz-checkbox-group>
+                        </span> -->
+                      <!-- <a class="zh-sx" (click)=psqddel(i,j,psckbt)>删除</a> -->
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </td>
+        </tr>
+
+
+
+        <tr>
+          <td style="text-align: right;">图片拉取参数:</td>
+          <td colspan="3">
+            <span class="zh-infoname" style=" margin-left:10px;  ">appid：
+              <input type="text" [(ngModel)]="lqimginfo.app_id" [disabled]="true" class="form-control" name="appid"
+                style="width:200px;  display: inline-block;" />
+            </span>
+            <span class="zh-infoname" style=" margin-left:20px;  ">appSecret：
+              <input type="text" [(ngModel)]="lqimginfo.app_secret" [disabled]="true" class="form-control" name="secret"
+                style="width:200px;    display: inline-block;" />
+            </span>
+            <span class="zh-infoname" style=" margin-left:20px;  ">sc_code：
+              <input type="text" [(ngModel)]="lqimginfo.sc_code" [disabled]="true" class="form-control" name="appid"
+                style="width:200px;   display: inline-block;" />
+            </span>
+            <span class="zh-infoname" style=" margin-left:20px;  ">备注：
+              <input type="text" [(ngModel)]="lqimginfo.comments" [disabled]="true" class="form-control" name="secret"
+                style="width:200px;  display: inline-block;" />
+            </span>
+
+          </td>
+        </tr>
+        <tr>
+          <td style="text-align: right;">默认商品售卖状态:</td>
+          <td>
+            <input type="radio" [disabled]="true" name="status" (change)="entinfo.default_init_value.status='1'"
+              [checked]="entinfo.default_init_value?.status==='1'">售卖
+            <input type="radio" [disabled]="true" name="status" (change)="entinfo.default_init_value.status='-1'"
+              [checked]="entinfo.default_init_value?.status==='-1'">停售
+          </td>
+          <td style="text-align: right;">默认上下架状态:</td>
+          <td>
+            <input type="radio" name="sale_status" [disabled]="true" (change)="entinfo.default_init_value.sale_status=1"
+              [checked]="entinfo.default_init_value?.sale_status===1">上架
+            <input type="radio" name="sale_status" [disabled]="true" (change)="entinfo.default_init_value.sale_status=2 "
+              [checked]="entinfo.default_init_value?.sale_status===2">下架
+          </td>
+        </tr>
+        <tr>
+          <td style="text-align: right;">超卖过机 :</td>
+          <td>
+            <input type="radio" name="cmgj" [disabled]="true" (change)="entinfo.default_init_value.cmgj=true" [checked]="entinfo.default_init_value.cmgj===true">是
+            <input type="radio" name="cmgj" [disabled]="true" (change)="entinfo.default_init_value.cmgj=false "
+              [checked]="entinfo.default_init_value.cmgj===false">否
+          </td>
+          <td style="text-align: right;" colspan="3"></td>
+        </tr>
+        <tr>
+          <td style="text-align: right;">默认接收线下库存状态:</td>
+          <td>
+            <input type="radio" name="receive_stock" (change)="entinfo.default_init_value.receive_stock='1'" [checked]="entinfo.default_init_value?.receive_stock==='1'"
+              [disabled]="true">接收
+            <input type="radio" name="receive_stock" (change)="entinfo.default_init_value.receive_stock='-1'" [checked]="entinfo.default_init_value?.receive_stock==='-1'"
+              [disabled]="true">不接收
+          </td>
+          <td style="text-align: right;">默认接收线下价格状态:</td>
+          <td>
+            <input type="radio" name="receive_price" (change)="entinfo.default_init_value.receive_price='1'" [checked]="entinfo.default_init_value?.receive_price==='1'"
+              [disabled]="true">接收
+            <input type="radio" name="receive_price" (change)="entinfo.default_init_value.receive_price='-1'" [checked]="entinfo.default_init_value?.receive_price==='-1'"
+              [disabled]="true">不接收
+          </td>
+        </tr>
+
+        <tr>
+          <td style="text-align: right;">手工下架默认天数:</td>
+          <td>
+            <input type="number" [(ngModel)]="autoclear_offline" [disabled]="true" class="form-control" name="appid"
+              style="width:200px;display: inline-block;" />
+          </td>
+          <td style="text-align: right;">发票二维码链接:</td>
+          <td>
+            <input type="text" [(ngModel)]="qrcode" [disabled]="true" class="form-control" name="qrcode" style="width:95%;display: inline-block;" />
+          </td>
+        </tr>
+        <tr>
+          <td style="text-align: right;">配置对账单正向单不参与核销公式:</td>
+          <td colspan="3">
+            <label class="checkbox-inline custom-checkbox nowrap" (change)="setformula()" *ngFor="let formula of formulaparams;let i=index;">
+              <input type="checkbox" name="formula" [disabled]="true" [(ngModel)]="formula.sfxz">
+              <span>{{formula.name}}</span>
+            </label>
+            <div *ngIf="showformula" style="background:rgba(0, 0, 0, 0.1);padding-left: 5px;margin:3px;">公式:
+              <span style="color:#f60;">{{showformula}}</span>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+      </tbody>
+    </nz-table>
+  </div>
+</div>

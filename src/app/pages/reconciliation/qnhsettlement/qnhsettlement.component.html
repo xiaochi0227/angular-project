@@ -1,0 +1,113 @@
+<app-search-bar #searchbar [queryList]='queryList' (childemit)="search($event)">
+</app-search-bar>
+<div class="horizontal-scroll">
+  <div class="zh-listhead1">
+    <button nz-button nzType="default" (click)="addexport()">导出到CSV文件</button>
+  </div>
+  <div class="zh-listmiddle">
+    <p>1.各渠道对账时间:</p>
+    <p>京东到家、美团外卖、饿了么、饿了么星选以完成时间核对，有赞以下单时间核对;</p>
+    <p>2.各渠道提成销售额计算规则：</p>
+    <p>京东到家、美团外卖、饿了么星选：提成销售额=成交价-商家整单优惠+平台单品优惠</p>
+    <p>饿了么、有赞：提成销售额=原价-商家整单优惠-商家单品优惠</p>
+    <p>3.此报表数据只统计订单（不包含已取消的订单和所有退单）</p>
+  </div>
+  <my-page [params]='params' [pagecount]='pageSize' [changecount]='pageSize.count' (childparams)="childparams($event)"></my-page>
+  <nz-table #nzTable [nzData]="settlementlists" [nzShowPagination]="false" [nzFrontPagination]="false" nzBordered>
+    <thead>
+      <tr>
+        <th>序号</th>
+        <th>门店</th>
+        <th>渠道</th>
+        <th>渠道订单号</th>
+        <th>原价</th>
+        <th>成交价</th>
+        <th>优惠</th>
+
+        <th>提成销售额</th>
+        <th>日期</th>
+        <th>操作</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let item of nzTable.data;let i=index" class="tbody-tr">
+        <td>{{i+1}}</td>
+        <td>{{item?.region_name}}</td>
+        <td [ngSwitch]="item?.channel_keyword">
+          <my-channeltags [getchannel]="item?.channel_keyword"></my-channeltags>
+        </td>
+        <td>{{item?.channel_sheetno}}</td>
+        <td>¥{{item?.total_item_yj|number:'1.2-2'}}</td>
+        <td>
+          <span style="margin-right:10px;display:inline-block;margin-bottom:10px;">¥{{item?.total_item_value|number:'1.2-2'}}</span>
+        </td>
+        <td>
+          <span style="margin-right:10px;display:inline-block;margin-bottom:10px;"><span class="label label-zh-default">整单优惠总额</span>¥{{item?.total_disc_value|number:'1.2-2'}}</span>
+          <span style="margin-right:10px;display:inline-block;margin-bottom:10px;"><span class="label label-zh-default">商家整单优惠</span>¥{{item?.total_sj_disc|number:'1.2-2'}}</span>
+          <span style="margin-right:10px;display:inline-block;margin-bottom:10px;"><span class="label label-zh-default">平台单品优惠</span>¥{{item?.total_pt_dp|number:'1.2-2'}}</span>
+          <span style="margin-right:10px;display:inline-block;margin-bottom:10px;"><span class="label label-zh-default">商家单品总优惠</span>¥{{item?.total_sj_dp|number:'1.2-2'}}</span>
+          <span style="margin-right:10px;display:inline-block;margin-bottom:10px;"><span class="label label-zh-default">商家运费优惠</span>¥{{item?.logistics_sj_disc|number:'1.2-2'}}</span>
+        </td>
+
+        <td>¥{{item.total_item_js|number:'1.2-2'}}</td>
+
+        <td>
+          <div><label class="label label-success">完成</label>{{item?.complete_time|date:'M月d日 H:m'}}</div>
+          <div><label class="label label-success">下单</label>{{item?.order_time|date:'M月d日 H:m'}}</div>
+        </td>
+        <td>
+          <button nzSize="small" nz-button nzType="default" (click)="gotodetail(item)">订单详情</button>
+        </td>
+
+      </tr>
+    </tbody>
+  </nz-table>
+</div>
+
+
+<!-- 订单详情弹框 -->
+<nz-modal nzWidth="75%" [(nzVisible)]="modalShow" [nzContent]="modalContent" (nzOnCancel)="closeModel()" nzTitle="订单详情"
+  [nzFooter]="modalFooter">
+  <ng-template #modalContent>
+    <div class="model-content">
+      <div>
+        <span style="margin-right:30px;">门店编码:<b style="color:#f00;">{{ordersdetail?.region_code}}</b></span>
+        <span style="margin-right:30px;">渠道订单号:<b style="color:#f00;">{{ordersdetail?.channel_sheetno}}</b></span>
+      </div>
+      <nz-table #nzTable [nzData]="ordersdetails" [nzShowPagination]="false" [nzFrontPagination]="false">
+        <thead>
+          <tr>
+            <th nzWidth="10%">序号</th>
+            <th nzWidth="35%">品名</th>
+            <th nzWidth="20%">编码/条码</th>
+            <th nzWidth="8%">数量</th>
+            <th nzWidth="8%">单价</th>
+            <th nzWidth="8%">金额</th>
+            <th>商家优惠</th>
+          </tr>
+       </thead>
+        <tbody>
+          <tr *ngFor="let item of nzTable.data;let i=index">
+            <td>{{i+1}}</td>
+            <td>{{item?.name}}</td>
+            <td>
+              {{item?.code}}/
+              <div>{{item?.barcode}}</div>
+            </td>
+            <td>(x{{item?.qty}})</td>
+            <td>{{item?.sale_price}}</td>
+            <td>{{item?.sale_value}}</td>
+            <td>{{item?.disc_value}}</td>
+
+          </tr>
+        </tbody>
+      </nz-table>
+
+      <div class="clear"></div>
+    </div>
+  </ng-template>
+
+  <ng-template #modalFooter>
+    <button nz-button nzType="primary" (click)="closeModel()">关闭</button>
+  </ng-template>
+</nz-modal>

@@ -1,0 +1,329 @@
+<div class="widgets">
+  <div class="row">
+
+    <div class="zh-serchbox black-muted-bg">
+      <table class="table zh-serchtable">
+        <tbody>
+          <tr>
+            <td>
+              <table class="table zh-serch-table">
+                <tr>
+
+                  <td class="zh-zdname" width="10%">城市</td>
+                  <td class="zh-textbox" width="22%">
+                    <!-- <input type="text" class="form-control" [(ngModel)]="params.search.city" name="city" placeholder="请输入城市名称"> -->
+                    <input nz-input [(ngModel)]="params.search.city" name="city" placeholder="请输入城市名称" nzSize="default">
+                  </td>
+                  <td class="zh-zdname" width="10%">门店</td>
+                  <td class="zh-textbox" width="22%">
+                    <!-- <my-searchselect #searchselect [selectlistarr]="stores" (searchcode)="searchcode($event)"
+                                                (searchname)="searchname($event)" [gettextvalue]="region_name"></my-searchselect> -->
+                    <nz-select style="width: 200px;" nzShowSearch nzAllowClear nzPlaceHolder="Choose" [(ngModel)]="params.search.region_code">
+                      <nz-option [nzLabel]="store.codename" [nzValue]="store.code" *ngFor="let store of stores"></nz-option>
+
+                    </nz-select>
+                  </td>
+                  <td class="zh-zdname" width="10%">店铺坐标</td>
+                  <td class="zh-textbox" width="22%">
+                    <!-- <select class="form-control" [(ngModel)]="params.search.location">
+                      <option value="">请选择</option>
+                      <option [value]="-1">有坐标</option>
+                      <option [value]="1">无坐标</option>
+                    </select> -->
+                    <nz-select style="width: 120px; color:#666;" nzPlaceHolder="Choose" [(ngModel)]="params.search.location">
+                      <nz-option nzLabel="有坐标" nzValue="-1"></nz-option>
+                      <nz-option nzLabel="无坐标" nzValue="1"></nz-option>
+                    </nz-select>
+                  </td>
+                </tr>
+              </table>
+            </td>
+            <td>
+              <button class="btn btn-primary" type="button" (click)="search(params)">查询</button>
+              <button class="btn btn-primary" type="button" (click)="Reset()">重置</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <my-page [params]='params' [pagecount]='pageSize' [changecount]='changecount' (childparams)="childparams($event)"></my-page>
+
+    <div class="horizontal-scroll" id="zh-tablecontent" style="min-height: 260px;">
+      <div class="zh-listhead" style="text-align: center; margin: 10px 0;">
+        <button nz-button nzType="primary" (click)="distributionset(selectitemarr,1)">批量修改配送方式</button>
+        <button nz-button nzType="default" (click)="batchdelivery()">批量修改配送费</button>
+        <button nz-button nzType="default" (click)="gettemplate(template)"><app-upload [onUploaded]="storecoordinates" nzLimit="1" [uploadname]="'批量导入门店坐标'" [uploadtype]="'text'"></app-upload></button>
+        
+        <button nz-button nzType="default" (click)="download('批量导入店铺坐标模板')">下载模板</button>
+        
+        <!-- <nz-radio-group [(ngModel)]="size">
+          <label nz-radio-button  (click)="distributionset(selectitemarr,1)">批量修改配送方式</label>
+          <label nz-radio-button (click)="batchdelivery()">批量修改配送费</label>
+          <label nz-radio-button >
+            <app-upload [onUploaded]="storecoordinates" nzLimit="1" [uploadname]="'批量导入门店坐标'" [uploadtype]="'text'"></app-upload>
+          </label>
+          <label nz-radio-button (click)="download('批量导入店铺坐标模板')">下载模板</label>
+        </nz-radio-group> -->
+
+        <!-- <input type="button" class="btn btn-success" value="批量修改配送方式" (click)="distributionset(selectitemarr,1)">       
+        <input type="button" class="btn btn-success" value="批量修改配送费" (click)="batchdelivery()">
+        <app-upload [onUploaded]="storecoordinates" nzLimit="1" [uploadname]="'批量导入门店坐标'" [uploadtype]="'text'"></app-upload>
+        <input class="btn btn-success" type="button" (click)="download('批量导入店铺坐标模板')" value="下载模板" />
+         -->
+        <!-- <a href="javascript:;" class="zh-upload btn btn-success">
+                        <input type="file" #file1 (change)="storecoordinates(file1)" ng2FileSelect [uploader]="uploader">批量导入门店坐标
+                    </a> -->
+        <!-- <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal">
+                        批量修改配送方式
+                    </button> -->
+        <!-- <nz-modal [nzVisible]="isVisible" [nzTitle]="modeltitle" [nzZIndex]="1000" [nzWidth]="650" [nzContent]="modalContent"
+          (nzOnCancel)="handleCancel($event)" (nzOnOk)="handleOk($event)" [nzConfirmLoading]="isConfirmLoading">
+          <ng-template #modalContent> -->
+        <nz-modal [(nzVisible)]="isVisible" nzTitle="配送费用与范围" (nzOnCancel)="handleCancel()" (nzOnOk)="handleOk()"
+          [nzOkLoading]="isConfirmLoading">
+          <div class="modalContent" *ngIf="psfs">
+            <!-- <div *ngFor="let psfsitem of checkOptions">
+                                    <div style="float:left">{{psfsitem.name}}</div>
+                                    <div style="float:left">
+                                        <nz-radio-group [(ngModel)]="psfsitem.xzqd" style="margin-right:15px;">
+                                            <label nz-radio *ngFor="let copt of psfsitem.deliverys" nzValue={{copt.code}}
+                                                style="margin-right: 20px;">{{copt.name}}</label>
+                                        </nz-radio-group>
+                                    </div>
+                                    
+                                   
+                                </div> -->
+            <nz-table #nzTable>
+              <tbody>
+                <tr *ngFor="let psfsitem of checkOptions">
+                  <td style="text-align: right; border-bottom:1px solid #6666666b; padding: 10px 0;">{{psfsitem.name}}:</td>
+                  <td style="text-align: left; padding:10px 20px 10px;border-bottom:1px solid#6666666b;">
+                    <nz-radio-group [(ngModel)]="psfsitem.xzqd" style="margin-right:15px;">
+                      <label nz-radio *ngFor="let copt of psfsitem.deliverys" nzValue={{copt.code}} style="margin-right: 20px;">{{copt.name}}</label>
+                    </nz-radio-group>
+                  </td>
+                </tr>
+              </tbody>
+            </nz-table>
+          </div>
+          <div class="modalContent" *ngIf="psfy">
+            <div>
+              选择渠道
+              <span class="channelspan">
+                <nz-select style="width: 350px;" [(ngModel)]="plpsparams.channel" [nzPlaceHolder]="'请选择渠道'">
+                  <nz-option *ngFor="let channel of channels" [nzLabel]="channel.name" [nzValue]="channel.channel_keyword"></nz-option>
+                </nz-select>
+              </span>
+            </div>
+            <div *ngFor="let shippingfee of shippingfeearr;let i = index" style="border-bottom:1px solid rgba(225, 225, 225, 0.3);">
+              <ul class="plpzpsf">
+                <li>
+                  <span class="lispan w200">
+                    起送价
+                    <span class="lispan w100">
+                      <!-- <nz-input [(ngModel)]="shippingfee.start_price">
+                        <ng-template #addOnAfter>元起</ng-template>
+                      </nz-input> -->
+                      <nz-input-group [nzAddOnAfter]="addOnAfterIconTemplate" [nzCompact]="true">
+                        <input type="text" nz-input [(ngModel)]="shippingfee.start_price">
+                      </nz-input-group>
+                      <ng-template #addOnAfterIconTemplate>
+                        元起
+                      </ng-template>
+                    </span>
+                  </span>
+                  <span class="lispan w200">
+                    配送
+                    <span class="lispan w100">
+                      <!-- <nz-input [(ngModel)]="shippingfee.start_distance">
+                        <ng-template #addOnAfter>公里</ng-template>
+                      </nz-input> -->
+                      <nz-input-group [nzAddOnAfter]="addOnAfterIconTemplate" [nzCompact]="true">
+                        <input type="text" nz-input [(ngModel)]="shippingfee.start_distance">
+                      </nz-input-group>
+                      <ng-template #addOnAfterIconTemplate>
+                        公里
+                      </ng-template>
+                    </span>
+                  </span>
+
+                </li>
+                <li>
+                  <span class="lispan w200">
+                    首&nbsp;&nbsp;&nbsp;&nbsp;重
+                    <span class="lispan w100">
+                      <!-- <nz-input [(ngModel)]="shippingfee.start_weight">
+                        <ng-template #addOnAfter>千克</ng-template>
+                      </nz-input> -->
+                      <nz-input-group [nzAddOnAfter]="addOnAfterIconTemplate">
+                        <input type="text" nz-input [(ngModel)]="shippingfee.start_weight">
+                      </nz-input-group>
+                      <ng-template #addOnAfterIconTemplate>
+                        千克
+                      </ng-template>
+                    </span>
+                  </span>
+                  <span class="lispan w200">
+                    配送费
+                    <span class="lispan w100">
+                      <!-- <nz-input [(ngModel)]="shippingfee.price">
+                        <ng-template #addOnAfter>元/单</ng-template>
+                      </nz-input> -->
+                      <nz-input-group [nzAddOnAfter]="addOnAfterIconTemplate">
+                        <input type="text" nz-input [(ngModel)]="shippingfee.price">
+                      </nz-input-group>
+                      <ng-template #addOnAfterIconTemplate>
+                        元/单
+                      </ng-template>
+                    </span>
+                  </span>
+                </li>
+                <li>
+                  <span class="lispan w200">
+                    每增加
+                    <span class="lispan w100">
+                      <!-- <nz-input [(ngModel)]="shippingfee.add_weight">
+                        <ng-template #addOnAfter>千克</ng-template>
+                      </nz-input> -->
+                      <nz-input-group [nzAddOnAfter]="addOnAfterIconTemplate">
+                        <input type="text" nz-input [(ngModel)]="shippingfee.add_weight">
+                      </nz-input-group>
+                      <ng-template #addOnAfterIconTemplate>
+                        千克
+                      </ng-template>
+                    </span>
+                  </span>
+                  <span class="lispan w200">
+                    配送费增加
+                    <span class="lispan w100">
+                      <!-- <nz-input [(ngModel)]="shippingfee.add_weight_price">
+                        <ng-template #addOnAfter>元</ng-template>
+                      </nz-input> -->
+                      <nz-input-group [nzAddOnAfter]="addOnAfterIconTemplate">
+                        <input type="text" nz-input [(ngModel)]="shippingfee.add_weight_price">
+                      </nz-input-group>
+                      <ng-template #addOnAfterIconTemplate>
+                        元
+                      </ng-template>
+                    </span>
+                  </span>
+                </li>
+                <li>
+                  <span class="lispan w200">
+                    每增加
+                    <span class="lispan w100">
+                      <!-- <nz-input [(ngModel)]="shippingfee.add_distance">
+                        <ng-template #addOnAfter>公里</ng-template>
+                      </nz-input> -->
+                      <nz-input-group [nzAddOnAfter]="addOnAfterIconTemplate">
+                        <input type="text" nz-input [(ngModel)]="shippingfee.add_distance">
+                      </nz-input-group>
+                      <ng-template #addOnAfterIconTemplate>
+                        公里
+                      </ng-template>
+                    </span>
+                  </span>
+                  <span class="lispan w200">
+                    配送费增加
+                    <span class="lispan w100">
+                      <!-- <nz-input [(ngModel)]="shippingfee.add_distance_price">
+                        <ng-template #addOnAfter>元</ng-template>
+                      </nz-input> -->
+                      <nz-input-group [nzAddOnAfter]="addOnAfterIconTemplate">
+                        <input type="text" nz-input [(ngModel)]="shippingfee.add_distance_price">
+                      </nz-input-group>
+                      <ng-template #addOnAfterIconTemplate>
+                        元
+                      </ng-template>
+                    </span>
+                  </span>
+                </li>
+                <li>
+                  <span class="lispan zh-datetime" style="width:450px;">
+                    时间段
+                    <span style="display:inline-block;">
+                      <nz-time-picker [(ngModel)]="shippingfee.time.start" [nzFormat]="'HH:mm'"></nz-time-picker>
+                    </span>
+                    <span style="display:inline-block;width:10px;text-align: right;">-</span>
+                    <span style="display:inline-block;">
+                      <nz-time-picker [(ngModel)]="shippingfee.time.end" [nzFormat]="'HH:mm'"></nz-time-picker>
+                    </span>
+                  </span>
+                </li>
+              </ul>
+              <span>
+                <button nz-button nzType="primary" style="margin-right:5px;" [hidden]='i>0' [disabled]='shippingfeearr.length>2'
+                  (click)="addBtn()">+</button>
+                <button nz-button nzType="primary" *ngIf="i>0" style="margin-right:5px;" (click)="delBtn(i)">-</button>
+              </span>
+            </div>
+          </div>
+        </nz-modal>
+      </div>
+      <nz-table #nzTable class="table table-hover zh-dsrtable">
+        <thead *ngIf="rephead">
+          <tr>
+            <th width="5%">
+              <label nz-checkbox [(ngModel)]="allchecked" (click)="setallcheck(allchecked)"></label>
+            </th>
+            <th width="13%">门店</th>
+            <th width="7%">城市</th>
+            <th width="13%">店铺坐标</th>
+            <th *ngFor="let head of rephead">{{head.name}}</th>
+            <th width="10%">操作</th>
+          </tr>
+        </thead>
+        <tbody *ngIf="!itemlists||itemlists.length===0">
+          <tr>
+            <td colspan="20">暂无数据！</td>
+          </tr>
+        </tbody>
+
+        <tbody *ngIf="itemlists">
+          <tr *ngFor="let item of itemlists;let i = index;">
+            <td width="5%">
+              <label nz-checkbox [(ngModel)]="item.sfxz" (click)="selectitem(item)"></label>
+            </td>
+            <td>{{item.name}}</td>
+            <td>{{item.city}}</td>
+            <td>
+              <div>
+                <span class="zbspan">经度:
+                  <!-- <input type="text" [disabled]="item.isedittext" class="form-control"
+                    [(ngModel)]="item.longitude" /> -->
+                  <input nz-input [(ngModel)]="item.longitude" [disabled]="item.isedittext" nzSize="default">
+
+                </span>
+                <span class="zbspan">纬度:
+                  <!-- <input type="text" [disabled]="item.isedittext" class="form-control"
+                    [(ngModel)]="item.latitude" /> -->
+                  <input nz-input [(ngModel)]="item.latitude" [disabled]="item.isedittext" nzSize="default">
+
+                </span>
+              </div>
+              <div style="color:#aee4ff;display:block;line-height: 18px;cursor: pointer;">
+                <span *ngIf="item.isedittext" (click)="editcoordinate(item)">修改</span>
+                <span *ngIf="!item.isedittext" (click)="savecoordinate(item)">保存</span>
+              </div>
+            </td>
+            <td *ngFor="let head of rephead" [innerHTML]="item[head?.code]"></td>
+            <td>
+              <div class="czdiv">
+                <a style="color:#aee4ff;display:block;" (click)="distributionset(item,2)">修改配送方式</a>
+                <a style="color:#aee4ff;display:block;" (click)="setshippingfee(item)">修改配送费</a>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </nz-table>
+    </div>
+
+  </div>
+</div>
+
+
+
+  <!-- 导入状态提示 -->
+  <ng-template #template let-notification>
+    <import-tip [importres]="results"></import-tip>
+  </ng-template>

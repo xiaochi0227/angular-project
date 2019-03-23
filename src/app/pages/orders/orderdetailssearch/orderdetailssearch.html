@@ -1,0 +1,131 @@
+<div class="zh-serchbox">
+  <table class="table zh-serchtable black-muted-bg">
+    <tbody>
+      <tr>
+        <td>
+          <table class="table zh-serch-table">
+            <tr>
+              <td class="zh-zdname">渠道</td>
+              <td class="zh-textbox">
+                <nz-select style="width: 180px;" [(ngModel)]="params.search.channel_keyword" nzShowSearch nzAllowClear
+                  nzPlaceHolder="请选择渠道">
+                  <nz-option *ngFor="let channel of channels;" [nzValue]="channel.channel_keyword" [nzLabel]="channel.name"></nz-option>
+                </nz-select>
+              </td>
+              <td class="zh-zdname">渠道订单号</td>
+              <td class="zh-textbox">
+                <input nz-input placeholder="请输入渠道订单号" [(ngModel)]="params.search.channel_sheetno">
+              </td>
+              <td class="zh-zdname">门店</td>
+              <td class="zh-textbox" *ngIf="stores">
+                <nz-select style="width: 180px;" [(ngModel)]="params.search.region_code" nzShowSearch nzAllowClear
+                  nzPlaceHolder="请选择门店名称">
+                  <nz-option *ngFor="let store of stores" [nzValue]="store.code" [nzLabel]="store.codename"></nz-option>
+                </nz-select>
+              </td>
+            </tr>
+            <tr>
+              <td class="zh-zdname">选择时间</td>
+              <td colspan="3" style="text-align:left;">
+                <my-daterange [_startDate]="_startDate" [_endDate]="_endDate" (startchange)="startchange($event)"
+                  (endchange)="endchange($event)"></my-daterange>
+              </td>
+              <td class="zh-zdname" name="order_status">订单状态</td>
+              <td class="zh-textbox">
+                <nz-select style="width: 180px;" [(ngModel)]="params.search.order_status" nzShowSearch nzAllowClear
+                  nzPlaceHolder="请选择订单状态">
+                  <nz-option [nzValue]="'1'" [nzLabel]="'[1]新订单'"></nz-option>
+                  <nz-option [nzValue]="'4'" [nzLabel]="'[4]已释放'"></nz-option>
+                  <nz-option [nzValue]="'6'" [nzLabel]="'[6]已备货'"></nz-option>
+                  <nz-option [nzValue]="'9'" [nzLabel]="'[9]已配送'"></nz-option>
+                  <nz-option [nzValue]="'11'" [nzLabel]="'[11]已签收'"></nz-option>
+                  <nz-option [nzValue]="'14'" [nzLabel]="'[14]待取消'"></nz-option>
+                  <nz-option [nzValue]="'15'" [nzLabel]="'[15]已取消'"></nz-option>
+                </nz-select>
+              </td>
+            </tr>
+            <tr>
+              <td class="zh-zdname">商品编码</td>
+              <td class="zh-textbox">
+                <input nz-input placeholder="请输入商品编码" [(ngModel)]="params.search.item_code">
+              </td>
+              <td class="zh-zdname">商品条码</td>
+              <td class="zh-textbox">
+                <input nz-input placeholder="请输入商品条码" [(ngModel)]="params.search.barcode">
+              </td>
+              <td class="zh-zdname">线上分类</td>
+              <td class="zh-textbox">
+                <nz-select style="width: 120px;" [(ngModel)]="params.search.online_sup_code" nzAllowClear
+                  (ngModelChange)="getSubOnlineCategories(params.search.online_sup_code)">
+                  <nz-option *ngFor="let category of firstCategories;" [nzValue]="category.code" [nzLabel]="category.name"></nz-option>
+                </nz-select>
+                <nz-select style="width: 120px;" [(ngModel)]="params.search.online_cat_code" nzAllowClear>
+                  <nz-option *ngFor="let category of subCategories;" [nzValue]="category.code" [nzLabel]="category.name"></nz-option>
+                </nz-select>
+              </td>
+            </tr>
+          </table>
+        </td>
+        <td>
+          <button nz-button nzType="primary" style="margin-right:10px;" (click)="search(params)">查询</button>
+          <button nz-button nzType="default" (click)="OrderRest()">重置</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+<my-page [params]='params' [pagecount]='page_count' [changecount]='changecount' (childparams)="childparams($event)"></my-page>
+<div class="horizontal-scroll">
+  <nz-table #nzTable [nzData]="orderdetails" [nzShowPagination]="false" [nzFrontPagination]="false" nzBordered>
+    <thead>
+      <tr>
+        <th colspan="12">
+          <span style="position: absolute;display:inline-block;width:380px;left:10px;top:12px;text-align: left;">
+            <span style="margin-right:25px;">商品总数量:{{goodstotal}}</span>
+            <span>商品总金额:{{goodsmoney}}</span>
+          </span>
+          <button nz-button nzType="default" (click)="addexport()"><i nz-icon type="file-excel" theme="outline"></i>导出到CSV文件</button>
+        </th>
+      </tr>
+      <tr>
+        <th width="5%">序号</th>
+        <th width="7%">渠道</th>
+        <th width="11%">门店</th>
+        <th width="12%">订单号</th>
+        <th width="7%">订单状态</th>
+        <th width="10%">线上分类</th>
+        <th width="10%">商品编码/条码</th>
+        <th width="11%">商品名称</th>
+        <th width="5%">商品售价</th>
+        <th width="5%">数量</th>
+        <th width="10%">金额</th>
+        <th>时间</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let orderdetail of nzTable.data;let i=index">
+        <td>{{cow+i+1}}</td>
+        <td>
+          <my-channeltags [getchannel]="orderdetail.channel_keyword"></my-channeltags>
+        </td>
+        <td>[{{orderdetail.region_code}}]{{orderdetail.region_name}}</td>
+        <td>{{orderdetail.channel_sheetno}}</td>
+        <td>{{orderdetail.order_status}}</td>
+        <td>一级:{{orderdetail.online_sup_name}}<br />二级:{{orderdetail.online_cat_name}}</td>
+        <td>{{orderdetail.item_code}}/<div>{{orderdetail.barcode}}</div>
+        </td>
+        <td>{{orderdetail.item_name}}</td>
+        <td class="textright">{{orderdetail.sale_price}}</td>
+        <td class="textright">{{orderdetail.sale_qty}}</td>
+        <td class="textright">
+          <span style="display:block;">商品金额:{{orderdetail.sale_value}}</span>
+          <span *ngIf="orderdetail.disc_value" style="display: block;">商家优惠:{{orderdetail.disc_value}}</span>
+          <span *ngIf="orderdetail.disc_value_pt" style="display: block;">平台优惠:{{orderdetail.disc_value_pt}}</span>
+          <span *ngIf="orderdetail.disc_bt_sj" style="display: block;">单品商家优惠:{{orderdetail.disc_bt_sj}}</span>
+          <span *ngIf="orderdetail.disc_bt" style="display: block;">平台单品优惠:{{orderdetail.disc_bt}}</span>
+        </td>
+        <td>{{orderdetail.timestamp}}</td>
+      </tr>
+    </tbody>
+  </nz-table>
+</div>

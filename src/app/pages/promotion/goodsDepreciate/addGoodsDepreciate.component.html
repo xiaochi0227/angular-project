@@ -1,0 +1,747 @@
+<!-- 标题 -->
+<div class="w-card" style="padding: 6px 0 12px 10px;">
+  <h2 style="margin-bottom: 0;cursor: default">新增单品直降</h2>
+</div>
+<!-- 标题结束 -->
+
+
+
+
+<!-- 提示框 -->
+<div *ngIf="pages.activityGoods=='2'" style="margin-top: 20px;">
+  <nz-alert nzShowIcon nzType="info" nzMessage="添加门店商品提示：" [nzDescription]="Info"></nz-alert>
+  <ng-template #Info>
+    请先选择门店，再选择商品；门店信息更新后，商品信息也会随之更新
+  </ng-template>
+</div>
+<!-- 提示框结束 -->
+
+
+
+
+<!-- 面板 -->
+<div class="w-card" style="padding: 20px;display: block">
+
+  <!-- 步骤条（公共） -->
+  <div style="width: 90%;margin: 0 auto;">
+    <nz-steps [(nzCurrent)]="pages.current">
+      <nz-step [nzTitle]="'活动规则'"></nz-step>
+      <nz-step [nzTitle]="'活动商品'"></nz-step>
+      <nz-step [nzTitle]="'完成'"></nz-step>
+    </nz-steps>
+  </div>
+  <!-- 步骤条（公共）结束 -->
+
+
+
+
+  <!-- 活动规则页面 -->
+  <div *ngIf="pages.activityGoods=='1'">
+
+    <!-- 渠道信息 -->
+    <div class="onnlineTitle"><span class="online-icon"></span>渠道信息</div>
+
+    <div class="new-body-border">
+      <div class="new-body" style="margin-top: 0">
+        <div class="new-body-left">
+          <span>*</span>选择渠道：
+        </div>
+        <div class="new-body-right">
+          <nz-select style="width: 350px" nzMode="multiple" nzPlaceHolder="请选择渠道" [(ngModel)]="channel" (ngModelChange)="onChoose('1',$event)">
+            <nz-option nzLabel="京东到家" nzValue="JDDJ"></nz-option>
+            <nz-option nzLabel="美团外卖" nzValue="MTWM"></nz-option>
+            <!-- <nz-option nzLabel="淘鲜达" nzValue="TXD"></nz-option> -->
+          </nz-select>
+        </div>
+      </div>
+    </div>
+    <!-- 渠道信息结束 -->
+
+
+    <!-- 活动信息 -->
+    <div class="onnlineTitle"><span class="online-icon"></span>活动信息</div>
+
+    <div class="new-body-border">
+
+      <!-- 活动名称 -->
+      <div class="new-body" style="margin-top: 0">
+        <div class="new-body-left">
+          <span>*</span>活动名称：
+        </div>
+        <div class="new-body-right">
+          <input type="text" nz-input placeholder="请输入20个字符以内的活动名称" [(ngModel)]="goodSubmit.pd_name" (ngModelChange)="onChangeActive('1',$event)"
+            [ngStyle]="{'border-color': Ruls.isPd_name?'#f00':''}" style="width: 350px">
+          <div class="hint" *ngIf="Ruls.isPd_name">活动名称长度不能为空，不能大于20个字符</div>
+        </div>
+      </div>
+      <!-- 活动名称结束 -->
+
+
+      <!-- 选择时间 -->
+      <div class="new-body">
+        <div class="new-body-left">
+          <span>*</span>选择时间：
+        </div>
+        <div class="new-body-right">
+          <nz-range-picker [nzShowTime]="{ nzFormat: 'HH:mm' }" nzFormat="yyyy-MM-dd HH:mm" (ngModelChange)="onCalendarChange('1',$event)"
+            [nzAllowClear]="false" [(ngModel)]="chooseTime.current_time" (nzOnOk)="onCalendarChange('2',$event)"
+            (nzOnOpenChange)="onCalendarChange('3',$event)" [nzDisabledTime]="chooseTime.disabledRangeTime"
+            [nzDisabledDate]="chooseTime.disabledDate">
+          </nz-range-picker>
+          <div class="hint" style="color: #0E6EB8">活动开始时间为当前时间+1小时</div>
+        </div>
+      </div>
+      <!-- 选择时间结束 -->
+
+
+      <!-- 限购规则 -->
+      <div class="new-body">
+        <div class="new-body-left">
+          <span>*</span>限购规则：
+        </div>
+        <div class="new-body-right">
+          <!-- 未选择状态 -->
+          <div *ngIf="!checkedJDDJ&&!checkedMTWM">未选择渠道</div>
+
+          <!-- 京东到家状态 -->
+          <div *ngIf="checkedJDDJ&&checkedMTWM" style="margin-bottom: 8px;">(京东到家)</div>
+          <div *ngIf="checkedJDDJ" [ngClass]="{'chooseBorder': checkedJDDJ&&checkedMTWM?true:false}">
+            <div>
+              <nz-select nzPlaceHolder="限购规则" [(ngModel)]="JDDJ.limitDaily" (ngModelChange)="onChoose('2',$event)"
+                style="width: 200px;">
+                <nz-option [nzValue]="0" nzLabel="不限制"></nz-option>
+                <nz-option [nzValue]="1" nzLabel="按每日限购数量"></nz-option>
+              </nz-select>
+            </div>
+            <div style="display: flex;align-items: center;margin-top: 15px;" *ngIf="JDDJ.limitDaily=='1'">
+              <div>本次促销活动，限购数量：</div>
+              <nz-input-number [(ngModel)]="JDDJ.limitCount" style="width:160px" [nzPlaceHolder]="'大于0的整数'" [nzMin]="1"
+                (ngModelChange)="onChangeActive('2',$event)" [ngStyle]="{'border-color': Ruls.isJDLimitCount?'#f00':''}">
+              </nz-input-number>
+            </div>
+            <div class="hint" *ngIf="Ruls.isJDLimitCount" style="margin-left: 170px;">限购数量不可为空，不可包含小数点</div>
+          </div>
+          <!-- 京东到家状态结束 -->
+
+          <!-- 美团外卖状态 -->
+          <div *ngIf="checkedJDDJ&&checkedMTWM" style="margin: 20px 0 8px 0;">(美团外卖)</div>
+          <div *ngIf="checkedMTWM" [ngClass]="{'chooseBorder': checkedJDDJ&&checkedMTWM?true:false}">
+
+            <div style="display: flex;align-items: baseline">
+              <label nz-checkbox [(ngModel)]="MTWMchoose.imposeNumber">每单限购数量</label>
+              <div *ngIf="MTWMchoose.imposeNumber" style="margin-left: 15px;" class="impose-body">
+                <nz-radio-group [(ngModel)]="MTWMchoose.radioValueCustom" (ngModelChange)="onChoose('3',$event)">
+                  <label nz-radio nzValue="0">不限</label>
+                  <label nz-radio nzValue="1">自定义</label>
+                </nz-radio-group>
+                <nz-input-number [(ngModel)]="MTWM.limitCount" style="width:160px" [nzPlaceHolder]="'大于0小于10的整数'"
+                  [nzMin]="1" [nzMax]="10" (ngModelChange)="onChangeActive('3',$event)" [ngStyle]="{'border-color': Ruls.isMTLimitCount?'#f00':''}"
+                  *ngIf="MTWMchoose.radioValueCustom==='1'?true:false">
+                </nz-input-number>
+              </div>
+            </div>
+            <div class="hint" *ngIf="Ruls.isMTLimitCount" style="margin-left: 284px;">限购数量不可为空，不可包含小数点</div>
+
+            <div style="display: flex;align-items: baseline;margin-top: 15px;">
+              <label nz-checkbox [(ngModel)]="MTWMchoose.imposeStore">每日活动库存</label>
+              <div *ngIf="MTWMchoose.imposeStore" style="margin-left: 15px;" class="impose-body">
+                <nz-radio-group [(ngModel)]="MTWMchoose.radioValueStore" (ngModelChange)="onChoose('4',$event)">
+                  <label nz-radio nzValue="0">不限</label>
+                  <label nz-radio nzValue="1">自定义</label>
+                </nz-radio-group>
+                <nz-input-number [(ngModel)]="MTWM.day_limit" style="width:160px" [nzPlaceHolder]="'大于0的整数'" [nzMin]="1"
+                  (ngModelChange)="onChangeActive('4',$event)" [ngStyle]="{'border-color': Ruls.isMTday_limit?'#f00':''}"
+                  *ngIf="MTWMchoose.radioValueStore==='1'?true:false">
+                </nz-input-number>
+              </div>
+            </div>
+            <div class="hint" *ngIf="Ruls.isMTday_limit" style="margin-left: 284px;">活动库存不可为空，不可包含小数点</div>
+
+          </div>
+          <!-- 美团外卖状态结束 -->
+        </div>
+      </div>
+      <!-- 限购规则结束 -->
+
+
+      <!-- 促销人员 -->
+      <div class="new-body">
+        <div class="new-body-left">
+          <span>*</span>促销人员：
+        </div>
+        <div class="new-body-right">
+
+          <div *ngIf="!checkedJDDJ&&!checkedMTWM">未选择渠道</div>
+
+          <div *ngIf="checkedJDDJ&&checkedMTWM" style="margin-bottom: 8px;">(京东到家)</div>
+          <div *ngIf="checkedJDDJ" [ngClass]="{'chooseBorder': checkedJDDJ&&checkedMTWM?true:false}">
+            <label nz-radio [(ngModel)]="JDDJ.user_type">全部用户</label>
+          </div>
+
+          <div *ngIf="checkedJDDJ&&checkedMTWM" style="margin: 20px 0 8px 0;">(美团外卖)</div>
+          <div *ngIf="checkedMTWM" [ngClass]="{'chooseBorder': checkedJDDJ&&checkedMTWM?true:false}">
+            <nz-radio-group [(ngModel)]="MTWM.user_type">
+              <label nz-radio [nzValue]="0">全部用户</label>
+              <label nz-radio [nzValue]="1">门店新客</label>
+            </nz-radio-group>
+          </div>
+
+        </div>
+      </div>
+      <!-- 促销人员结束 -->
+
+    </div>
+    <!-- 活动信息结束 -->
+
+
+    <!-- 按钮操作 -->
+    <div class="form-btn">
+      <button nz-button nzType="primary" (click)="onSave('1')" [nzLoading]="isLoading.one">仅保存</button>
+      <button nz-button nzType="primary" style="margin-left: 15px;" (click)="onBtnNext('1')">下一步</button>
+    </div>
+    <!-- 按钮操作结束 -->
+
+  </div>
+  <!-- 活动规则页面结束 -->
+
+
+
+
+
+
+  <!-- 活动商品页面 -->
+  <div *ngIf="pages.activityGoods==='2'">
+
+    <!-- 门店列表 -->
+    <div class="onnlineTitle" style="width: 90%;"><span class="online-icon"></span>添加门店</div>
+
+    <div class="table-body">
+      <div class="table-body-top">
+        <span class="link" (click)="onAddModal('1',addStoreComponent)">新增门店</span>
+
+        <ng-container *ngIf="this.deleteStore_params.regions.length !== 0; else elseTemplate">
+          <span class="link" (click)="onPushDelete('1')">批量删除</span>
+        </ng-container>
+        <ng-template #elseTemplate>
+          <span class="disable">批量删除</span>
+        </ng-template>
+      </div>
+
+      <div style="margin-top: 20px;">
+        <nz-table #nzStoreTable nzSize="middle" [nzData]="storeList.data_Set" [nzScroll]="{ y: '500px' }"
+          [nzFrontPagination]="false" [nzShowPagination]="false">
+          <thead>
+            <tr>
+              <th nzShowCheckbox nzWidth="10%" [(nzChecked)]="storeList.allChecked" [nzIndeterminate]="storeList.indeterminate"
+                (nzCheckedChange)="checkAll('2',$event)">
+              </th>
+              <th nzWidth="20%">门店编码</th>
+              <th nzWidth="30%">门店名称</th>
+              <th nzWidth="25%">城市</th>
+              <th>操作</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr style="background: #fff;" *ngFor="let data of nzStoreTable.data">
+              <td nzShowCheckbox [(nzChecked)]="data.checked" (nzCheckedChange)="checkMultiple('2')"></td>
+              <td>{{data.region_code}}</td>
+              <td>{{data.region_name}}</td>
+              <td>{{data.city}}</td>
+              <td><span class="link delete" (click)="onPushDelete('2',data.region_code)">删除</span></td>
+            </tr>
+          </tbody>
+        </nz-table>
+      </div>
+      <div class="chooseCount" *ngIf="storeList.data_Set.length !== 0">
+        <div>已选 {{storeList.num}} 家门店</div>
+        <div>共 {{storeList.count}} 条记录</div>
+      </div>
+    </div>
+    <!-- 门店列表结束 -->
+
+
+
+    <!-- 商品列表 -->
+    <div class="onnlineTitle" style="width: 90%;margin-top: 60px;"><span class="online-icon"></span>添加商品</div>
+
+    <!-- 批量导入 -->
+    <div class="file-body" *ngIf="commodityList.isShowFile">
+      <div class="file-one">
+        <div class="file-border">
+          <label nz-button for="upload">
+            <i nz-icon type="upload"></i>选择文件
+          </label>
+          <input type="file" #file5 id="upload" (change)="promotionimport(file5)">
+          <span class="file-span" style="margin-left: 15px;">
+            <i nz-icon type="file-text" style="margin-right: 8px;"></i>未选择任何文件
+          </span>
+        </div>
+        <button nz-button nzType="primary" style="width: 100px;margin-left: 30px" (click)="onUpload('1')">上传</button>
+        <a class="link" href="http://www.m-glory.net/newadmin/templete/单品直降导入模版.xlsx" style="margin-left: 20px;">下载模板</a>
+        <span class="file-span" style="margin-left: 30px;">（重新选择文件上传会覆盖之前的文件以及数据）</span>
+      </div>
+      <div class="file-two">
+        <span class="file-span" style="margin-left: 20px;">共导入3条记录，成功2条，失败1条</span>
+        <span class="link" style="margin-left: 30px;" (click)="onUpload('2')">查看失败记录</span>
+        <span class="link" style="margin-left: 30px;" (click)="onUpload('3')">清空上传记录</span>
+      </div>
+    </div>
+    <!-- 批量导入结束 -->
+
+    <!-- 查询商品 -->
+    <div class="search-card">
+      <div class="search-left">
+        <div class="search-content">
+          <input type="text" nz-input placeholder="门店编码" [(ngModel)]="searchCommodity.search.region_code">
+        </div>
+        <div class="search-content">
+          <input type="text" nz-input placeholder="门店名称" [(ngModel)]="searchCommodity.search.region_name">
+        </div>
+        <div class="search-content">
+          <input type="text" nz-input placeholder="商品编码" [(ngModel)]="searchCommodity.search.item_code">
+        </div>
+        <div class="search-content">
+          <input type="text" nz-input placeholder="商品名称" [(ngModel)]="searchCommodity.search.item_name">
+        </div>
+      </div>
+      <div class="search-right">
+        <button nz-button nzType="primary" (click)="onSearchStore('3')">搜索</button>
+        <button nz-button style="margin-left: 10px;" (click)="onSearchStore('4')">重置</button>
+      </div>
+    </div>
+    <!-- 查询商品结束 -->
+
+    <div class="table-body" style="width: 86%;">
+      <!-- 操作标题 -->
+      <div class="table-body-top">
+        <ng-container *ngIf="storeList.data_Set.length !== 0; else elseTemplate_one">
+          <div class="title-left">
+            <span class="link" (click)="onAddModal('2',addCommodityComponent)">新增商品</span>
+            <span class="link" (click)="onAddModal('5')" style="margin-left:20px;">批量新增</span>
+          </div>
+        </ng-container>
+        <ng-template #elseTemplate_one>
+          <div class="title-left">
+            <span class="disable">新增商品</span>
+            <span class="disable" style="margin-left:20px;">批量新增</span>
+          </div>
+        </ng-template>
+
+        <ng-container *ngIf="storeList.data_Set.length !== 0&&commodityList.region_items.length !== 0; else elseTemplate_two">
+          <div class="title-right">
+            <span>
+              <span class="link" (click)="onAddModal('3',discountComponent)">批量设置折扣</span>
+              <span class="link" (click)="onAddModal('4',priceComponent)" style="margin-left:20px;">批量设置活动价</span>
+            </span>
+            <span class="link" (click)="onPushDelete('3')">批量删除</span>
+          </div>
+        </ng-container>
+        <ng-template #elseTemplate_two>
+          <div class="title-right">
+            <span>
+              <span class="disable">批量设置折扣</span>
+              <span class="disable" style="margin-left:20px;">批量设置活动价</span>
+            </span>
+            <span class="disable">批量删除</span>
+          </div>
+        </ng-template>
+      </div>
+      <!-- 操作标题结束 -->
+
+      <div style="margin-top: 20px;">
+        <nz-table #nzCommodityTable nzSize="middle" [nzData]="commodityList.data_Set" [nzScroll]="{ y: '500px' }"
+          [nzFrontPagination]="false" [nzShowPagination]="false">
+          <thead>
+            <tr>
+              <th nzShowCheckbox nzWidth="7%" [(nzChecked)]="commodityList.allChecked" [nzIndeterminate]="commodityList.indeterminate"
+                (nzCheckedChange)="checkAll('4',$event)">
+              </th>
+              <th nzWidth="10%">门店编号</th>
+              <th nzWidth="12%">门店名称</th>
+              <th nzWidth="13%">商品编码</th>
+              <th nzWidth="13%">商品条码</th>
+              <th nzWidth="17%">商品名称</th>
+              <th nzWidth="7%">原价</th>
+              <th nzWidth="10%">活动价</th>
+              <th>操作</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr style="background: #fff;" *ngFor="let data of nzCommodityTable.data">
+              <td nzShowCheckbox [(nzChecked)]="data.checked" (nzCheckedChange)="checkMultiple('4')"></td>
+              <td>{{data.region_code}}</td>
+              <td>{{data.region_name}}</td>
+              <td>{{data.item_code}}</td>
+              <td>{{data.barcode}}</td>
+              <td>{{data.item_name}}</td>
+              <td>￥{{data.sale_price}}</td>
+              <td>
+                <div style="display: flex;align-items: center">
+                  ￥
+                  <input nz-input [(ngModel)]="data.price" (ngModelChange)="onChangePrice($event,data)" [ngStyle]="{'border-color': data.borderColor}">
+                </div>
+              </td>
+              <td nz-td>
+                <span class="link delete" (click)="onPushDelete('4',data)" style="margin-left: 6px;">删除</span>
+              </td>
+            </tr>
+          </tbody>
+        </nz-table>
+      </div>
+      <div class="chooseCount" *ngIf="commodityList.data_Set.length !== 0">
+        <div>已选 {{commodityList.num}} 件商品</div>
+        <div>共 {{commodityList.count}} 条记录</div>
+      </div>
+    </div>
+    <!-- 商品列表结束 -->
+
+  </div>
+  <!-- 活动商品页面结束 -->
+
+
+
+
+
+  <!-- TODO 完成页面 -->
+  <div *ngIf="pages.activityGoods==='3'">
+    <div style="margin-top: 20px;" *ngIf="activityGoods==='4'">
+      <div class="center">
+        <div class="center-vertical" style="margin-top: 20px;">
+          <div class="tick"><span></span></div>
+          <div style="font-size: 26px;margin-top: 30px;">操作成功</div>
+        </div>
+      </div>
+      <div class="center">
+        <table style="border-collapse:separate; border-spacing:0px 20px;" class="success-body">
+          <tr>
+            <td width="30%;">活动类型：</td>
+            <td>单品直降</td>
+          </tr>
+          <tr>
+            <td width="30%;">活动名称：</td>
+            <td>{{goodSubmit.pd_name}}</td>
+          </tr>
+          <tr>
+            <td width="30%;">活动时间：</td>
+            <td>{{goodSubmit.begin_date | date:'yyyy-MM-dd HH:mm:ss'}} - {{goodSubmit.end_date |
+              date:'yyyy-MM-dd HH:mm:ss'}}</td>
+          </tr>
+          <tr>
+            <td width="30%;">活动门店数量：</td>
+            <td>{{additionBody==='1'?nzCount_addStore:region_count}}</td>
+          </tr>
+          <tr>
+            <td width="30%;">活动商品数量：</td>
+            <td>{{nzCount_commody}}</td>
+          </tr>
+        </table>
+      </div>
+      <div class="center" style="margin-top: 30px;">
+        <button (click)="onStick()" class="ng-btn btn-info btn btn-xs" padding="padding: 4px 35px;" *ngIf="continue">继续创建</button>
+        <button (click)="onExamine()" class="ng-btn btn btn-info btn-xs" style="margin-left: 15px;padding: 4px 35px;background:#fff;border: 1px solid #D9D9D9;color: #666;">查看活动</button>
+      </div>
+    </div>
+  </div>
+  <!-- 完成页面结束 -->
+
+  
+
+
+  <!-- 底部说明 -->
+  <div class="bottom-state" *ngIf="pages.activityGoods=='1'">
+    <b>注意事项：</b><br><br>
+    <b>添加门店注意</b><br>
+    一个门店的商品在同一时间内，只能参与满减、满赠、换购、X元Y件、套装、多买等这些促销中的一种活动。<br>
+  </div>
+
+  <div class="bottom-state" style="width: 90%;padding-left: 12%;" *ngIf="pages.activityGoods=='2'">
+    <div>
+      <label nz-checkbox [(ngModel)]="commodityList.agree">
+        <span style="padding: 0">已阅读并同意</span>
+      </label>
+      <span class="agree" (click)="onAddModal('6')">《商家自营销协议》</span>
+    </div>
+    <div style="margin-top: 20px;">
+      <button nz-button nzType="primary" (click)="onSave('3')" [disabled]="!commodityList.agree" [nzLoading]="isLoading.three">保存并提交</button>
+      <button nz-button nzType="primary" (click)="onSave('2')" style="margin-left: 15px;" [nzLoading]="isLoading.two">仅保存</button>
+      <button nz-button (click)="onBtnNext('2')" style="margin-left: 15px;">上一步</button>
+    </div>
+    <div style="margin-top: 40px;">
+      <b>注意事项：</b><br><br>
+      <b>添加门店注意</b><br>
+      一个门店的商品在同一时间内，只能参与满减、满赠、换购、X元Y件、套装、多买等这些促销中的一种活动。<br>
+    </div>
+  </div>
+  <!-- 底部说明结束 -->
+
+</div>
+<!-- 面板结束 -->
+
+
+
+
+<!-- 公共对话框 -->
+<!-- 新增门店 -->
+<ng-template #addStoreComponent>
+
+  <div style="display: flex;">
+    <nz-input-group nzCompact style="width: 60%;">
+      <nz-select style="width: 30%;" [(ngModel)]="addStore.valueIndex" (ngModelChange)="onSelect('1',$event)">
+        <nz-option nzLabel="门店编码" nzValue="0"></nz-option>
+        <nz-option nzLabel="门店名称" nzValue="1"></nz-option>
+      </nz-select>
+      <input type="text" [(ngModel)]="addStore.value" nz-input style="width: 70%;" placeholder="{{addStore.placeholder}}"
+        (keyup.enter)="onSearchStore('1')">
+    </nz-input-group>
+    <button nz-button nzType="primary" style="margin-left: 10px;" (click)="onSearchStore('1')">
+      <i nz-icon type="search"></i>
+    </button>
+  </div>
+
+  <div style="margin-top: 20px;position: relative;">
+    <nz-table #nzAddStoreTable nzSize="small" nzShowSizeChanger [nzShowTotal]="totalTemplate" [nzData]="addStore.data_Set"
+      [(nzPageSize)]="addStore.Pagesize" [(nzPageIndex)]="addStore.PageIndex" [nzTotal]="addStore.count"
+      [nzFrontPagination]="false" (nzPageIndexChange)="pageOver('1',$event)" (nzPageSizeChange)="pageOver('1',$event)"
+      [nzScroll]="{ y: '350px' }">
+      <thead>
+        <tr>
+          <th nzShowCheckbox nzWidth="10%" [(nzChecked)]="addStore.allChecked" [nzIndeterminate]="addStore.indeterminate"
+            (nzCheckedChange)="checkAll('1',$event)">
+          </th>
+          <th nzWidth="30%">门店编码</th>
+          <th nzWidth="40%">门店名称</th>
+          <th>城市</th>
+        </tr>
+      </thead>
+
+      <tbody style="font-size: 13px;">
+        <tr *ngFor="let data of nzAddStoreTable.data; let i = index">
+          <td nzShowCheckbox [(nzChecked)]="data.checked" (nzCheckedChange)="checkMultiple('1',$event,data)"></td>
+          <td>{{data.code}}</td>
+          <td>{{data.name}}</td>
+          <td>{{data.city}}</td>
+        </tr>
+      </tbody>
+    </nz-table>
+    <div class="chooseTitle">已选 {{addStore.num}} 家门店</div>
+    <ng-template #totalTemplate let-total>
+      共 {{total}} 条记录
+    </ng-template>
+  </div>
+</ng-template>
+<!-- 新增门店结束 -->
+
+
+
+<!-- 新增商品 -->
+<ng-template #addCommodityComponent>
+  <div style="display: flex;width: 60%;">
+    <nz-select style="width: 25%;" [(ngModel)]="addCommodity.valueIndex" (ngModelChange)="onSelect('2',$event)">
+      <nz-option nzLabel="商品编码" nzValue="0"></nz-option>
+      <nz-option nzLabel="商品条码" nzValue="1"></nz-option>
+      <nz-option nzLabel="商品名称" nzValue="2"></nz-option>
+      <nz-option nzLabel="商品分类" nzValue="3"></nz-option>
+    </nz-select>
+
+    <ng-container *ngIf="addCommodity.valueIndex==='3'; else elseTemplate_three">
+      <nz-select style="width: 30%;margin-left: 10px;" [nzPlaceHolder]="'一级分类'" [(ngModel)]="select_one"
+        (ngModelChange)="onSelect('3',$event)">
+        <nz-option [nzLabel]="item.name" [nzValue]="item.code" *ngFor="let item of online.onlinelist_one"></nz-option>
+      </nz-select>
+      <nz-select style="width: 30%;margin-left: 10px;" [nzPlaceHolder]="online.isDisable?'暂无二级分类':''" [(ngModel)]="select_two"
+        [nzDisabled]="online.isDisable">
+        <nz-option [nzLabel]="item.name" [nzValue]="item.code" *ngFor="let item of online.onlinelist_two"></nz-option>
+      </nz-select>
+    </ng-container>
+
+    <ng-template #elseTemplate_three>
+      <input [(ngModel)]="addCommodity.value" nz-input style="width: 70%;margin-left: 10px;" placeholder="{{addCommodity.placeholder}}">
+    </ng-template>
+
+    <button nz-button nzType="primary" style="margin-left: 10px;" (click)="onSearchStore('2')">
+      <i nz-icon type="search"></i>
+    </button>
+  </div>
+
+  <div style="margin-top: 20px;position: relative;">
+    <nz-table #nzAddCommodityTable nzSize="small" nzShowSizeChanger [nzShowTotal]="totalTemplate_one" [nzData]="addCommodity.data_Set"
+      [(nzPageSize)]="addCommodity.Pagesize" [(nzPageIndex)]="addCommodity.PageIndex" [nzTotal]="addCommodity.count"
+      [nzFrontPagination]="false" (nzPageIndexChange)="pageOver('2',$event)" (nzPageSizeChange)="pageOver('2',$event)"
+      [nzScroll]="{ y: '350px' }">
+      <thead>
+        <tr>
+          <th nzShowCheckbox nzWidth="10%" [(nzChecked)]="addCommodity.allChecked" [nzIndeterminate]="addCommodity.indeterminate"
+            (nzCheckedChange)="checkAll('3',$event)">
+          </th>
+          <th nzWidth="15%">一级分类</th>
+          <th nzWidth="15%">二级分类</th>
+          <th nzWidth="24%">商品名称</th>
+          <th nzWidth="18%">商品编码</th>
+          <th>商品条码</th>
+        </tr>
+      </thead>
+
+      <tbody style="font-size: 13px;">
+        <tr *ngFor="let data of nzAddCommodityTable.data">
+          <td nzShowCheckbox [(nzChecked)]="data.checked" (nzCheckedChange)="checkMultiple('3',$event,data)"></td>
+          <ng-container *ngIf="data.online_sup_code; else elseTemplate_four">
+            <td>{{data.online_sup_code==='0'?data.online_cat_name:data.online_sup_name}}</td>
+          </ng-container>
+          <ng-template #elseTemplate_four>
+            <td>无</td>
+          </ng-template>
+
+          <ng-container *ngIf="data.online_cat_code; else elseTemplate_five">
+            <td>{{data.online_cat_name}}</td>
+          </ng-container>
+          <ng-template #elseTemplate_five>
+            <td>无</td>
+          </ng-template>
+          <td>{{data.item_name}}</td>
+          <td>{{data.item_code}}</td>
+          <td>{{data.barcode}}</td>
+        </tr>
+      </tbody>
+    </nz-table>
+    <div class="chooseTitle">已选 {{addCommodity.num}} 件商品</div>
+    <ng-template #totalTemplate_one let-total>
+      共 {{total}} 条记录
+    </ng-template>
+  </div>
+</ng-template>
+<!-- 新增商品结束 -->
+
+
+
+<!-- 批量设置折扣 -->
+<ng-template #discountComponent>
+  <div class="modal-info">
+    <input nz-input type="text" placeholder="请输入折扣" [(ngModel)]="commodityList.discount">
+    <div class="info">注：请输入1到10的折扣</div>
+  </div>
+</ng-template>
+<!-- 批量设置折扣结束 -->
+
+
+
+<!-- 批量设置活动价 -->
+<ng-template #priceComponent>
+  <div class="modal-info">
+    <input nz-input type="text" placeholder="请输入活动价" [(ngModel)]="commodityList.price">
+  </div>
+</ng-template>
+<!-- 批量设置活动价结束 -->
+
+
+
+
+
+
+<!-- 批量导入内容 -->
+<!-- <div *ngIf="additionBody==='2'">
+            <div> -->
+<!-- 标题 -->
+<!-- <div class="account-title">
+                    <span></span>添加门店商品
+                </div> -->
+
+<!-- 上传导入文件 -->
+<!-- <div class="center" style="align-items: center;margin-top: 30px;">
+                    <span class="fileinput-button">
+                        <label for="upload" class="filedButton" style="margin-bottom: 0;">
+                            <i class="anticon anticon-upload"></i>选择文件
+                        </label>
+                        <input class="inputButton" type="file" #file5 id="upload" (change)="promotionimport(file5)"> -->
+<!-- <input class="inputButton" type="file" id="upload" #file1 (change)="storecoordinates(file1)"
+                        ng2FileSelect [uploader]="uploader"> -->
+<!-- </span>
+                    <a class="link-down" href="http://www.m-glory.net/newadmin/templete/单品直降导入模版.xlsx" style="margin-left: 6px;"><u>下载模板</u></a>
+                </div>
+                <div class="center showfile" style="margin-top: 10px;">{{dataSet_Commodity.length !== 0?fileName:''}}</div> -->
+
+<!-- 上传成功/失败对话框 -->
+<!-- <nz-modal [nzVisible]="isUploadingVisible" [nzWidth]="520" [nzTitle]="'文件导入提示'" [nzContent]="modalUploadinginfo"
+                    [nzFooter]="'false'" (nzOnCancel)="handleCancel()">
+                    <ng-template #modalUploadinginfo>
+                        <span style="font-size: 18px;" [ngStyle]="{'color': titleColor}">导入成功 0 条数据</span>
+                    </ng-template>
+                </nz-modal> -->
+
+
+
+
+<!-- 保存提交按钮/上一步按钮/商家协议对话框（公共） -->
+<!-- <div class="account-title"></div>
+        <div class="center" style="margin-top: 30px;">
+            <label nz-checkbox [(ngModel)]="checkedAgree">
+                <span style="padding: 0">已阅读并同意</span>
+            </label>
+            <span class="agree" (click)="onAgree()">《商家自营销协议》</span>
+        </div>
+        <div class="center">
+            <button (click)="onSaveSubmit()" class="ng-btn btn btn-info btn-xs" [disabled]="checkedAgree?false:true">保存并提交</button>
+            <button (click)="onSave()" class="ng-btn btn btn-info btn-xs" style="margin-left: 10px" [disabled]="checkedAgree?false:true">仅保存</button>
+        </div>
+        <nz-modal [nzVisible]="isVisible" [nzWidth]="520" [nzTitle]="'商家自营销协议'" [nzContent]="modalContentinfo"
+            [nzFooter]="'false'" (nzOnCancel)="handleCancel()">
+            <ng-template #modalContentinfo>
+                <div class="main-info">
+                    请参考各平台自营销协议
+                </div>
+            </ng-template>
+        </nz-modal> -->
+
+<!-- </div> -->
+
+
+
+
+
+<!-- 完成页面 -->
+<!-- <div style="margin-top: 20px;" *ngIf="activityGoods==='4'">
+        <div class="center">
+            <div class="center-vertical" style="margin-top: 20px;">
+                <div class="tick"><span></span></div>
+                <div style="font-size: 26px;margin-top: 30px;">操作成功</div>
+            </div>
+        </div>
+        <div class="center">
+            <table style="border-collapse:separate; border-spacing:0px 20px;" class="success-body">
+                <tr>
+                    <td width="30%;">活动类型：</td>
+                    <td>单品直降</td>
+                </tr>
+                <tr>
+                    <td width="30%;">活动名称：</td>
+                    <td>{{goodSubmit.pd_name}}</td>
+                </tr>
+                <tr>
+                    <td width="30%;">活动时间：</td>
+                    <td>{{goodSubmit.begin_date | date:'yyyy-MM-dd HH:mm:ss'}} - {{goodSubmit.end_date |
+                        date:'yyyy-MM-dd HH:mm:ss'}}</td>
+                </tr>
+                <tr>
+                    <td width="30%;">活动门店数量：</td>
+                    <td>{{additionBody==='1'?nzCount_addStore:region_count}}</td>
+                </tr>
+                <tr>
+                    <td width="30%;">活动商品数量：</td>
+                    <td>{{nzCount_commody}}</td>
+                </tr>
+            </table>
+        </div>
+        <div class="center" style="margin-top: 30px;">
+            <button (click)="onStick()" class="ng-btn btn-info btn btn-xs" padding="padding: 4px 35px;" *ngIf="continue">继续创建</button>
+            <button (click)="onExamine()" class="ng-btn btn btn-info btn-xs" style="margin-left: 15px;padding: 4px 35px;background:#fff;border: 1px solid #D9D9D9;color: #666;">查看活动</button>
+        </div>
+    </div> -->
+
+
+<!-- </div> -->
+
+
+<!-- <div style="padding-top:20px; text-align: center;">
+    <button class="btn btn-default" (click)="goback()">返回列表</button>
+</div> -->

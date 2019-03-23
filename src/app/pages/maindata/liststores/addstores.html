@@ -1,0 +1,68 @@
+<nz-card *ngIf="storesarr">
+  <table class="log_table" style="margin-bottom:10px;">
+    <thead>
+      <tr>
+        <th colspan="8">
+            <!-- <input type="button" value="新增" (click)="addrows()" class="btn btn-xs btn-success"> -->
+            <button nz-button nzType="primary" nzSize="small" (click)="addrows()">新增</button>
+        </th>
+      </tr>
+      <tr>
+        <th width="10%">门店编码</th>
+        <th width="10%">所在城市</th>
+        <th width="25%">门店名称</th>
+        <th width="25%">门店地址</th>
+        <th width="10%">门店面积(㎡)</th>
+        <th width="10%">门店安全库存量</th>
+        <th width="10%">是否启用</th>
+        <th>操作</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let store of storesarr;let i=index">
+        <td><input nz-input type="text" [(ngModel)]="store.code" name="code" /></td>
+        <td><input nz-input type="text" [(ngModel)]="store.city" name="city" /></td>
+        <td><input nz-input type="text" [(ngModel)]="store.name" name="name" /></td>
+        <td><input nz-input type="text" [(ngModel)]="store.address" name="address" /></td>
+        <td><input nz-input type="text" [(ngModel)]="store.area" name="area"></td>
+        <td><input nz-input type="text" [(ngModel)]="store.aqkcl" name="aqkcl"></td>
+        <td class="zh-textbox">
+          <nz-select class="form-control" [(ngModel)]="store.status" style="width:100%">
+            <nz-option nzLabel="启用" nzValue="1"></nz-option>
+            <nz-option nzLabel="停用" nzValue="-1"></nz-option>
+          </nz-select>
+        </td>
+        <td><input nz-input type="button" value="删除" (click)="del(i)" class="btn btn-xs btn-danger"></td>
+      </tr>
+      <tr>
+        <td colspan="8" style="text-align:center;">
+          <button nz-button nzType="primary" nzSize="small" (click)="addStore(storesarr)">保 存</button>
+          <button nz-button nzType="default" nzSize="small" onClick="javascript: history.go(-1);">返 回</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</nz-card>
+<!-- <nz-card>
+<div class="text_box">
+    <button nz-button type="default"  (click)="addrows()" class="btn btn-xs btn-success">新增</button>
+</div>
+<div class="head_top">
+    <div width="10%">门店编码</div>
+    <div width="10%">所在城市</div>
+    <div width="25%">门店名称</div>
+    <div width="25%">门店地址</div>
+    <div width="10%">门店面积(㎡)</div>
+    <div width="10%">门店安全库存量</div>
+    <div width="10%">是否启用</div>
+</div>
+<div class="head_bottom">
+    <div width="10%"><input type="text"></div>
+    <div width="10%"><input type="text"></div>
+    <div width="25%"><input type="text"></div>
+    <div width="25%"><input type="text"></div>
+    <div width="10%"><input type="text"></div>
+    <div width="10%"><input type="text"></div>
+    <div width="10%"><input type="text"></div>
+</div>
+</nz-card> -->

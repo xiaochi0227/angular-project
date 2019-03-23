@@ -1,0 +1,193 @@
+<div class="horizontal-scroll" *ngIf="categories">
+  <table class="zh-onlinecategorytable">
+    <thead>
+      <tr>
+        <th colspan="2">
+          <input class="btn btn-info" type="button" (click)="download('线上分类导入模板')" *ngIf="xzmbbt" value="下载模板" />
+          <app-upload [onUploaded]="olctgrInput" nzLimit="1" [uploadname]="'线上分类导入'" [uploadtype]="'button'"></app-upload>
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td style="width: 70%;text-align: left;">
+          <p class="zh-cateheadbts">
+            <button nz-button [nzSize]="small" (click)="savesortorder(categories.rows)">保存顺序(一级)</button>
+            <span class="zh-tip">可以拖曳分类调整顺序，操作完了记得保存顺序~</span>
+          </p>
+          <div class="zh-categoriesbox">
+            <table class="zh-caterows">
+              <tbody [sortablejs]="categories.rows" [sortablejsOptions]="options">
+                <tr class="glyphiconmove" *ngFor="let category of categories.rows;let i=index">
+                  <td class="zh-bordertd">
+                    <table class="zh-level">
+                      <tr>
+                        <td style="width:40%;">
+                          <input *ngIf="category.isparent==true" type="button" (click)="getlevel2(category.code,$event,i)"
+                            class="zh-toggleicon" value="+" />
+                          <span [ngSwitch]="category.isused" class="zh-icon">
+                            <i nz-icon *ngSwitchCase="true" [type]="'check-circle'" [theme]="'twotone'" [twoToneColor]="'#52c41a'"></i>
+                            <i nz-icon *ngSwitchCase="false" [type]="'close-circle'" [theme]="'twotone'" [twoToneColor]="'#eb2f96'"></i>
+                          </span>
+                          <span class="zh-catename">{{category.name}}[编码:{{category.code}}]</span>
+                        </td>
+                        <td style="width:15%;text-align: left;">商品数:{{category.count}}</td>
+                        <td style="text-align: right;">
+                          <button nz-button [nzSize]="small" *ngIf="category.isused==false&&category.del_status==2"
+                            (click)="getDelOnlineCategory(category)">删除</button>
+                          <button nz-button [nzSize]="small" *ngIf="category.isparent==true" (click)="savesortorder(showlevel2[i])">保存顺序(二级)</button>
+                          <button nz-button [nzSize]="small" (click)="getOnlineCategory(category)">修改</button>
+                          <button nz-button [nzSize]="small" *ngIf="category.isparent==false&&kczm" (click)="updateStockFull(category)">库存置满</button>
+                          <button nz-button [nzSize]="small" (click)="categoryLog(category)">日志</button>
+                        </td>
+                      </tr>
+                    </table>
+                    <table class="table table-bordered" style="width:100%;" *ngIf="selectedbts[i]">
+                      <tbody [sortablejs]="showlevel2[i]" [sortablejsOptions]="options">
+                        <tr *ngFor="let lev of showlevel2[i]">
+                          <td style="width:40%;text-align: left;">
+                            <span [ngSwitch]="lev.isused" class="zh-icon1">
+                              <i nz-icon *ngSwitchCase="true" [type]="'check-circle'" [theme]="'twotone'"
+                                [twoToneColor]="'#52c41a'"></i>
+                              <i nz-icon *ngSwitchCase="false" [type]="'close-circle'" [theme]="'twotone'"
+                                [twoToneColor]="'#eb2f96'"></i>
+                              <!-- <i nz-icon *ngSwitchCase="true" [nzType]="'check-circle'" [nzTheme]="'twotone'"
+                                [nzTwotoneColor]="'#52c41a'"></i>
+                              <i nz-icon *ngSwitchCase="false" [nzType]="'close-circle'" [nzTheme]="'twotone'"
+                                [nzTwotoneColor]="'#52c41a'"></i> -->
+                            </span>
+                            {{lev.name}}({{lev.code}})
+                          </td>
+                          <td style="width:15%;text-align: left;">商品数:{{lev.count}}</td>
+                          <td style="text-align: right;">
+
+                            <button class="btn btn-danger btn-xs" *ngIf="lev.isused==false&&lev.del_status==2" (click)="getDelOnlineCategorySecond(lev,i)">删除</button>
+                            <button class="btn btn-warning btn-xs" *ngIf="lev.isused==false&&lev.del_status!==2"
+                              disabled>删除</button>
+                            <button nz-button [nzSize]="small" *ngIf="lev.isused==false&&lev.del_status==2" (click)="getDelOnlineCategorySecond(lev,i)">删除</button>
+                            <button nz-button [nzSize]="small" *ngIf="lev.isused==false&&lev.del_status!==2" disabled>删除</button>
+
+                            <button nz-button [nzSize]="small" (click)="getOnlineCategory(lev)" nzType="default">修改</button>
+                            <button nz-button [nzSize]="small" *ngIf="lev.isparent==false" (click)="updateStockFull(lev)"
+                              nzType="default">库存置满</button>
+                            <button nz-button [nzSize]="small" (click)="categoryLog(lev)" nzType="default">日志</button>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </td>
+        <td>
+          <form #addpl="ngForm">
+            <table class="zh-addtable">
+              <thead>
+                <tr>
+                  <th colspan="2" style="border:none;border-bottom:1px solid #d9d9d9;padding:0.2rem;text-align: center;font-weight:bold;">{{titletext}}&nbsp;</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <input type="hidden" name="id" [(ngModel)]="category.id">
+                  <td style="text-align:right;">编码</td>
+                  <td>
+                    <input nz-input placeholder="请输入编码（编码唯一）" [disabled]="editbm" [(ngModel)]="category.code" name="code">
+                  </td>
+                </tr>
+                <tr>
+                  <td style="text-align:right;">名称</td>
+                  <td>
+                    <input nz-input placeholder="请输入名称（名称唯一）" [disabled]="editbm" [(ngModel)]="category.name" name="name">
+                  </td>
+                </tr>
+                <tr>
+                  <td style="text-align:right;">上级</td>
+                  <td>
+                    <nz-select [(ngModel)]="category.parent" [disabled]="editbm" name="parent">
+                      <nz-option nzValue="" nzLabel="请选择"></nz-option>
+                      <nz-option *ngFor="let category of firstCategories;" [nzValue]="category.code" [nzLabel]="category.name"></nz-option>
+                    </nz-select>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="text-align:right;">状态</td>
+                  <td>
+                    <nz-select [(ngModel)]="category.isused" name="isused">
+                      <nz-option nzValue="true" nzLabel="启用"></nz-option>
+                      <nz-option nzValue="false" nzLabel="禁用"></nz-option>
+                    </nz-select>
+                  </td>
+                </tr>
+                <tr>
+                  <td></td>
+                  <td>
+                    <button nz-button nzType="primary" style="margin-right:10px;" (click)="saveOnlineCategory(category)"
+                      [disabled]="!addpl.form.valid">保存</button>
+                    <button nz-button nzType="default" (click)="addOnlineCategory()">取消</button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </form>
+        </td>
+      </tr>
+    </tbody>
+
+    <tbody style="display: none;">
+      <tr>
+        <td></td>
+        <td></td>
+      </tr>
+      <tr class="glyphicon-move" *ngFor="let category of categories.rows;let i=index">
+        <td>{{i+1}}</td>
+        <td style="text-align:center;" [ngSwitch]="category.isused">
+          <i *ngSwitchCase="true" class="ion-checkmark-round" style="padding:2px 3px;color:#5cb85c;background:#fff;border-radius:5px;"></i>
+          <i *ngSwitchCase="false" class="ion-close-round" style="padding:2px 3px;color:#f00;background:#fff;border-radius:5px;"></i>
+        </td>
+        <td>{{category.code}}</td>
+        <td>{{category.name}}</td>
+        <td>{{category.count}}</td>
+        <td>
+          <button class="btn btn-info btn-xs" (click)="getOnlineCategory(category)">修改品类</button>
+          <button class="btn btn-info btn-xs" *ngIf="category.isparent==false" (click)="getItemBasees(category)">设置商品</button>
+          <button class="btn btn-info btn-xs" *ngIf="category.isparent==false" (click)="updateStockFull(category)">库存置满</button>
+          <button class="btn btn-info btn-xs" (click)="categoryLog(category)">线上品类日志</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<app-modal [modalwidth]="modalwidth" [modaltitle]="modaltitle" [isVisible]="modalstatus" [isConfirmLoading]="modalconfirloading"
+  [confirmisshow]="confirmisshow" (handlecancelemit)="closemodal()">
+  <div *ngIf="this.modaltitle==='线上分类日志'">
+    <nz-table #nzTable [nzData]="categorylogs" [nzShowPagination]="false" [nzFrontPagination]="false" nzBordered>
+      <thead>
+        <tr>
+          <th>名称</th>
+          <th>排列顺序</th>
+          <th>是否可用</th>
+          <th>修改时间</th>
+          <th>修改人</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let category of nzTable.data;">
+          <td>{{category.name}}</td>
+          <td>{{category.order}}</td>
+          <td>{{category.isused}}</td>
+          <td>{{category.timestamp}}</td>
+          <td>{{category.oper_user}}</td>
+        </tr>
+      </tbody>
+    </nz-table>
+  </div>
+</app-modal>
+
+<!-- 导入状态提示 -->
+<ng-template #template let-notification>
+  <import-tip [importres]="results"></import-tip>
+</ng-template>

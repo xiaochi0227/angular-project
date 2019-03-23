@@ -1,0 +1,227 @@
+
+            <nz-card>
+                <nz-tabset >
+                    <nz-tab nzTitle="{{channel.name}}" (nzClick)="getselectlist(channel)" *ngFor="let channel of channels;">
+                        <!-- <ng-template #nzTabHeading>
+                            <div style="padding:8px 20px;">{{channel.name}}</div>
+                        </ng-template> -->
+                        <div class="zh-serchbox black-muted-bg">
+                            <table class="table zh-serchtable">
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <table class="table zh-serch-table">
+                                                <tr>
+                                                    <td class="zh-zdname" width="10%" style="color:#66666652">城市</td>
+                                                    <td class="zh-textbox" width="22%"> 
+                                                        <input nz-input type="text" class="form-control" [(ngModel)]="params.search.city" name="city" placeholder="请输入城市名称">
+                                                    </td>
+                                                    <td class="zh-zdname" width="10%" style="color:#66666652">门店</td>
+                                                    <td class="zh-textbox" width="22%" style="color:#66666652">
+                                                            <!-- <my-searchselect #searchselect [selectlistarr]="stores" (searchcode)="searchcode($event)"
+                                                            (searchname)="searchname($event)" [gettextvalue]="region_name"></my-searchselect> -->
+                                                        <!-- <input type="text" class="form-control" [(ngModel)]="params.search.region_code" name="region_code" placeholder="请输入门店编码"> -->
+                                                        <nz-select style="width: 200px;" nzShowSearch nzAllowClear nzPlaceHolder="请选择门店" [(ngModel)]="params.region_code">
+                                                        <nz-option [nzLabel]="store.codename" [nzValue]="store.code" *ngFor="let store of stores"></nz-option>
+                                                        </nz-select>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="zh-zdname" width="10%" style="color:#66666652">营业状态</td>
+                                                    <td class="zh-textbox" width="22%" style="color:#66666652">
+                                                        <nz-radio-group [(ngModel)]="params.search.yy_status" (click)="getQuery()">
+                                                            <label nz-radio-button nzValue="">全部</label>
+                                                            <label nz-radio-button nzValue="1">正常营业</label>
+                                                            <label nz-radio-button nzValue="-1">置休</label>
+                                                        </nz-radio-group>
+                                                    </td>
+                                                    <td class="zh-zdname" width="10%" style="color:#66666652">经营状态</td>
+                                                    <td class="zh-textbox" width="22%" style="color:#66666652">
+                                                        <nz-radio-group [(ngModel)]="params.search.jy_status" (click)="getQuery()">
+                                                            <label nz-radio-button nzValue="">全部</label>
+                                                            <label nz-radio-button nzValue="1">正常</label>
+                                                            <label nz-radio-button nzValue="2">关闭</label>
+                                                        </nz-radio-group>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                        <td>
+                                            <button nz-button nzType="primary" (click)="search(params)">查询</button>
+                                            <button nz-button nzType="primary" (click)="Reset()">重置</button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <ul class="storestatus" *ngIf="itemdate" style="color:#666; border-top:1px solid #66666652;">
+                                <li>营业中
+                                    <span class="statusnum">{{itemdate.yy_count1}}</span>
+                                </li>
+                                <li>暂时关闭
+                                    <span class="statusnum">{{itemdate.yy_count2}}</span>
+                                </li>
+                                <li>有效门店
+                                    <span class="statusnum">{{itemdate.jy_count1}}</span>
+                                </li>
+                                <li>无效门店
+                                    <span class="statusnum">{{itemdate.jy_count2}}</span>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="horizontal-scroll" id="zh-tablecontent" style="min-height: 260px;">
+                            <div class="zh-listhead">
+                                    <button nz-button nzType="default" (click)="setopenstatus()">批量设置营业状态</button> 
+                                    <button nz-button nzType="default" (click)="setopenjystatus()">批量设置经营状态</button>
+                                    <button nz-button nzType="default" (click)="setopentime()">批量设置营业时间</button>
+                                <!-- <input type="button" class="btn btn-success" value="批量设置营业状态" (click)="setopenstatus()">
+                                <input type="button" class="btn btn-success" value="批量设置经营状态" (click)="setopenjystatus()">
+                                <input type="button" class="btn btn-success" value="批量设置营业时间" (click)="setopentime()"> -->
+                                <!-- <nz-modal [nzVisible]="isVisible" [nzTitle]="modeltitle" [nzZIndex]="1000" [nzWidth]="650" [nzContent]="modalContent" (nzOnCancel)="handleCancel()"
+                                    (nzOnOk)="handleOk($event)" [nzConfirmLoading]="isConfirmLoading"> -->
+                                <nz-modal  [(nzVisible)]="isVisible" nzTitle="modeltitle" (nzOnCancel)="handleCancel()" [nzWidth]="650" (nzOnOk)="handleOk()">         
+                                      <div class="modalContent" *ngIf="yyzt">
+                                            <div>
+                                                您将修改
+                                                <span style="font-size: 16px;color:#f00;margin:0 5px;font-weight: bold;">{{params.search.name}}</span>渠道上的
+                                                <span style="font-size: 16px;color:#f00;margin:0 5px;font-weight: bold;">{{selectitemarr.length}}</span>家门店的营业状态
+                                            </div>
+                                            <div class="statusform">
+                                                <nz-radio-group [(ngModel)]="ztopt.status">
+                                                    <label nz-radio [nzValue]="'1'">
+                                                        <span>正常营业</span>
+                                                    </label>
+                                                    <label nz-radio [nzValue]="'-1'">
+                                                        <span>置休</span>
+                                                    </label>
+                                                </nz-radio-group>
+                                            </div>
+                                        </div>
+                                        <div class="modalContent" *ngIf="jyzt">
+                                            <div>
+                                                您将修改
+                                                <span style="font-size: 16px;color:#f00;margin:0 5px;font-weight: bold;">{{params.search.name}}</span>渠道上的
+                                                <span style="font-size: 16px;color:#f00;margin:0 5px;font-weight: bold;">{{selectitemarr.length}}</span>家门店的经营状态
+                                            </div>
+                                            <div class="statusform">
+                                                <nz-radio-group [(ngModel)]="jyztopt.status">
+                                                    <label nz-radio [nzValue]="'1'">
+                                                        <span>正常</span>
+                                                    </label>
+                                                    <label nz-radio [nzValue]="'2'">
+                                                        <span>关闭</span>
+                                                    </label>
+                                                </nz-radio-group>
+                                            </div>
+                                        </div>
+                                        <div class="modalContent" *ngIf="yysj">
+                                            <div>
+                                                您将修改
+                                                <span style="font-size: 16px;color:#f00;margin:0 5px;font-weight: bold;">{{params.search.name}}</span>渠道上的
+                                                <span style="font-size: 16px;color:#f00;margin:0 5px;font-weight: bold;">{{selectitemarr.length}}</span>家门店的营业时间
+                                            </div>
+                                            <div class="statusform">
+                                                <p *ngFor="let date of timearr;let i = index">{{i+1}}.
+                                                    <span style="display:inline-block;">
+                                                        <nz-time-picker style="width:80px!important;" [(ngModel)]="date.start" [nzFormat]="'HH:mm'"></nz-time-picker>
+                                                    </span>
+                                                    <span style="display:inline-block;width:10px;text-align: center;">-</span>
+                                                    <span style="display:inline-block;">
+                                                        <nz-time-picker style="width:80px!important;" [(ngModel)]="date.end" [nzFormat]="'HH:mm'"></nz-time-picker>
+                                                    </span>
+                                                    <button nz-button  nzType="primary" style="margin-right:5px;" [hidden]='i>0' [disabled]='timearr.length>2'
+                                                        (click)="addBtn()">+</button>
+                                                    <button nz-button  nzType="primary" *ngIf="i>0" style="margin-right:5px;"  (click)="delBtn(i)">-</button>
+                                                </p>
+                                            </div>
+                                        </div> 
+                                        <div class="modalContent" *ngIf="edititemtime">
+                                            <div class="statusform">
+                                                <p *ngFor="let date of itemtimearr;let i = index">{{i+1}}.
+                                                    <span style="display:inline-block;">
+                                                        <nz-time-picker style="width:80px!important;" [(ngModel)]="date.start" [nzFormat]="'HH:mm'"></nz-time-picker>
+                                                    </span>
+                                                    <span style="display:inline-block;width:10px;text-align: center;">-</span>
+                                                    <span style="display:inline-block;">
+                                                        <nz-time-picker style="width:80px!important;" [(ngModel)]="date.end" [nzFormat]="'HH:mm'"></nz-time-picker>
+                                                    </span>
+                                                    <button type="button" style="margin-right:5px;" class="btn btn-primary btn-mj" [hidden]='i>0' [disabled]='itemtimearr.length>2'
+                                                        (click)="addBtnitem()">+</button>
+                                                    <button type="button" *ngIf="i>0" style="margin-right:5px;" class="btn btn-primary btn-mj" (click)="delBtnitem(i)">-</button>
+                                                </p>
+                                            </div>
+                                        </div>             
+                                </nz-modal>
+                            </div>
+                            <nz-table class="table table-hover zh-dsrtable">
+                                <thead>
+                                    <tr >
+                                        <th width="5%" style="text-align:center">
+                                            <label nz-checkbox [(ngModel)]="allchecked" (click)="setallcheck(allchecked)"></label>
+                                        </th>
+                                        <th width="15%" style="text-align:center">门店ID</th>
+                                        <th width="25%" style="text-align:center">门店名称</th>
+                                        <th width="10%" style="text-align:center">城市</th>
+                                        <th style="text-align:center">营业时间</th>
+                                        <th width="12%" style="text-align:center">营业状态</th>
+                                        <th width="12%" style="text-align:center">经营状态</th>
+                                    </tr>
+                                </thead>
+                                <tbody *ngIf="!itemlists||itemlists.length===0">
+                                    <tr>
+                                        <td colspan="7">暂无数据！</td>
+                                    </tr>
+                                </tbody>
+                                <tbody *ngIf="itemlists">
+                                    <tr *ngFor="let item of itemlists;let i=index">
+                                        <td width="5%">
+                                            <label nz-checkbox [(ngModel)]="item.sfxz" (click)="selectitem(item)"></label>
+                                        </td>
+                                        <td>{{item.region_code}}</td>
+                                        <td>{{item.region_name}}</td>
+                                        <td>{{item.city}}</td>
+                                        <td>
+                                            <!-- <div class="zh-datetime" *ngFor="let yt of item.yy_time;let i=index;">{{i+1}}.
+                                                <span style="display:inline-block;">
+                                                    <nz-timepicker style="width:80px!important;" [(ngModel)]="yt.start" [nzFormat]="'HH:mm'"></nz-timepicker>
+                                                </span>
+                                                <span style="display:inline-block;width:10px;text-align: center;">-</span>
+                                                <span style="display:inline-block;">
+                                                    <nz-timepicker style="width:80px!important;" [(ngModel)]="yt.end" [nzFormat]="'HH:mm'"></nz-timepicker>
+                                                </span>
+                                            </div> -->
+                                            <div style="vertical-align: middle;display:inline-block;">
+                                                <p *ngFor="let yt of item.yy_time;let i=index;" style="margin-bottom: 0;">
+                                                    <span>{{yt}}</span>
+                                                </p>
+                                            </div>
+                                            <i style="cursor: pointer;margin-left:5px;vertical-align: middle;" (click)="edititemtimefun(item)" class="anticon anticon-edit"></i>
+                                        </td>
+                                        <td>
+                                            <nz-select style="width: 100px;" [(ngModel)]="item.yy_status" [nzPlaceHolder]="'请选择'" (ngModelChange)="changeyystatus(item)">
+                                                <nz-option [nzLabel]="'正常营业'" [nzValue]="'1'"></nz-option>
+                                                <nz-option [nzLabel]="'置休'" [nzValue]="'-1'"></nz-option>
+                                            </nz-select>
+                                        </td>
+                                        <td>
+                                            <nz-select style="width: 100px;" [(ngModel)]="item.jy_status" [nzPlaceHolder]="'请选择'" (ngModelChange)="changejystatus(item)" >
+                                                <nz-option [nzLabel]="'正常'" [nzValue]="'1'"></nz-option>
+                                                <nz-option [nzLabel]="'停业'" [nzValue]="'2'"></nz-option>
+                                            </nz-select>
+                                            <!-- <span *ngSwitchCase="'1'">正常营业</span>
+                                            <span *ngSwitchCase="'2'">置休</span> -->
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </nz-table>
+    
+                        </div>
+                    </nz-tab>
+                    <!-- <ng-template #tabBarExtraContent>
+                        <button nz-button [nzType]="'primary'" (click)="addmessage()">
+                            <span>查看操作记录</span>
+                        </button>
+                    </ng-template> -->
+                </nz-tabset>
+                <my-page [params]='params' [pagecount]='pageSize' [changecount]='changecount' (childparams)="childparams($event)"></my-page>
+            </nz-card>
+

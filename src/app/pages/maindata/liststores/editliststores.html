@@ -1,0 +1,735 @@
+<!-- <nz-card *ngIf="stores">
+  <div>
+    <table style="margin-bottom:10px;" *ngIf="store" class="p-table">
+      <tr>
+        <td class="p-textbox" width="12%">门店编码</td>
+        <td class="p-inputbox" width="22%">{{store.code}}</td>
+        <td class="p-textbox" width="12%">门店名称</td>
+        <td class="p-inputbox" width="22%">
+          <input nz-input type="text" class="form-control" [(ngModel)]="store.name" name="name" />
+        </td>
+        <td class="p-textbox" width="12%">城市</td>
+        <td class="p-inputbox" width="22%">
+          <input nz-input [(ngModel)]="store.city" name="city" />
+        </td>
+      </tr>
+      <tr>
+        <td class="p-textbox">门店地址</td>
+        <td>
+          <input nz-input class="form-control" [(ngModel)]="store.address" name="address" />
+        </td>
+        <td class="p-textbox">门店面积</td>
+        <td>
+          <input nz-input type="text" class="form-control" [(ngModel)]="store.area" name="area" />
+        </td>
+        <td class="p-textbox">门店库存共享率</td>
+        <td>
+          <input nz-input type="text" class="form-control" [(ngModel)]="store.kcgxl" name="kcgxl">
+        </td>
+      </tr>
+      <tr>
+        <td class="p-textbox">门店安全库存量</td>
+        <td>
+          <input nz-input type="text" class="form-control" [(ngModel)]="store.aqkcl" name="aqkcl">
+        </td>
+        <td class="p-textbox">是否启用</td>
+        <td>
+          <nz-select class="form-control" [(ngModel)]="store.status" name="status">
+            <nz-option nzLabel="启用" nzValue="1"></nz-option>
+            <nz-option nzLabel="停用" nzValue="-1"></nz-option>
+          </nz-select>
+        </td>
+        <td class="textright">拣货端缺货下架</td>
+        <td>
+          <nz-select class="form-control" [(ngModel)]="store.out_of_stock" name="store.out_of_stock">
+            <nz-option nzLabel="开启" nzValue="true"></nz-option>
+            <nz-option nzLabel="关闭" nzValue="false"></nz-option>
+          </nz-select>
+        </td>
+      </tr>
+      <tr>
+        <td style="text-align: right;">接单助手</td>
+        <td>
+          <nz-select class="form-control" [(ngModel)]="store.receipt" name="receipt" [disabled]="qudaoobj.pc_receipt === '-1'&& qudaoobj.android_receipt === '-1'">
+            <nz-option nzLabel="开启" nzValue="1"></nz-option>
+            <nz-option nzLabel="关闭" nzValue="-1"></nz-option>
+          </nz-select>
+        </td>
+        <td class="textright">拣货助手</td>
+        <td>
+          <nz-select class="form-control" [(ngModel)]="store.receipt" name="receipt" [disabled]="qudaoobj.pc_receipt === '-1'&& qudaoobj.android_receipt === '-1'">
+            <nz-option nzLabel="开启" nzValue="1"></nz-option>
+            <nz-option nzLabel="关闭" nzValue="-1"></nz-option>
+          </nz-select>
+        </td>
+        <td class="textright">收银机号</td>
+        <td>
+          <input nz-input class="form-control" [(ngModel)]="store.syjh" name="syjh">
+        </td>
+      </tr>
+      <tr>
+        <td style="text-align: right;">收银员号</td>
+        <td>
+          <input nz-input class="form-control" [(ngModel)]="store.syyh" name="syyh">
+        </td>
+        <td colspan="4"></td>
+      </tr>
+    </table>
+    <nz-table class="table table-bordered black-muted-bg" style="margin-bottom:3px;">
+      <thead>
+        <tr>
+          <th>设置门店经营渠道</th>
+        </tr>
+      </thead>
+    </nz-table>
+    <nz-table class="table table-bordered" style="margin-bottom:3px;" *ngFor="let channel of channels;let i=index">
+      <thead>
+        <tr>
+          <th style="text-align: left;">
+            {{channel.channel_name}}(
+            <span *ngIf="channel.orgcode" style="color:#0f0">已绑定</span>
+            <span *ngIf="!channel.orgcode" style="color:#f00">未绑定</span>)
+            <input type="button" *ngIf="selectedbts[i]" value="选择账号" class="btn btn-info btn-xs" (click)="clickchanneloptar(i,channel);">
+            <span style="float: right;">
+              <input type="button" class="btn btn-info btn-xs" value="订单设置日志" (click)="ordersetlog(store.code,channel.channel_keyword)">
+              <input type="button" class="btn btn-info btn-xs" value="查看" (click)="toview($event,i,channel)">
+              <input type="button" *ngIf="channel.orgcode" class="btn btn-warning btn-xs" (click)=delchannel(channel.channel_keyword,channel.orgcode)
+                value="解 绑">
+              <input type="button" class="btn btn-warning btn-xs" (click)=initstore(channel) value="渠道门店初始化">
+            </span>
+          </th>
+        </tr>
+      </thead>
+      <tbody *ngIf="selectedbts[i]">
+        <tr>
+          <td>
+            <div class="zh-optlist">
+              <span class="zh-infoname">渠道门店编码</span>
+              <span class="zh-channeltext">
+                <input type="text" class="form-control" [(ngModel)]="channel.appcode" name="appcode">
+              </span>
+              <span class="zh-infoname">appid</span>
+              <span class="zh-channeltext">
+                <input type="text" class="form-control" [(ngModel)]="channel.appid" name="appid" readonly="readonly">
+              </span>
+              <span class="zh-infoname">secret</span>
+              <span class="zh-channeltext">
+                <input type="text" class="form-control" [(ngModel)]="channel.secret" name="secret" readonly="readonly">
+              </span>
+              <span class="zh-infoname" *ngIf="!(channel.channel_keyword=='BDWM'||channel.channel_keyword=='MTWM')">token</span>
+              <span class="zh-channeltext" *ngIf="!(channel.channel_keyword=='BDWM'||channel.channel_keyword=='MTWM')">
+                <input type="text" class="form-control" [(ngModel)]="channel.token" name="token" readonly="readonly">
+              </span>
+              <span class="zh-infoname" *ngIf="channel.channel_keyword=='ELEM'||channel.channel_keyword =='ELEMFOOD'">refreshToken</span>
+              <span class="zh-channeltext" *ngIf="channel.channel_keyword=='ELEM'||channel.channel_keyword =='ELEMFOOD'">
+                <input type="text" class="form-control" [(ngModel)]="channel.refreshToken" name="refreshToken">
+              </span>
+              <span class="zh-infoname">启用渠道商品管理</span>
+              <span class="zh-channeltext">
+                <select class="form-control" [(ngModel)]="channel.qyqdspgl">
+                  <option [value]="1">是</option>
+                  <option [value]="0">否</option>
+                </select>
+              </span>
+              <span class="zh-infoname" *ngIf="channel.channel_keyword=='BDWM' || channel.channel_keyword=='EBLS'">是否非标品</span>
+              <span class="zh-channeltext" *ngIf="channel.channel_keyword=='BDWM'  || channel.channel_keyword=='EBLS'">
+                <select class="form-control" [(ngModel)]="channel.customer_upc">
+                  <option [value]=true selected>非标品</option>
+                  <option [value]=false>标品</option>
+                </select>
+              </span>
+              <span class="zh-infoname" *ngIf="channel.channel_keyword=='ELEM'||channel.channel_keyword =='ELEMFOOD'">线上门店状态</span>
+              <span class="zh-channeltext" *ngIf="channel.channel_keyword=='ELEM'||channel.channel_keyword =='ELEMFOOD'">
+                <select class="form-control" [(ngModel)]="channel.status">
+                  <option value="noinit">有商品</option>
+                  <option value="initing">initing</option>
+                  <option value="inited">无商品</option>
+                </select>
+              </span>
+              <span class="zh-infoname">舍入方式</span>
+              <span class="zh-channeltext">
+                <select class="form-control" [(ngModel)]="channel.rounding">
+                  <option value="0">四舍五入</option>
+                  <option value="1">截取</option>
+                  <option value="2">向上取整</option>
+                </select>
+              </span>
+              <span class="zh-infoname">价格精度</span>
+              <span class="zh-channeltext">
+                <select class="form-control" [(ngModel)]="channel.accuracy">
+                  <option value="F">分</option>
+                  <option value="J">角</option>
+                  <option value="Y">元</option>
+                </select>
+              </span>
+              <span class="zh-infoname">渠道调价比例(%)</span>
+              <span class="zh-channeltext">
+                <input type="text" [(ngModel)]="channel.adjust_rate" class="form-control" name="adjust_rate" />
+              </span>
+              <span class="zh-infoname">是否自动接单</span>
+              <span class="zh-channeltext">
+                <select class="form-control" [(ngModel)]="channel.zdjd">
+                  <option value="true">是</option>
+                  <option value="false">否</option>
+                </select>
+              </span>
+              <span class="zh-infoname">超卖不接单</span>
+              <span class="zh-channeltext">
+                <select class="form-control" [(ngModel)]="channel.cmbjd">
+                  <option value="true">是</option>
+                  <option value="false">否</option>
+                </select>
+              </span>
+              <span class="zh-infoname">渠道价格</span>
+              <span class="zh-channeltext">
+                <select class="form-control" [(ngModel)]="channel.price_field">
+                  <option *ngIf="channel.set_channel==='1' || channel.set_channel===''" value="sale_price">按促销价(线上)</option>
+                  <option *ngIf="channel.set_channel==='2'" value="erp_reference_price">按线下原价</option>
+                  <option *ngIf="channel.set_channel==='1' || channel.set_channel===''" value="reference_price">按原价（线上）</option>
+                  <option *ngIf="channel.set_channel==='2'" value="erp_price">按线下售价</option>
+                </select>
+              </span>
+              <span class="zh-infoname" *ngIf="channel.channel_keyword=='YOUZAN'">是否在牵牛花上线商品</span>
+              <span class="zh-channeltext" *ngIf="channel.channel_keyword=='YOUZAN'">
+                <select class="form-control" [(ngModel)]="channel.add_item">
+                  <option value="1">是</option>
+                  <option value="-1">否</option>
+                </select>
+              </span>
+              <span class="zh-infoname" *ngIf="channel.channel_keyword=='YOUZAN'">门店ID</span>
+              <span class="zh-channeltext" *ngIf="channel.channel_keyword=='YOUZAN'">
+                <input type="text" [(ngModel)]="channel.youzan_store_id" class="form-control" name="youzan_store_id" />
+              </span>
+              <span class="zh-infoname" *ngIf="channel.channel_keyword=='YOUZAN'">是否多网点模式</span>
+              <span class="zh-channeltext" *ngIf="channel.channel_keyword=='YOUZAN'">
+                <select class="form-control" [(ngModel)]="channel.youzan_multistore" name="youzan_multistore">
+                  <option value="true">是</option>
+                  <option value="false">否</option>
+                </select>
+              </span>
+              <span class="zh-infoname" *ngIf="channel.channel_keyword=='YOUZAN'">是否为主店</span>
+              <span class="zh-channeltext" *ngIf="channel.channel_keyword=='YOUZAN'">
+                <select class="form-control" [(ngModel)]="channel.home_store">
+                  <option [value]="true">是</option>
+                  <option [value]="false">否</option>
+                </select>
+              </span>
+              <span class="zh-infoname" *ngIf="channel.channel_keyword=='YOUZAN'">商品匹配模式</span>
+              <span class="zh-channeltext" *ngIf="channel.channel_keyword=='YOUZAN'">
+                <select class="form-control" [(ngModel)]="channel.relation_field">
+                  <option value="item_code">编码</option>
+                  <option value="barcode">条码</option>
+                </select>
+              </span>
+              <span class="zh-infoname" *ngIf="channel.channel_keyword=='YOUZAN'">默认商品图片地址</span>
+              <span class="zh-channeltext" *ngIf="channel.channel_keyword=='YOUZAN'">
+                <input type="text" [(ngModel)]="channel.item_detail" class="form-control" name="item_detail" />
+              </span>
+              <span class="zh-infoname" *ngIf="channel.channel_keyword=='YOUZAN'">单网点线下门店编码</span>
+              <span class="zh-channeltext" *ngIf="channel.channel_keyword=='YOUZAN'">
+                <input type="text" [(ngModel)]="channel.youzan_model" class="form-control" name="youzan_model" />
+              </span>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </nz-table>
+    <nz-table class="table table-bordered black-muted-bg" style="margin-bottom:3px;">
+      <tr>
+        <th>设置门店配送渠道</th>
+      </tr>
+    </nz-table>
+    <nz-table class="table table-bordered" style="margin-bottom:3px;" *ngFor="let channel of channelDeliverys;let i=index">
+      <thead>
+        <tr>
+          <th style="text-align: left;">
+            {{channel.delivery_name}}(
+            <span *ngIf="channel.orgcode" style="color:#0f0">已绑定</span>
+            <span *ngIf="!channel.orgcode" style="color:#f00">未绑定</span>)
+            <input type="button" *ngIf="psselectedbts[i]" value="选择账号" class="btn btn-info btn-xs" (click)="psclickchanneloptar(i,channel);">
+            <span style="float: right;">
+
+              <input type="button" class="btn btn-info btn-xs" value="查看" (click)="pstoview($event,i,channel)">
+              <input type="button" *ngIf="channel.orgcode" class="btn btn-warning btn-xs" (click)=delchannel(channel.channel_delivery_keyword,channel.orgcode)
+                value="解 绑">
+            </span>
+          </th>
+        </tr>
+      </thead>
+      <tbody *ngIf="psselectedbts[i]">
+        <tr>
+          <td>
+            <div class="zh-optlist">
+              <span class="zh-infoname">主体账号</span>
+              <span class="zh-channeltext">
+                <input type="text" class="form-control" [(ngModel)]="channel.main_account" name="main_account" readonly="readonly">
+              </span>
+              <span class="zh-infoname" *ngIf="channel.channel_delivery_keyword =='MTPS'">Appkey</span>
+              <span class="zh-infoname" *ngIf="channel.channel_delivery_keyword =='FNPS'">App Id</span>
+              <span class="zh-infoname" *ngIf="channel.channel_delivery_keyword =='DADA'">商户ID</span>
+              <span class="zh-channeltext">
+                <input type="text" class="form-control" [(ngModel)]="channel.appid" name="appid" readonly="readonly">
+              </span>
+              <span class="zh-infoname" *ngIf="channel.channel_delivery_keyword =='MTPS'">secret</span>
+              <span class="zh-infoname" *ngIf="channel.channel_delivery_keyword =='FNPS'">Secret Key</span>
+              <span class="zh-infoname" *ngIf="channel.channel_delivery_keyword =='DADA'">商户名称</span>
+              <span class="zh-channeltext">
+                <input type="text" class="form-control" [(ngModel)]="channel.secret" name="secret" readonly="readonly">
+              </span>
+              <span class="zh-infoname">配送渠道门店编号</span>
+              <span class="zh-channeltext">
+                <input type="text" class="form-control" [(ngModel)]="channel.appcode" name="appcode">
+              </span>
+              <span class="zh-infoname" *ngIf="channel.channel_delivery_keyword !=='DADA'">配送服务类型</span>
+              <span class="zh-channeltext" *ngIf="channel.channel_delivery_keyword ==='MTPS'">
+                <nz-select class="form-control" [(ngModel)]="channel.delivery_service_type" name="delivery_service_type"
+                  disabled>
+                  <option value="0">请选择</option>
+                  <option value="4002">飞速达</option>
+                  <option value="4011">快速达</option>
+                  <option value="4012">及时送</option>
+                  <option value="4013">集中送</option>
+                </nz-select>
+
+              </span>
+              <span class="zh-channeltext" *ngIf="channel.channel_delivery_keyword ==='FNPS'">
+                <select class="form-control" [(ngModel)]="channel.delivery_service_type" name="delivery_service_type"
+                  disabled>
+                  <option value="0">请选择</option>
+                  <option value="1">蜂鸟配送</option>
+                  <option value="2">蜂鸟优选</option>
+                  <option value="3">蜂鸟快送</option>
+                </select>
+
+              </span>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </nz-table>
+    <table class="table table-bordered">
+      <tr>
+        <td colspan="2">
+          <input type="button" class="btn btn-info" (click)=updateStore(channels,store) value="保 存">
+          <input type="button" class="btn btn-default" onClick="javascript: history.go(-1);" value="返 回">
+        </td>
+      </tr>
+    </table>
+  </div>
+</nz-card> -->
+
+
+
+
+<nz-card>
+  <table style="margin-bottom:10px;" *ngIf="store">
+    <tr>
+      <td width="10%">门店编码</td>
+      <td width="23%" class="p-inputbox">{{store.code}}</td>
+      <td width="10%">门店名称</td>
+      <td width="23%" class="p-inputbox">
+        <input nz-input type="text" class="form-control" [(ngModel)]="store.name" name="name" />
+      </td>
+      <td width="10%">城市</td>
+      <td width="23%" class="p-inputbox">
+        <input nz-input [(ngModel)]="store.city" name="city" />
+      </td>
+    </tr>
+    <tr>
+      <td>门店地址</td>
+      <td class="p-inputbox">
+        <input nz-input class="form-control" [(ngModel)]="store.address" name="address" />
+      </td>
+      <td>门店面积</td>
+      <td class="p-inputbox">
+        <input nz-input type="text" class="form-control" [(ngModel)]="store.area" name="area" />
+      </td>
+      <td>门店库存共享率</td>
+      <td class="p-inputbox">
+        <input nz-input type="text" class="form-control" [(ngModel)]="store.kcgxl" name="kcgxl">
+      </td>
+    </tr>
+    <tr>
+      <td>门店安全库存量</td>
+      <td class="p-inputbox">
+        <input nz-input type="text" class="form-control" [(ngModel)]="store.aqkcl" name="aqkcl">
+      </td>
+      <td>是否启用</td>
+      <td class="p-inputbox">
+        <nz-select style="width:100%" [(ngModel)]="store.status" name="status">
+          <nz-option nzLabel="启用" nzValue="1"></nz-option>
+          <nz-option nzLabel="停用" nzValue="-1"></nz-option>
+        </nz-select>
+      </td>
+      <td>拣货端缺货下架</td>
+      <td class="p-inputbox">
+        <nz-select style="width:100%" [(ngModel)]="store.out_of_stock" name="store.out_of_stock">
+          <nz-option nzLabel="开启" nzValue="true"></nz-option>
+          <nz-option nzLabel="关闭" nzValue="false"></nz-option>
+        </nz-select>
+      </td>
+    </tr>
+    <tr>
+      <td>接单助手</td>
+      <td class="p-inputbox">
+        <nz-select style="width:100%" [(ngModel)]="store.receipt" name="receipt" [disabled]="qudaoobj.pc_receipt === '-1'&& qudaoobj.android_receipt === '-1'">
+          <nz-option nzLabel="开启" nzValue="1"></nz-option>
+          <nz-option nzLabel="关闭" nzValue="-1"></nz-option>
+        </nz-select>
+      </td>
+      <td>拣货助手</td>
+      <td class="p-inputbox">
+        <nz-select style="width:100%" [(ngModel)]="store.receipt" name="receipt" [disabled]="qudaoobj.pc_receipt === '-1'&& qudaoobj.android_receipt === '-1'">
+          <nz-option nzLabel="开启" nzValue="1"></nz-option>
+          <nz-option nzLabel="关闭" nzValue="-1"></nz-option>
+        </nz-select>
+      </td>
+      <td>收银机号</td>
+      <td class="p-inputbox">
+        <input nz-input class="form-control" [(ngModel)]="store.syjh" name="syjh">
+
+      </td>
+    </tr>
+    <tr>
+      <td>收银员号</td>
+      <td class="p-inputbox">
+        <input nz-input class="form-control" [(ngModel)]="store.syyh" name="syyh">
+
+      </td>
+      <td colspan="4"></td>
+    </tr>
+  </table>
+</nz-card>
+
+<div style="padding:5px 0 5px 5px; margin:5px 0; background-color: #cccccc82;">
+  <h4>设置门店经营渠道</h4>
+</div>
+
+<table style="margin-bottom:3px; width:100%" *ngFor="let channel of channels;let i=index">
+  <thead>
+    <tr>
+      <th>
+        <div class="set_qdbox">
+          <div class="qd_left">
+            {{channel.channel_name}}
+            (<span *ngIf="channel.orgcode" style="color:#0f0">已绑定</span>
+            <span *ngIf="!channel.orgcode" style="color:#f00">未绑定</span>)
+            <button nz-button type="primary" nzSize="small" *ngIf="selectedbts[i]" (click)="clickchanneloptar(i,channel);">选择账号</button>
+          </div>
+          <div class="qd_right">
+            <span>
+              <button nz-button nzType="primary" nzSize="small" (click)="ordersetlog(store.code,channel.channel_keyword)">订单设置日志</button>
+              <button nz-button *ngIf="!selectedbts[i]" nzType="primary" nzSize="small" (click)="toview($event,i,channel)">查看</button>
+              <button nz-button *ngIf="selectedbts[i]" nzType="primary" nzSize="small" (click)="toview($event,i,channel)">收起</button>
+              <button nz-button nzType="primary" nzSize="small" style="background-color: #f0ad4e; border:1px solid #f0ad4e"
+                (click)="delchannel(channel.channel_keyword,channel.orgcode)">解 绑</button>
+              <button nz-button nzType="primary" nzSize="small" style="background-color: #f0ad4e; border:1px solid #f0ad4e"
+                (click)="initstore(channel)">渠道门店初始化</button>
+            </span>
+          </div>
+        </div>
+      </th>
+    </tr>
+  </thead>
+  <tbody *ngIf="selectedbts[i]">
+    <tr>
+      <td>
+        <div class="zh-optlist" style="display:flex; flex-wrap:wrap;justify-content:space- between;align-items:center;">
+          <span class="zh-infoname">渠道门店编码</span>
+          <span class="zh-channeltext">
+            <input nz-input type="text" class="form-control" [(ngModel)]="channel.appcode" name="appcode">
+          </span>
+          <span class="zh-infoname">appid</span>
+          <span class="zh-channeltext">
+            <input nz-input type="text" class="form-control" [(ngModel)]="channel.appid" name="appid" readonly="readonly">
+          </span>
+          <span class="zh-infoname">secret</span>
+          <span class="zh-channeltext">
+            <input nz-input type="text" class="form-control" [(ngModel)]="channel.secret" name="secret" readonly="readonly">
+          </span>
+          <span class="zh-infoname" *ngIf="!(channel.channel_keyword=='BDWM'||channel.channel_keyword=='MTWM')">token</span>
+          <span class="zh-channeltext" *ngIf="!(channel.channel_keyword=='BDWM'||channel.channel_keyword=='MTWM')">
+            <input nz-input type="text" class="form-control" [(ngModel)]="channel.token" name="token" readonly="readonly">
+          </span>
+          <span class="zh-infoname" *ngIf="channel.channel_keyword=='ELEM'||channel.channel_keyword =='ELEMFOOD'">refreshToken</span>
+          <span class="zh-channeltext" *ngIf="channel.channel_keyword=='ELEM'||channel.channel_keyword =='ELEMFOOD'">
+            <input nz-input type="text" class="form-control" [(ngModel)]="channel.refreshToken" name="refreshToken">
+          </span>
+          <span class="zh-infoname">启用渠道商品管理</span>
+          <span class="zh-channeltext">
+            <nz-select [(ngModel)]="channel.qyqdspgl" class="select_box">
+              <nz-option nzLabel="是" nzValue="1"></nz-option>
+              <nz-option nzLabel="否" nzValue="-1"></nz-option>
+            </nz-select>
+          </span>
+          <span class="zh-infoname" *ngIf="channel.channel_keyword=='BDWM' || channel.channel_keyword=='EBLS'">是否非标品</span>
+          <span class="zh-channeltext" *ngIf="channel.channel_keyword=='BDWM'  || channel.channel_keyword=='EBLS'">
+            <nz-select [(ngModel)]="channel.customer_upc" class="select_box">
+              <nz-option nzLabel="非标品" nzValue="true"></nz-option>
+              <nz-option nzLabel="标品" nzValue="false"></nz-option>
+            </nz-select>
+          </span>
+          <span class="zh-infoname" *ngIf="channel.channel_keyword=='ELEM'||channel.channel_keyword =='ELEMFOOD'">线上门店状态</span>
+          <span class="zh-channeltext" *ngIf="channel.channel_keyword=='ELEM'||channel.channel_keyword =='ELEMFOOD'">
+            <nz-select [(ngModel)]="channel.status" class="select_box">
+              <nz-option nzLabel="有商品" nzValue="noinit"></nz-option>
+              <nz-option nzLabel="initing" nzValue="initing"></nz-option>
+              <nz-option nzLabel="无商品" nzValue="inited"></nz-option>
+            </nz-select>
+          </span>
+          <span class="zh-infoname">舍入方式</span>
+          <span class="zh-channeltext">
+            <nz-select [(ngModel)]="channel.rounding" class="select_box">
+              <nz-option nzLabel="四舍五入" nzValue="0"></nz-option>
+              <nz-option nzLabel="截取" nzValue="1"></nz-option>
+              <nz-option nzLabel="向上取整" nzValue="2"></nz-option>
+            </nz-select>
+          </span>
+          <span class="zh-infoname">价格精度</span>
+          <span class="zh-channeltext">
+            <nz-select [(ngModel)]="channel.accuracy" class="select_box">
+              <nz-option nzLabel="分" nzValue="F"></nz-option>
+              <nz-option nzLabel="角" nzValue="J"></nz-option>
+              <nz-option nzLabel="元" nzValue="Y"></nz-option>
+            </nz-select>
+          </span>
+          <span class="zh-infoname">渠道调价比例(%)</span>
+          <span class="zh-channeltext">
+            <input nz-input type="text" [(ngModel)]="channel.adjust_rate" class="form-control" name="adjust_rate" />
+          </span>
+          <span class="zh-infoname">是否自动接单</span>
+          <span class="zh-channeltext">
+            <nz-select [(ngModel)]="channel.zdjd" class="select_box">
+              <nz-option nzLabel="是" nzValue="true"></nz-option>
+              <nz-option nzLabel="否" nzValue="false"></nz-option>
+            </nz-select>
+          </span>
+          <span class="zh-infoname">超卖不接单</span>
+          <span class="zh-channeltext">
+            <nz-select [(ngModel)]="channel.cmbjd" class="select_box">
+              <nz-option nzLabel="是" nzValue="true"></nz-option>
+              <nz-option nzLabel="否" nzValue="false"></nz-option>
+            </nz-select>
+          </span>
+          <span class="zh-infoname">渠道价格</span>
+          <span class="zh-channeltext">
+            <nz-select class="form-control" [(ngModel)]="channel.price_field" class="select_box">
+              <nz-option *ngIf="channel.set_channel==='1' || channel.set_channel===''" naLabel="按促销价(线上)" nzValue="sale_price"></nz-option>
+              <nz-option *ngIf="channel.set_channel==='2'" naLabel="按线下原价" nzValue="erp_reference_price"></nz-option>
+              <nz-option *ngIf="channel.set_channel==='1' || channel.set_channel===''" naLabel="按原价（线上）" nzValue="reference_price"></nz-option>
+              <nz-option *ngIf="channel.set_channel==='2'" naLabel="按线下售价" nzValue="erp_price"></nz-option>
+            </nz-select>
+          </span>
+          <span class="zh-infoname" *ngIf="channel.channel_keyword=='YOUZAN'">是否在牵牛花上线商品</span>
+          <span class="zh-channeltext" *ngIf="channel.channel_keyword=='YOUZAN'">
+            <nz-select [(ngModel)]="channel.add_item" class="select_box">
+              <nz-option nzLabel="是" nzValue="1"></nz-option>
+              <nz-option nzLabel="否" nzValue="-1"></nz-option>
+            </nz-select>
+          </span>
+          <span class="zh-infoname" *ngIf="channel.channel_keyword=='YOUZAN'">门店ID</span>
+          <span class="zh-channeltext" *ngIf="channel.channel_keyword=='YOUZAN'">
+            <input type="text" [(ngModel)]="channel.youzan_store_id" class="form-control" name="youzan_store_id" />
+          </span>
+          <span class="zh-infoname" *ngIf="channel.channel_keyword=='YOUZAN'">是否多网点模式</span>
+          <span class="zh-channeltext" *ngIf="channel.channel_keyword=='YOUZAN'">
+            <nz-select [(ngModel)]="channel.youzan_multistore" name="youzan_multistore" class="select_box">
+              <nz-option nzLabel="是" nzValue="true"></nz-option>
+              <nz-option nzLabel="否" nzValue="false"></nz-option>
+            </nz-select>
+          </span>
+          <span class="zh-infoname" *ngIf="channel.channel_keyword=='YOUZAN'">是否为主店</span>
+          <span class="zh-channeltext" *ngIf="channel.channel_keyword=='YOUZAN'">
+            <nz-select [(ngModel)]="channel.home_store" class="select_box">
+              <nz-option nzLabel="是" nzValue="true"></nz-option>
+              <nz-option nzLabel="否" nzValue="false"></nz-option>
+            </nz-select>
+          </span>
+          <span class="zh-infoname" *ngIf="channel.channel_keyword=='YOUZAN'">商品匹配模式</span>
+          <span class="zh-channeltext" *ngIf="channel.channel_keyword=='YOUZAN'">
+            <nz-select [(ngModel)]="channel.relation_field" class="select_box">
+              <nz-option nzLabel="编码" nzValue="item_code"></nz-option>
+              <nz-option nzLabel="条码" nzValue="barcode"></nz-option>
+            </nz-select>
+          </span>
+          <span class="zh-infoname" *ngIf="channel.channel_keyword=='YOUZAN'">默认商品图片地址</span>
+          <span class="zh-channeltext" *ngIf="channel.channel_keyword=='YOUZAN'">
+            <input type="text" [(ngModel)]="channel.item_detail" class="form-control" name="item_detail" />
+          </span>
+          <span class="zh-infoname" *ngIf="channel.channel_keyword=='YOUZAN'">单网点线下门店编码</span>
+          <span class="zh-channeltext" *ngIf="channel.channel_keyword=='YOUZAN'">
+            <input type="text" [(ngModel)]="channel.youzan_model" class="form-control" name="youzan_model" />
+          </span>
+        </div>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<div style="padding:5px 0 5px 5px; margin:5px 0; background-color: #cccccc82;">
+  <h4>设置门店配送渠道</h4>
+</div>
+<table style="margin-bottom:3px;width:100%;" *ngFor="let channel of channelDeliverys;let i=index">
+  <thead>
+    <tr>
+      <th style="text-align: left;">
+        <div class="set_qdbox">
+          <div class="qd_left">
+            {{channel.delivery_name}}(
+            <span *ngIf="channel.orgcode" style="color:#0f0">已绑定</span>
+            <span *ngIf="!channel.orgcode" style="color:#f00">未绑定</span>)
+            <button nz-button *ngIf="psselectedbts[i]" nzType="primary" nzSize="small" (click)="psclickchanneloptar(i,channel);">选择账号</button>
+          </div>
+          <div class="qd_right">
+            <button nz-button *ngIf="!psselectedbts[i]" nzType="primary" nzSize="small" (click)="pstoview($event,i,channel)">查看</button>
+            <button nz-button *ngIf="psselectedbts[i]" nzType="primary" nzSize="small" (click)="pstoview($event,i,channel)">收起</button>
+            <button nz-button style="background-color: #f0ad4e; border:1px solid #f0ad4e" *ngIf="channel.orgcode"
+              nzType="primary" nzSize="small" (click)=delchannel(channel.channel_delivery_keyword,channel.orgcode)>解 绑</button>
+          </div>
+        </div>
+      </th>
+    </tr>
+  </thead>
+  <tbody *ngIf="psselectedbts[i]">
+    <tr>
+      <td>
+        <div style="display:flex; flex-wrap:wrap;justify-content:space- between;align-items:center;">
+          <div class="zh-infoname">主体账号</div>
+          <span class="zh-channeltext">
+            <input nz-input type="text" [(ngModel)]="channel.main_account" name="main_account" readonly="readonly">
+          </span>
+          <span class="zh-infoname" *ngIf="channel.channel_delivery_keyword =='MTPS'">Appkey</span>
+          <span class="zh-infoname" *ngIf="channel.channel_delivery_keyword =='FNPS'">App Id</span>
+          <span class="zh-infoname" *ngIf="channel.channel_delivery_keyword =='DADA'">商户ID</span>
+          <span class="zh-channeltext">
+            <input nz-input type="text" class="form-control" [(ngModel)]="channel.appid" name="appid" readonly="readonly">
+          </span>
+          <span class="zh-infoname" *ngIf="channel.channel_delivery_keyword =='MTPS'">secret</span>
+          <span class="zh-infoname" *ngIf="channel.channel_delivery_keyword =='FNPS'">Secret Key</span>
+          <span class="zh-infoname" *ngIf="channel.channel_delivery_keyword =='DADA'">商户名称</span>
+          <span class="zh-channeltext">
+            <input nz-input type="text" class="form-control" [(ngModel)]="channel.secret" name="secret" readonly="readonly">
+          </span>
+          <span class="zh-infoname">配送渠道门店编号</span>
+          <span class="zh-channeltext">
+            <input nz-input type="text" class="form-control" [(ngModel)]="channel.appcode" name="appcode">
+          </span>
+          <span class="zh-infoname" *ngIf="channel.channel_delivery_keyword !=='DADA'">配送服务类型</span>
+          <span class="zh-channeltext" *ngIf="channel.channel_delivery_keyword ==='MTPS'">
+            <nz-select class="select_box" [(ngModel)]="channel.delivery_service_type" name="delivery_service_type"
+              disabled>
+              <nz-option nzLabel="请选择" nzValue="0"></nz-option>
+              <nz-option nzLabel="飞速达" nzValue="4002"></nz-option>
+              <nz-option nzLabel="快速达" nzValue="4011"></nz-option>
+              <nz-option nzLabel="及时送" nzValue="4012"></nz-option>
+              <nz-option nzLabel="集中送" nzValue="4013"></nz-option>
+            </nz-select>
+          </span>
+          <span class="zh-channeltext" *ngIf="channel.channel_delivery_keyword ==='FNPS'">
+            <nz-select class="select_box" [(ngModel)]="channel.delivery_service_type" name="delivery_service_type"
+              disabled>
+              <nz-option nzLabel="请选择" nzValue="0"></nz-option>
+              <nz-option nzLabel="蜂鸟配送" nzValue="1"></nz-option>
+              <nz-option nzLabel="蜂鸟优选" nzValue="2"></nz-option>
+              <nz-option nzLabel="请蜂鸟快送选择" nzValue="3"></nz-option>
+            </nz-select>
+          </span>
+        </div>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="save_qdbox">
+  <button nz-button nzType="primary" (click)="updateStore(channels,store)">保 存</button>
+  <button nz-button nzType="primary" onClick="javascript: history.go(-1);">返 回</button>
+</div>
+
+<!-- 经营渠道选择账号信息 -->
+<nz-modal [(nzVisible)]="totaldiv3" nzTitle="选择账号信息" (nzOnCancel)="closediv2()" (nzOnOk)="closediv2()" nzWidth=800>
+  <table class="log_table">
+    <tr>
+      <td width="15%">appid</td>
+      <td width="20%">secret</td>
+      <td width="20%">token</td>
+      <td width="20%">refreshToken</td>
+      <td width="20%">调价比例</td>
+      <td width="15%">备注</td>
+      <td>操作</td>
+    </tr>
+    <tr *ngFor="let channeloptar of channeloptarr1;let i = index">
+      <td style="word-break : break-all;word-wrap:break-word">{{channeloptar.appid}}</td>
+      <td style="word-break : break-all;word-wrap:break-word">{{channeloptar.secret}}</td>
+      <td style="word-break : break-all;word-wrap:break-word">{{channeloptar.token}}</td>
+      <td style="word-break : break-all;word-wrap:break-word">{{channeloptar.refreshToken}}</td>
+      <td style="word-break : break-all;word-wrap:break-word">{{channeloptar.adjust_rate}}</td>
+      <td>{{channeloptar.memo}}</td>
+      <td>
+        <label>
+          <input type="radio" name="name" (click)="channeloptarr2(channeloptar)" />选中</label>
+      </td>
+    </tr>
+  </table>
+</nz-modal>
+<!-- 配送渠道选择账号信息 -->
+<nz-modal [(nzVisible)]="totaldiv3" nzTitle="订单设置日志" (nzOnCancel)="closediv4()" (nzOnOk)="closediv4()" nzWidth=800>
+  <table class="table table-bordered" *ngIf="pschanneloptarr1">
+    <tr>
+      <td>主体名称</td>
+      <td>主体账号</td>
+      <td>Appkey</td>
+      <td>secret</td>
+      <td *ngIf="pschanneloptarr1.channel_delivery_keyword!=='DADA'">配送服务类型</td>
+      <td>备注</td>
+      <td>操作</td>
+    </tr>
+    <tr *ngFor="let channeloptar of pschanneloptarr1.rows;let i = index">
+      <td style="word-break : break-all;word-wrap:break-word">{{channeloptar.main_name}}</td>
+      <td style="word-break : break-all;word-wrap:break-word">{{channeloptar.main_account}}</td>
+      <td style="word-break : break-all;word-wrap:break-word">{{channeloptar.appid}}</td>
+      <td style="word-break : break-all;word-wrap:break-word">{{channeloptar.secret}}</td>
+      <td style="word-break : break-all;word-wrap:break-word" *ngIf="pschanneloptarr1.channel_delivery_keyword!=='DADA'">
+        <select class="form-control" [(ngModel)]="channeloptar.dst" name="delivery_service_type">
+          <option value="">请选择</option>
+          <option *ngFor="let dst of channeloptar.delivery_service_type" [value]="dst.value">{{dst.label}}</option>
+        </select>
+      </td>
+      <td>{{channeloptar.memo}}</td>
+      <td>
+        <label>
+          <input type="radio" name="name" (click)="pschanneloptarr2(channeloptar,pschanneloptarr1.channel_delivery_keyword)" />选中</label>
+      </td>
+    </tr>
+  </table>
+</nz-modal>
+
+<!-- 订单设置日志 -->
+<nz-modal [(nzVisible)]="totaldiv3" nzTitle="订单设置日志" (nzOnCancel)="closediv3()" (nzOnOk)="closediv3()" nzWidth=800>
+  <div style="height:560px;  overflow-y: scroll; ">
+    <table class="log_table">
+      <tr>
+        <td width="10%">序号</td>
+        <td width="13%">门店号</td>
+        <td width="20%">操作描述</td>
+        <td width="10%">修改结果</td>
+        <td width="13%">操作人</td>
+        <td width="13%">操作渠道</td>
+        <td>操作时间</td>
+      </tr>
+      <tr *ngFor="let orderlog of ordersetlogs;let i = index">
+        <td>{{cow1+i+1}}</td>
+        <td style="word-break : break-all;word-wrap:break-word">{{orderlog.region_code}}</td>
+        <td style="word-break : break-all;word-wrap:break-word">{{orderlog.option_field_desc}}</td>
+        <td style="word-break : break-all;word-wrap:break-word">{{orderlog.option_result}}</td>
+        <td style="word-break : break-all;word-wrap:break-word">{{orderlog.userCode}}</td>
+        <td style="word-break : break-all;word-wrap:break-word">{{orderlog.channel_keyword}}</td>
+        <td>{{orderlog.create_time}}</td>
+      </tr>
+    </table>
+    <div style="position: absolute;; bottom:54px; right:38px;">
+      <my-page [pagetheme]="modalpage" [params]='params' [pagecount]='storePage' [changecount]='changestorecount'
+        (childparams)="storechildparams($event)"></my-page>
+    </div>
+  </div>
+
+
+</nz-modal>

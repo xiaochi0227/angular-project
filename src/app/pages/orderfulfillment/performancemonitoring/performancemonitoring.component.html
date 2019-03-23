@@ -1,0 +1,104 @@
+<div class="zh-serchbox">
+  <div nz-row>
+    <div nz-col nzSpan="8">
+      <div>当前超时数量</div>
+      <span>
+        {{results?.ordercount}}
+      </span>
+    </div>
+    <div nz-col nzSpan="8" (click)="gotoorder()">
+      <div>异常单</div>
+      <span>
+        {{results?.returncount}}
+      </span>
+    </div>
+    <div nz-col nzSpan="8" (click)="gotoreturnorder()">
+      <div>售后单</div>
+      <span>
+        {{results?.returnHcount}}
+      </span>
+    </div>
+  </div>
+</div>
+<nz-card nzTitle="监控配置概览" [nzExtra]="extraTemplate1" style="margin:10px 0px">
+  <ng-template #extraTemplate1>
+    <h4>
+      <i *ngIf="userrights.usertype!=='3'" (click)="gotodetailpage()" class="anticon anticon-setting zh-setting"></i>
+    </h4>
+  </ng-template>
+  <div nz-row>
+    <div nz-col nzSpan="6" *ngFor="let item of monitorconfigdate">
+      <span class="span-padding">
+        {{item?.honour_name}}:{{item?.control_time}}min
+        <i class="anticon anticon-sound zh-sound" [class.gray]="!item.report_setting"></i>
+      </span>
+    </div>
+
+  </div>
+</nz-card>
+
+<nz-card nzTitle="当前超时监控" [nzExtra]="extraTemplate">
+  <ng-template #extraTemplate>
+    <div>
+        <nz-select nzShowSearch='true'  [(ngModel)]="params.search.region_code" nzAllowClear  (ngModelChange)="searchcode($event)">
+            <nz-option *ngFor="let item of storeList" [nzValue]="item.code" [nzLabel]="item.codename"></nz-option>
+          </nz-select>
+    </div>
+    
+  </ng-template>
+  <nz-tabset *ngIf="results&&results.resultlist&&results.resultlist.length>0">
+    <nz-tab *ngFor="let tab of results.resultlist;" [nzTitle]="nzTabHeading">
+      <ng-template #nzTabHeading>
+        <div style="padding:8px 20px;">{{tab?.honour_name}}({{tab?.recount}})</div>
+      </ng-template>
+      <div class="tabbody">
+        <div nz-row class="tabheader">
+          <div nz-col nzSpan="8">
+            超时次数:{{tab?.recount}}
+          </div>
+          <div nz-col nzSpan="8">
+            超时门店:{{tab?.regioncount}}
+          </div>
+          <div nz-col nzSpan="8">
+            超时总时长:{{tab?.retime}}
+          </div>
+
+        </div>
+        <nz-table nzSize="samll" #basicTable [nzData]="tab.orders" nzShowPagination="false">
+          <thead>
+            <tr>
+              <th nzWidth="5%">序号</th>
+              <th nzWidth="9%">超时类型</th>
+              <th nzWidth="10%">超时时长</th>
+              <th nzWidth="8%">门店编号</th>
+              <th nzWidth="17%">订单号</th>
+              <th nzWidth="12%">渠道</th>
+              <th nzWidth="12%">序号</th>
+              <th>门店名称</th>
+              <th nzWidth="8%">门店联系方式</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let tabitem of basicTable.data;let i = index;">
+              <td>{{i+1}}</td>
+              <td>{{tabitem?.honour_name}}</td>
+              <td>{{tabitem?.overtime}}</td>
+              <td>{{tabitem?.region_code}}</td>
+              <td>{{tabitem?.channel_sheetno}}</td>
+              <td>{{tabitem?.channel_keyword}}</td>
+              <td>{{tabitem?.order_seq}}</td>
+              <td>{{tabitem?.region_name}}</td>
+              <td>{{tabitem?.phone}}</td>
+            </tr>
+          </tbody>
+        </nz-table>
+        <!-- <div *ngIf="orders.rows&&orders.rows.length === 0" style="color:#fff;">未查询到数据!</div> -->
+      </div>
+
+    </nz-tab>
+  </nz-tabset>
+</nz-card>
+
+<audio #voice>
+  <source src="/assets/mp3/monitortone.mp3" type="audio/mp3" />
+</audio>

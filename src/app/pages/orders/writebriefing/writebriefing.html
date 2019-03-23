@@ -1,0 +1,150 @@
+<div class="zh-serchbox">
+  <table class="table zh-serchtable black-muted-bg">
+    <tbody>
+      <tr>
+        <td>
+          <table class="table zh-serch-table">
+            <tr>
+
+              <td class="zh-zdname">下单日期</td>
+              <td class="zh-textbox">
+                <nz-date-picker [(ngModel)]="params.search.date" [nzAllowClear]='false' [nzPlaceHolder]="'Select date'"></nz-date-picker>
+              </td>
+            </tr>
+          </table>
+        </td>
+        <td>
+          <button nz-button nzType="primary" style="margin-right:10px;" (click)="search(params.search)">查询</button>
+          <button nz-button nzType="default" (click)="Reset()">重置</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+<div class="horizontal-scroll" style="position: relative;">
+  <div class="zh-tablehead">
+    <div class="zh-listhead" *ngIf="dcdcsvwj">
+      <button nz-button nzType="default" (click)="addexport()"><i nz-icon type="file-excel" theme="outline"></i>导出到CSV文件</button>
+    </div>
+    <table class="zh-table">
+      <tr>
+        <td class="zh-table1td" style="width:260px;">
+          <div style="width:260px;">店名</div>
+        </td>
+        <td class="zh-table1td">
+          <div class="zh-headscroll">
+            <span *ngIf="isempty">暂无数据！</span>
+            <table class="zh-headtable1" [myDivScrollLeft]="slvalue">
+              <tr>
+                <td class="zh-httd2-1">
+                  <table class="zh-headtable2" *ngIf="writebriefings">
+                    <tr *ngIf="writebriefings[0]?.itemArray">
+                      <td class="zh-ht2td" *ngFor="let channelname of writebriefings[0]?.itemArray">
+                        <table class="zh-headtable3">
+                          <tr>
+                            <td class="zh-ht3td">&nbsp;{{channelname?.name}}</td>
+                          </tr>
+                          <tr>
+                            <td>
+                              <table class="zh-headtable4">
+                                <tr>
+                                  <td>
+                                    <div style="width:100%;min-width: 85px;text-align:center;">数量</div>
+                                  </td>
+                                  <td>
+                                    <div style="width:100%;min-width: 85px;text-align:center;">金额</div>
+                                  </td>
+                                  <td *ngIf="channelname?.kdj>=0">
+                                    <div style="width:100%;min-width: 85px;text-align:center;">客单价</div>
+                                  </td>
+                                </tr>
+                              </table>
+                            </td>
+                          </tr>
+                        </table>
+                      </td>
+                      <td>
+                        <table class="zh-headtable3">
+                          <tr>
+                            <td colspan="3" class="zh-ht3td">平台合计</td>
+                          </tr>
+                          <tr>
+                            <td>
+                              <table class="zh-headtable4">
+                                <tr>
+                                  <td>
+                                    <div style="width:100%;min-width: 85px;text-align:center;">数量</div>
+                                  </td>
+                                  <td>
+                                    <div style="width:100%;min-width: 85px;text-align:center;">金额</div>
+                                  </td>
+                                  <td>
+                                    <div style="width:100%;min-width: 85px;text-align:center;">客单价</div>
+                                  </td>
+                                </tr>
+                              </table>
+                            </td>
+                          </tr>
+                        </table>
+                      </td>
+                    </tr>
+                  </table>
+                </td>
+              </tr>
+            </table>
+          </div>
+        </td>
+      </tr>
+    </table>
+
+  </div>
+  <div class="zh-tablecontent">
+    <div class="zh-left" [myDivScroll]="stvalue">
+      <table class="zh-lefttable textleft" *ngIf="writebriefings">
+        <tr *ngFor="let storename of writebriefings">
+          <td>
+            <div style="width:100%;overflow:hidden;">{{storename?.region_name}}</div>
+          </td>
+        </tr>
+      </table>
+    </div>
+    <div class="zh-container">
+      <div class="zh-columnbox" (scroll)="getstvalue($event)">
+        <table class="zh-contable1 textright">
+          <tr *ngFor="let writebriefing of writebriefings">
+            <td class="zh-ct2td" *ngFor="let channeldate of writebriefing?.itemArray">
+              <table class="zh-contable3">
+                <tr>
+                  <td>
+                    <div style="width:100%;min-width: 85px;">&nbsp;{{channeldate?.total}}</div>
+                  </td>
+                  <td>
+                    <div style="width:100%;min-width: 85px;">&nbsp;{{channeldate?.money}}</div>
+                  </td>
+                  <td *ngIf="channeldate?.kdj>=0">
+                    <div style="width:100%;min-width: 85px;">&nbsp;{{channeldate?.kdj}}</div>
+                  </td>
+                </tr>
+              </table>
+            </td>
+            <td class="zh-ct2td">
+              <table class="zh-contable3">
+                <tr>
+                  <td>
+                    <div style="width:100%;min-width: 85px;">&nbsp;{{writebriefing?.orderTotal}}</div>
+                  </td>
+                  <td>
+                    <div style="width:100%;min-width: 85px;">&nbsp;{{writebriefing?.sumMoney}}</div>
+                  </td>
+                  <td>
+                    <div style="width:100%;min-width: 85px;">&nbsp;{{writebriefing?.kdj}}</div>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

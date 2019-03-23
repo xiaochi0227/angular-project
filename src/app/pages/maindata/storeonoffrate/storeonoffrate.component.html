@@ -1,0 +1,46 @@
+<app-search-bar [queryList]='queryList' (childemit)="search($event)"></app-search-bar>
+
+<div class="zh-serchbox textcenter">
+  <button nz-button nzType="default" (click)="addexport()">导出到CSV文件</button>
+</div>
+<my-page [params]='params' [pagecount]='pageSize' [changecount]='pageSize.count' (childparams)="childparams($event)"></my-page>
+<nz-table #basicTable [nzData]="storeonofflist" nzShowPagination="false">
+  <thead>
+    <tr>
+      <th nzWidth="7%">日期</th>
+      <th nzWidth="10%">门店名称</th>
+      <th nzWidth="7%">门店编码</th>
+      <th nzWidth="7%">营业时间段</th>
+      <th nzWidth="7%">计划营业时长(小时)</th>
+      <th nzWidth="8%">实际营业时长(小时)</th>
+      <th nzWidth="7%">关店次数</th>
+      <th nzWidth="10%">未营业时长(小时)</th>
+      <th nzWidth="10%">第一次开关店时间</th>
+      <th nzWidth="10%">第二次开关店时间</th>
+      <th nzWidth="10%">第三次开关店时间</th>
+      <th nzWidth="7%">渠道</th>
+    </tr>
+  </thead>
+  <tbody>
+
+    <tr *ngFor="let item of basicTable.data;let i = index;">
+      <td>{{item.business_dates}}</td>
+      <td>{{item.region_name}}</td>
+      <td>{{item.region_code}}</td>
+      <td>{{item.business_time_duan }}</td>
+      <td>{{item.jh_business_duration}}</td>
+      <td>{{item.sj_business_duration}}</td>
+      <td>{{item.close_shop_count}}</td>
+      <td>{{item.no_business_duration}}</td>
+      <td>{{item.one_start_end}}</td>
+      <td>{{item.tow_start_end}}</td>
+      <td>{{item.three_start_end}}</td>
+      <td>
+        <label *ngIf="item.channel==='MTWM'">美团外卖</label>
+        <label *ngIf="item.channel==='ELEM'">饿了么</label>
+        <label *ngIf="item.channel==='JDDJ'">京东到家</label>
+        <label *ngIf="item.channel==='BDWM'">百度外卖</label>
+      </td>
+    </tr>
+  </tbody>
+</nz-table>

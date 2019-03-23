@@ -1,0 +1,121 @@
+
+
+
+.card-box {
+    width: 90%;
+    background: #ffffff;
+    border: 1px solid #e9e9e9;
+    border-radius: 2px;
+    cursor: pointer;
+    margin-bottom: 20px;
+    position: relative;
+    // :hover{
+    //     box-shadow: 0 1px 6px rgba(0,0,0,.7)!important;
+    // }
+}
+
+.card-top {
+    padding: 26px 24px 12px 24px;
+    display: flex;
+}
+
+.card-top .card-pic {
+    width: 48px;
+    height: 48px;
+    // background: #d9d9d9;
+    border-radius: 50%;
+    color: #fff;
+    font-size: 32px;
+    font-weight:400;
+    text-align: center;
+    line-height: 45px;
+}
+
+.card-top .card-title {
+    color: rgba(0,0,0,0.85);
+    font-size: 20px;
+    font-weight: 800;
+}
+
+.card-top .card-body {
+    display: flex;
+    justify-content: space-between;
+    font-size: 16px;
+    color: rgba(0,0,0,0.45);
+    margin-top: 20px;
+    // align-items: center;
+} 
+
+.card-top .card-body .card-body-space {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;   
+    overflow: hidden;
+    height: 32px;
+}
+
+.card-bottom {
+    padding: 15px 24px;
+    background: #f7f9fa;
+    border-top: 1px solid #e9e9e9;
+    display: flex;
+}
+
+.card-bottom div {
+    width: 32px;
+    height: 32px;
+    background: #d9d9d9;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.card-bottom div:first-child span {
+    width: 26px;
+    height: 13px;
+    background-image:url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNS42NDYiIGhlaWdodD0iMTIuNjQxIiB2aWV3Qm94PSIwIDAgMjUuNjQ2IDEyLjY0MSI+CiAgPGRlZnM+CiAgICA8c3R5bGU+CiAgICAgIC5jbHMtMSB7CiAgICAgICAgZmlsbDogI2ZmZjsKICAgICAgfQogICAgPC9zdHlsZT4KICA8L2RlZnM+CiAgPGcgaWQ9ImljX+e+juWbouWkluWNliIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoLTMuMTUxIC0xMS4yODYpIj4KICAgIDxwYXRoIGlkPSLot6/lvoRfMzY2IiBkYXRhLW5hbWU9Iui3r+W+hCAzNjYiIGNsYXNzPSJjbHMtMSIgZD0iTTEyOC41MDksMzAwLjg3YTEyLjUzNiwxMi41MzYsMCwwLDAsMy44NTUuNTI2YzEuODU2LS4xMDUsNC40MjYtMS4wNTIsNy0uOTQ3YTM2LjQxNywzNi40MTcsMCwwLDEsNS44NTQuNzM3LDMuODc1LDMuODc1LDAsMCwwLDIuNDI3LDBjLjE0My0uMTA1LjI4Ni0uNjMxLS40MjgtLjYzMXMtMi4yODUuMjEtMi4xNDItLjUyNmMwLS44NDIsMS44NTYtLjg0MiwzLjE0MS0uNTI2LDAsMC0uMTQzLS40MjEtLjg1Ny0uNDIxcy0xLjE0Mi0uMTA1LTEuMTQyLS40MjFjLjE0My0uNTI2LjcxNC0uNzM2LDEuNTcxLS4zMTZhMy41NTQsMy41NTQsMCwwLDEsMS40MjgsMS4yNjMsMTMuODE1LDEzLjgxNSwwLDAsMSwzLjcxMywxLjI2M3MxLjE0Mi43MzcsMCwxLjA1Mi0xLjI4NS0uMjEtMy40MjcuNTI2YTI0LjUxNSwyNC41MTUsMCwwLDAtNC43MTIsMi4yMDljLS40MjguNDIxLS41NzEuNTI2LS4yODYuNzM2YS4zODguMzg4LDAsMCwxLDAsLjYzMSw3LjQ4NSw3LjQ4NSwwLDAsMS0yLjU3LDEuMjYzLDIwLjY5LDIwLjY5LDAsMCwxLTMuMjg0LjYzMXMyLjQyNy4yMSwyLjU3LDEuNTc4LS4yODYsMS4yNjMtLjI4NiwxLjI2My0zLjE0MS0yLjUyNS01LjQyNi0yLjYzLS4yODYtMi4xLDEuNzEzLTMuMjYyYTUuMDE2LDUuMDE2LDAsMCwwLTEuNTcxLjczNiwyLjA1NCwyLjA1NCwwLDAsMS0uMjg2LTIuMzE1cy00LjQyNi4yMS03LjQyNS0xLjg5NEMxMjcuOCwzMDEuMTg2LDEyNy41MSwzMDAuNTU0LDEyOC41MDksMzAwLjg3WiIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoLTEyNC42MzcgLTI4Ni44MzUpIi8+CiAgPC9nPgo8L3N2Zz4K');
+}
+
+.card-bottom div:last-child span {
+    width: 24px;
+    height: 17px;
+    background-image:url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNC4yNjgiIGhlaWdodD0iMTcuMDEiIHZpZXdCb3g9IjAgMCAyNC4yNjggMTcuMDEiPgogIDxkZWZzPgogICAgPHN0eWxlPgogICAgICAuY2xzLTEgewogICAgICAgIGZpbGw6ICNmZmY7CiAgICAgIH0KICAgIDwvc3R5bGU+CiAgPC9kZWZzPgogIDxnIGlkPSLnu4RfMTM3NyIgZGF0YS1uYW1lPSLnu4QgMTM3NyIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoLTcwMiAtMzIzKSI+CiAgICA8cGF0aCBpZD0i6Lev5b6EXzEyMzAiIGRhdGEtbmFtZT0i6Lev5b6EIDEyMzAiIGNsYXNzPSJjbHMtMSIgZD0iTTM2LjQ3Niw0MC42MTJhMy43MSwzLjcxLDAsMCwxLTEuNC0xLjEzN2MtLjYtMS4zODItMS4yLTIuMS0xLjc4MS0yLjE0OUExLjQwNSwxLjQwNSwwLDAsMCwzMywzNy4yOTRjLS45MjUsMC0xLjQzOS45MDUtMS42NzgsMS41YTE3LjEsMTcuMSwwLDAsMC0yLjk2MS0uMjU2LDIxLjA2OCwyMS4wNjgsMCwwLDAtOC4zNDMsMS44NTYsMjcsMjcsMCwwLDAtMy4wMjUsMS40NjIsNC45ODIsNC45ODIsMCwwLDAtLjgxMy0uNSwyLjQ2NiwyLjQ2NiwwLDAsMC0xLjMxNS0uNTEyLDEuMDQ1LDEuMDQ1LDAsMCwwLS44MDcuMzYyLDEuOTY3LDEuOTY3LDAsMCwwLS4zMTEsMS40MTcsMTUuOTY2LDE1Ljk2NiwwLDAsMS0uNTU0LDIuNzUsMi4yMDksMi4yMDksMCwwLDAsLjI0OSwxLjgyMiwyLjM3NSwyLjM3NSwwLDAsMCwyLjA4NiwxLjAyNmwuMzI4LDBhMy40MDUsMy40MDUsMCwwLDAsMi40NTYtMS4xODYsMS4xNjUsMS4xNjUsMCwwLDAsLjE0OS0uMzMzLDEzLjcwNiwxMy43MDYsMCwwLDAsMy4wNzYsMS44ODFBMTkuMjE0LDE5LjIxNCwwLDAsMCwyNC4yLDQ5LjU4N2E1LjA1OSw1LjA1OSwwLDAsMCwxLjYxMi4yOTQuNjQxLjY0MSwwLDAsMCwuMDc0LDAsNC4yNjgsNC4yNjgsMCwwLDAsLjQ2NS0uMDMxbC0uOTA3LjE2N2MtLjAzOC0uMDEyLjA2Ni4xODkuMDI2LjE3OS0uNzQ1LS4xNy0zLjAzNC0uOTkxLTMuNTI0LS42NTItLjMzMy42NjEuMzU5LDQuNC44MzgsNC43Ni42LjA0OSwyLjQ0NS0xLjQwOCwzLjA4My0yLjAyOC4wMjUtLjAyMy4wNDYuMjIxLjA2Ni4ybDIuMzcxLS40MjVjLjAzOC4wMTUtLjA0LS4yMDYsMC0uMmEyNS41NzgsMjUuNTc4LDAsMCwwLDMuNDU3LjY3MmMuNDE2LS42NjctLjI4NS00LjE5Mi0uOTc0LTQuODE4YTkuOSw5LjksMCwwLDAtMi45NTQsMi4wMTljLS4wMzQuMDI2LS4wMzUtLjE2Ny0uMDY1LS4xMzlsLS44ODQuMTY2YTMuNzM1LDMuNzM1LDAsMCwwLDEuMzM1LS42Myw1LjIsNS4yLDAsMCwwLC42MzItLjU1MSwxOC40NzgsMTguNDc4LDAsMCwwLDMuMTU0LTQuNzg2LDIuMjM4LDIuMjM4LDAsMCwwLDEuNjI5LjYyNiw2LjA0Myw2LjA0MywwLDAsMCwxLjQ1My0uMmMxLjQxNC0uNDc2LDIuMTUxLTEuMTU3LDIuMjYxLTEuOTIxQTEuNDM2LDEuNDM2LDAsMCwwLDM2LjQ3Niw0MC42MTJabS03LjQzMy0xLjIyN2MuMTUyLS4xMy40MzQtLjA0MS42MzMuMnMuMjM4LjUzNS4wODguNjY0LS40MzYuMDQxLS42MzQtLjJTMjguODkyLDM5LjUxMiwyOS4wNDIsMzkuMzg1Wm0tNC4zNDksMi4yYzEuMjQ2LS4zMjUsMi4zMzItLjMsMi40MjUuMDY0cy0uODM3LjkxOS0yLjA4MSwxLjI0Ni0yLjMzLjMtMi40MjUtLjA2NC44MzgtLjkxOSwyLjA4Mi0xLjI0NlptLTUuODE3LjU0NmMuMDQ5LS4zMTMuMjUxLS41NDMuNDUxLS41MTJzLjMyMS4zMTQuMjczLjYyNy0uMjUzLjYzOC0uNDUxLjYwN1MxOC44MjYsNDIuNDQ4LDE4Ljg3Nyw0Mi4xMzRabTEyLjQxMy40MjZzLS4yNTItLjYzNy0uNDQyLjA3NGMtLjIwNi43NzItMS40MzMsMS40Ni0xLjQ4NiwxLjQ5MWExMy45ODIsMTMuOTgyLDAsMCwxLTYuNjgzLDEuOTk0LDguMjE5LDguMjE5LDAsMCwxLTIuNTU3LS40NzEsNC45NzYsNC45NzYsMCwwLDEtMS4wNDMtLjZjLS4xMzMtLjEtLjMtLjEzMi0uNDY2LjIyNCwwLDAtLjExNy0uNzI2LjQtLjYuMTU5LjAzNy4yMy40NjMuNjY2LjdhNi41MjUsNi41MjUsMCwwLDAsMywuNjczLDEzLjkyOCwxMy45MjgsMCwwLDAsNi42NDgtMS45ODMsNS4wMzMsNS4wMzMsMCwwLDAsMS4zOTMtMS4zNDdjLjA5NC0uMTgzLjA0Ni0uNTIyLjEyMy0uNjkycy40NzktLjM4NS40NDguNTM0WiIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoNjg4Ljg5NiAyODUuNzA2KSIvPgogIDwvZz4KPC9zdmc+Cg==');
+}
+
+.card:hover {
+    box-shadow: 0 1px 6px rgba(0,0,0,.7);
+    // opacity: 1;
+}
+
+.card-box-null {
+    width: 90%;
+    // border: 1px solid rgba(0, 0, 0,0.6);
+    border-radius: 2px;
+    background: rgba(0, 0, 0,.4);
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 171px;
+    z-index: 99;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    
+}
+
+.card-box-null span {
+    width: 66px;
+    height: 66px;
+    border-radius: 50%;
+    color: #333;
+    background: #fff;
+    text-align: center;
+    line-height: 64px;
+    font-size: 14px;
+    display: block;
+}
+
+// .null:hover {
+//     box-shadow: 0 0 0 #fff;
+// }

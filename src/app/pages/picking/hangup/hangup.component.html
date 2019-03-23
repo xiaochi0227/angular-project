@@ -1,0 +1,39 @@
+<div class="zh-serchbox">
+  <header class="top">
+    <div>
+      <button nz-button nzType="primary" (click)="savememberclassify()">保存顺序</button>
+      <span>可以拖曳分类调整顺序，操作完了记得保存顺序~</span>
+    </div>
+    <div class="add-btn">
+      <button nz-button nzSize="small" nzType="primary" (click)="change(null,showModal)">新增挂起产品</button>
+    </div>
+</header>
+  <div>
+    <ul [sortablejs]="categories" class="sort">
+      <li *ngFor="let category of categories;let i=index">
+        <span class="zh-catename">{{category.name}}&nbsp;&nbsp;
+          [编码:{{category.code}}]</span>
+        <div class="btn">
+          <nz-radio-group>
+            <button nzSize="small" nz-button nzType="primary" (click)=change(category,showModal)>修改</button>
+            <button nzSize="small" nz-button nzType="Default" (click)=pickingHangUpResonSort(category)>删除</button>
+
+          </nz-radio-group>
+        </div>
+      </li>
+    </ul>
+  </div>
+ 
+</div>
+
+
+<ng-template #showModal >
+  <div class="search-bar">
+    <label>编码</label>
+    <input nz-input placeholder="请输入编码" name="code" [(ngModel)]="hangUp.code">
+  </div>
+  <div class="search-bar">
+    <label>名称</label>
+    <input nz-input placeholder="请输入名称" name="name" [(ngModel)]="hangUp.name">
+  </div>
+</ng-template>

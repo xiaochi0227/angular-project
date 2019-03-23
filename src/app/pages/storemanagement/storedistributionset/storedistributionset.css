@@ -1,0 +1,21 @@
+.lispan {
+  display: inline-block;
+  vertical-align: middle;
+}
+.w200 {
+  width: 200px;
+}
+.w100 {
+  width: 100px;
+}
+.plpzpsf li {
+  list-style: none;
+}
+.plpzpsf {
+  display: inline-block;
+  width: 90%;
+  padding: 10px;
+}
+.plpzpsf li {
+  padding-bottom: 15px;
+}

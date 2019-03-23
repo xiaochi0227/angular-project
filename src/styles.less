@@ -1,0 +1,293 @@
+/* You can add global styles to this file, and also import other style files */
+/* zlz样式代码start */
+ul,
+menu,
+dir {
+  display: block;
+  list-style-type: disc;
+  list-style: none;
+  -webkit-margin-before: 0em;
+  -webkit-margin-after: 0em;
+  -webkit-margin-start: 0px;
+  -webkit-margin-end: 0px;
+  -webkit-padding-start: 0px;
+}
+
+
+
+li {
+  list-style: none;
+}
+
+.span-padding {
+  padding: 7px;
+  display: inline-block;
+}
+
+.horizontal-scroll {
+  min-height: 600px;
+
+  .operatingbox {
+    margin: 5px 0;
+  }
+}
+
+.textleft {
+  text-align: left;
+}
+
+.fl {
+  float: left;
+}
+
+.fr {
+  float: right;
+}
+
+.textright {
+  text-align: right;
+}
+
+.textcenter {
+  text-align: center;
+}
+
+/*a  upload */
+.a-upload {
+  padding: 4px 10px;
+  height: 32px;
+  vertical-align: top;
+  line-height: 20px;
+  position: relative;
+  cursor: pointer;
+  color: rgba(0, 0, 0, .65);
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  overflow: hidden;
+  display: inline-block;
+  *display: inline;
+  *zoom: 1
+}
+
+.search-bar {
+  label {
+    text-align: right;
+    display: inline-block;
+    width: 100px;
+    padding-right: 15px;
+  }
+
+  input {
+    width: calc(100% - 120px)
+  }
+
+  nz-date-picker {
+    width: calc(100% - 120px);
+
+    nz-picker {
+      width: 100%;
+
+      input {
+        width: 100%;
+      }
+
+    }
+  }
+
+
+  nz-select {
+    width: calc(100% - 120px)
+  }
+
+}
+
+.zh-serchbox {
+  padding: 24px;
+  background: #fbfbfb;
+  border: 1px solid #d9d9d9;
+  border-radius: 6px;
+  margin-bottom: 15px;
+
+  .zh-serchtable {
+    width: 100%;
+  }
+}
+
+
+
+zh-middle .a-upload input {
+  position: absolute;
+  font-size: 100px;
+  right: 0;
+  top: 0;
+  opacity: 0;
+  filter: alpha(opacity=0);
+  cursor: pointer
+}
+
+.clear {
+  clear: both;
+}
+
+.a-upload:hover {
+  text-decoration: none;
+  color: #40a9ff;
+  background-color: #fff;
+  border-color: #40a9ff;
+}
+
+
+
+.dot-top {
+  display: inline-block;
+  vertical-align: middle;
+  margin-right: 5px;
+  margin-bottom: 3px;
+  font-size: 0;
+  line-height: 0;
+  border-width: 6px;
+  border-color: #00FF00;
+  border-top-width: 0;
+  border-style: dashed;
+  border-bottom-style: solid;
+  border-left-color: transparent;
+  border-right-color: transparent;
+}
+
+.dot-bottom {
+  display: inline-block;
+  vertical-align: middle;
+  margin-right: 5px;
+  margin-bottom: 3px;
+  font-size: 0;
+  line-height: 0;
+  border-width: 6px;
+  border-color: #777;
+  border-bottom-width: 0;
+  border-style: dashed;
+  border-top-style: solid;
+  border-left-color: transparent;
+  border-right-color: transparent;
+}
+
+
+
+/*a  upload */
+/* zlz样式代码end */
+@gray: #555;
+
+
+
+// ----------------- old --------------------
+@font-family: 'Roboto', sans-serif;
+
+@resXXL: 1280px;
+@resXL: 1170px;
+@resL: 991px;
+@resM: 768px;
+@resS: 660px;
+@resXS: 500px;
+@resXXS: 435px;
+@resMin: 320px;
+
+@top-height: 66px;
+@sidebar-width: 180px;
+
+@small-card-height: 114px;
+@xsmall-card-height: 187px;
+@medium-card-height: 400px;
+@extra-medium-card-height: 550px;
+@large-card-height: 974px;
+
+@default-animation-duration: 0.2s;
+@default-animation-style: ease-out;
+
+@assets-root: 'assets/';
+@images-root: @assets-root + 'img/';
+@fonts-root: @assets-root + 'fonts/';
+@font-thin: 100;
+@font-light: 300;
+@font-normal: 400;
+@font-bold: 700;
+@font-bolder: 500;
+@font-ultraBold: 900;
+
+@facebook-color: #3b5998;
+@twitter-color: #55acee;
+@google-color: #dd4b39;
+@linkedin-color: #0177B5;
+@github-color: #6b6b6b;
+@stackoverflow-color: #2F96E8;
+@dribble-color: #F26798;
+@behace-color: #0093FA;
+
+
+@default: rgba(#000000, 0.2);
+@body-bg: #F0F3F4;
+
+@default-text: #ffffff;
+@content-text: @default-text;
+@help-text: #eeeeee;
+
+@label-text: #ffffff;
+@disabled: #dddddd;
+@disabled-bg: transparent;
+@border: #ffffff;
+@border-light: rgba(#ffffff, 0.2);
+@input-border: transparent;
+@input-background: rgba(#000000, 0.15);
+@dropdown-text: #7d7d7d;
+
+@sidebar: rgba(#000000, 0.5);
+@sidebar-text: #ffffff;
+
+@mail-box: whitesmoke;
+@auth-panel-background: rgba(#000000, 0.55);
+@progress-background: rgba(#000000, 0.15);
+@progress-default: #ffffff;
+
+@bootstrap-panel-radius: 5px;
+@bootstrap-panel-text: #7d7d7d;
+@bootstrap-panel-bg: #ffffff;
+@bootstrap-panel-header-bg: @bootstrap-panel-bg;
+@bootstrap-panel-header-border: 1px solid rgba(0, 0, 0, 0.12);
+@bootstrap-panel-shadow: 0 5px 5px 0 rgba(0, 0, 0, 0.25);
+
+@primary: #209e91;
+@info: #2dacd1;
+@success: #90b900;
+@warning: #dfb81c;
+@danger: #e85656;
+
+@primary-light: tint(@primary, 30%);
+@info-light: tint(@info, 30%);
+@success-light: tint(@success, 30%);
+@warning-light: tint(@warning, 30%);
+@danger-light: tint(@danger, 30%);
+
+@primary-dark: shade(@primary, 15%);
+@info-dark: shade(@info, 15%);
+@success-dark: shade(@success, 15%);
+@warning-dark: shade(@warning, 15%);
+@danger-dark: shade(@danger, 15%);
+
+@primary-bg: tint(@primary, 20%);
+@info-bg: tint(@info, 20%);
+@success-bg: tint(@success, 20%);
+@warning-bg: tint(@warning, 20%);
+@danger-bg: tint(@danger, 20%);
+
+@activelink: @primary;
+@hoverlink: @primary-dark;
+
+
+.horizontal-scroll {
+  min-height: 600px;
+  padding-bottom: 40px;
+}
+
+.zh-listhead1 {
+  padding: 5px 0;
+
+}

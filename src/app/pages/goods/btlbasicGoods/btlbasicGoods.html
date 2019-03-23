@@ -1,0 +1,331 @@
+<div *ngIf="commodities">
+  <!-- <ba-card baCardClass="with-scroll" *ngIf="commodities"> -->
+  <div class="zh-serchbox">
+    <table class="zh-serchtable">
+      <tbody>
+        <tr>
+          <td>
+            <table class="table zh-serch-table">
+              <tr>
+                <td class="zh-zdname" width="10%">线下编码</td>
+                <td class="zh-textbox" width="23%">
+                  <!-- <input type="text" class="form-control" [(ngModel)]="params.search.code" id="code" placeholder="请输入线下编码"> -->
+                  <input nz-input placeholder="请输入线下编码" [(ngModel)]="params.search.code">
+
+                </td>
+                <td class="zh-zdname" width="10%">商品条码</td>
+                <td class="zh-textbox" width="23%">
+                  <!-- <input type="text" class="form-control" [(ngModel)]="params.search.barcode" id="barcode"
+                        placeholder="请输入条码"> -->
+                  <input nz-input placeholder="请输入条码" [(ngModel)]="params.search.barcode">
+
+                </td>
+                <td class="zh-zdname" width="10%">商品名称</td>
+                <td class="zh-textbox" width="24%">
+                  <!-- <input type="text" class="form-control" [(ngModel)]="params.search.name" id="name" placeholder="请输入名称"> -->
+                  <input nz-input placeholder="请输入名称" [(ngModel)]="params.search.name">
+
+                </td>
+              </tr>
+              <tr *ngIf="hidesearch">
+                <td class="zh-zdname">售卖状态</td>
+                <td class="zh-textbox">
+                  <!-- <select class="form-control" [(ngModel)]="params.search.status">
+                        <option> </option>
+                        <option [value]="1">售卖</option>
+                        <option [value]="-1">停售</option>
+                      </select> -->
+                  <nz-select style="width: 150px;" [(ngModel)]="params.search.status" nzAllowClear>
+                    <nz-option nzValue="''" nzLabel="全部"></nz-option>
+                    <nz-option nzValue="1" nzLabel="售卖"></nz-option>
+                    <nz-option nzValue="-1" nzLabel="停售"></nz-option>
+                  </nz-select>
+                </td>
+                <td class="zh-zdname">数据来源</td>
+                <td class="zh-textbox">
+                  <!-- <input type="text" class="form-control" [(ngModel)]="params.search.source_type_keyword" id="source_type_keyword"
+                        placeholder="请输入数据来源"> -->
+                  <input nz-input placeholder="请输入数据来源" [(ngModel)]="params.search.source_type_keyword">
+
+                </td>
+                <td class="zh-zdname">规格</td>
+                <td class="zh-textbox">
+                  <!-- <input type="text" class="form-control" [(ngModel)]="params.search.norm" id="norm" placeholder="请输入规格"> -->
+                  <input nz-input placeholder="请输入规格" [(ngModel)]="params.search.norm">
+
+                </td>
+              </tr>
+              <tr *ngIf="hidesearch">
+                <td class="zh-zdname">单位</td>
+                <td class="zh-textbox">
+                  <!-- <input type="text" class="form-control" [(ngModel)]="params.search.base_uom_name" id="base_uom_name"
+                        placeholder="请输入单位"> -->
+                  <input nz-input placeholder="请输入单位" [(ngModel)]="params.search.base_uom_name">
+
+                </td>
+                <td class="zh-zdname"> </td>
+                <td class="zh-textbox">
+                </td>
+                <td class="zh-zdname"> </td>
+                <td class="zh-textbox">
+                </td>
+              </tr>
+            </table>
+          </td>
+          <td>
+            <!-- <button class="btn btn-primary" type="button" style="margin-right:5px;" (click)="search(params)">查询</button>
+                <button class="btn btn-primary" type="reset" (click)="Reset()">重置</button> -->
+            <button nz-button nzType="primary" style="margin-right:10px;" (click)="search(params)">查询</button>
+            <button nz-button nzType="default" (click)="Reset()">重置</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <input value="展开更多↓" type="button" (click)="togglesearch($event)" style="display:block;width:100%;color:#333;background:rgba(240, 240, 240, 0.2);border: 1px solid rgba(225, 225, 225, 0.3);text-align: center;padding:3px 0;cursor: pointer;" />
+  </div>
+  <my-page [params]='params' [pagecount]='pageSize' [changecount]='changecount' (childparams)="childparams($event)"></my-page>
+  <div class="horizontal-scroll">
+    <div class="zh-listhead" style="margin:10px 0;">
+      <!-- <a href="javascript:;" class="zh-upload btn btn-success" style="display:none"> -->
+      <!-- <input type="file" #file2 (change)="itemBaseStatus(file2)" ng2FileSelect [uploader]="uploader">商品主档售卖状态</a> -->
+      <a href="http://www.m-glory.net/newadmin/templete/商品主档模板.zip" class="btn btn-success" style="display:none">下载模板</a>
+      <!-- <button nz-button nzType="default" style="margin-right:2px;" (click)="download('商品白名单导入模板')">下载模板</button> -->
+      <!-- <input type="button" class="btn btn-success" value="导出到CSV文件" (click)="addexport()" /> -->
+      <button nz-button nzType="default" (click)="addexport()"><i nz-icon type="file-excel" theme="outline"></i>导出到CSV文件</button>
+    </div>
+    <nz-table nzBordered [nzData]="commodities" [nzShowPagination]="false" [nzFrontPagination]="false">
+      <tr>
+        <td width="28%">商品</td>
+        <td width="8%">规格</td>
+        <td width="12%">单位</td>
+        <td width="8%">包装含量</td>
+        <td width="10%">单位转换系数</td>
+        <td width="7%">重量</td>
+        <td width="11%">品类</td>
+        <td width="11%">同步时间</td>
+      </tr>
+    </nz-table>
+    <div>
+      <div class="zh-bglistcardbox" *ngFor="let commodity of commodities;let i=index">
+
+        <div class="zh-bgcardhead">
+          <nz-table [nzData]="commodities" [nzShowPagination]="false" [nzFrontPagination]="false">
+            <tr>
+              <td width="18%">线下编码：{{commodity?.code}}</td>
+              <td width="25%">线下商品条码：{{commodity?.barcode}}</td>
+              <td width="57%" style="text-align: right">
+                <!-- <button type="button" class="btn btn-info btn-xs" style='float: right;margin-right:10px' (click)="geItemLog(commodity)"*ngIf="spzdrz">线下商品主档日志</button> -->
+                <button nz-button nzType="primary" style="margin-right:10px;" (click)="geItemLog(commodity)" *ngIf="spzdrz">线下商品主档日志</button>
+
+              </td>
+            </tr>
+          </nz-table>
+        </div>
+        <div class="zh-bgcardcontent">
+          <nz-table [nzData]="commodities" [nzShowPagination]="false" [nzFrontPagination]="false" nzBordered>
+            <tr>
+              <td width="28%">
+                <span *ngIf="commodity.master_img_url" style="float: left;">
+                  <img class="lazy commodity-img" style="width:50px;height:50px;border:1px solid transparent;margin:0 auto;"
+                    [src]="commodities[i].master_img_url">
+                </span>
+                <span class="zh-spcontent" style="display:block;margin-top:5px;">
+                  <div *ngIf="commodity.name">
+                    {{commodity?.name}}</div>
+                </span>
+              </td>
+              <td width="8%">
+                <span class="zh-spcontent">
+                  <div *ngIf="commodity.spec">
+                    {{commodity?.spec}}</div>
+                </span>
+              </td>
+              <td width="12%">
+                <span class="zh-spcontent">
+                  <div *ngIf="commodity.base_uom_name">
+                    {{commodity?.base_uom_name}}</div>
+                </span>
+              </td>
+              <td width="8%">{{commodity?.pk_number}}</td>
+              <td width="10%">{{commodity?.dwzhxs}}</td>
+              <td width="7%">{{commodity?.gross_weight}}</td>
+              <td width="11%">
+                <span class="zh-spcontent">
+                  <div *ngIf="commodity.source_cat_name">
+                    {{commodity?.source_cat_name}}</div>
+                </span>
+              </td>
+              <td width="11%">
+                <span class="zh-spcontent">
+                  <div *ngIf="commodity.timestamp">
+                    {{commodity?.timestamp}}</div>
+                </span>
+              </td>
+            </tr>
+          </nz-table>
+        </div>
+      </div>
+    </div>
+
+  </div>
+  <!-- </ba-card> -->
+
+</div>
+<!-- 修改商品状态模态框（Modal） -->
+<!-- <div class="modal fade" [class.in]="totaldiv">
+  <div class="modal-dialog modal-lg" style="top:50px;">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" (click)="closediv()">
+          &times;
+        </button>
+        <h4 class="modal-title titptstatus" id="myModalLabel">
+          设置商品状态
+        </h4>
+      </div>
+      <form>
+        <div class="modal-body" *ngIf="liststores">
+          <div style="text-align: left;padding-left: 10px;padding-bottom:10px;font-weight: bold;">
+            <span style="margin-right:30px;">商品名:
+              <b style="color:#f00;">{{liststores[0]?.item_name}}</b>
+            </span>
+            <span style="margin-right:30px;">商品编码:
+              <b style="color:#f00;">{{liststores[0]?.item_code}}</b>
+            </span>
+            <span>商品条码:
+              <b style="color:#f00;">{{liststores[0]?.barcode}}</b>
+            </span>
+          </div>
+          <div class="row" style="padding:0 15px;max-height: 360px;overflow-y: scroll;">
+            <table class="table table-bordered">
+              <tr>
+                <td width="8%">序号</td>
+                <td>门店名称</td>
+                <td>
+                  <label style="margin-right: 30px;">
+                    <input type="checkbox" [checked]="smqx" (click)="qxsm($event)" />全选售卖</label>
+                  <label style="margin-right: 30px;">
+                    <input type="checkbox" [checked]="sjsm" (click)="qxsj($event)" />全选上架</label>
+                  <label style="margin-right: 30px;">
+                    <input type="checkbox" [checked]="jsxxjg" (click)="qxtxskc($event)" />全选接价格</label>
+                  <label style="margin-right: 30px;">
+                    <input type="checkbox" [checked]="jsxxkc" (click)="qxjsxxkc($event)" />全选接库存</label>
+                  <label> 门店售价/库存</label>
+                </td>
+              </tr>
+              <tr *ngFor="let liststore of liststores;let i=index">
+                <td><input type="checkbox" [(ngModel)]="liststore.sfxz" name="sfxz"></td>
+                <td>{{i+1}}</td>
+                <td>[{{liststore.region_code}}]{{liststore.region_name}}</td>
+                <td>
+                  <label style="margin-right: 30px;">
+                    <input type="checkbox" [checked]="liststore?.status=='1'" (click)="sfqycheckbox($event,i)" />售卖</label>
+                  <label style="margin-right: 30px;">
+                    <input type="checkbox" [checked]="liststore?.sale_status==1" (click)="sfsxjcheckbox($event,i)" />上架</label>
+                  <label style="margin-right: 30px;">
+                    <input type="checkbox" [checked]="liststore?.receive_price=='1'" (click)="sfjsjgcheckbox($event,i)" />接收线下价格</label>
+                  <label style="margin-right: 30px;">
+                    <input type="checkbox" [checked]="liststore?.receive_stock=='1'" (click)="sfjskccheckbox($event,i)" />接收线下库存</label>
+                  <label> {{liststore.sale_price}}/{{liststore.available_qty}}</label>
+                </td>
+              </tr>
+            </table>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-primary" (click)="deletestore(liststores)">
+            确定
+          </button>
+          <button type="button" class="btn zh-default" (click)="closediv()">
+            取消
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div> -->
+
+<!-- 导入状态提示 -->
+<div class="modal fade" [class.in]="importtip" *ngIf="results">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" (click)="closeimportip()">
+          &times;
+        </button>
+        <h4 class="modal-title" id="myModalLabel">
+          导入状态
+        </h4>
+      </div>
+      <form>
+        <div class="modal-body" style="max-height: 660px;overflow-y: scroll;">
+          <!-- <import-tip [importres]="results"></import-tip> -->
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- 商品主档日志 -->
+<div class="modal fade" [class.in]="totaldiv1">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <!-- <button type="button" class="close" (click)="closediv1()">
+          &times;
+        </button> -->
+        <h4 class="modal-title" id="myModalLabel">
+          商品主档日志
+        </h4>
+      </div>
+      <form>
+        <div class="modal-body" style="max-height: 660px;overflow-y: scroll;" *ngIf="itemlogs">
+          <div style="text-align: left;padding-left: 10px;padding-bottom:10px;font-weight: bold;">
+            <span style="margin-right:30px;">商品编码:
+              <b style="color:#f00;">{{itemlogs[0]?.item_code}}</b>
+            </span>
+            <span style="margin-right:30px;">商品条码:
+              <b style="color:#f00;">{{itemlogs[0]?.barcode}}</b>
+            </span>
+            <span style="margin-right:30px;">商品名称:
+              <b style="color:#f00;">{{itemlogs[0]?.item_name}}</b>
+            </span>
+          </div>
+          <div class="row" style="padding:0 15px;">
+            <nz-table #nzTable [nzData]="itemlogs" [nzShowPagination]="false" [nzFrontPagination]="false" nzBordered>
+              <thead>
+                <tr class="tablehead">
+                  <th>修改时间</th>
+                  <th>规格</th>
+                  <th>计量单位</th>
+                  <th>重量</th>
+                  <th>分类名称</th>
+                  <th>商品名称</th>
+                  <th>状态</th>
+                  <th>修改人</th>
+                  <th>操作备注</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let itemlog of nzTable.data;let i=index">
+                  <td>{{itemlog.timestamp}}</td>
+                  <td>{{itemlog.spec}}</td>
+                  <td>{{itemlog.base_uom_name}}</td>
+                  <td>{{itemlog.gross_weight}}</td>
+                  <td>{{itemlog.online_cat_name}}</td>
+                  <td>{{itemlog.m_desc}}</td>
+                  <td [ngSwitch]="itemlog.item_status">
+                    <span *ngSwitchCase="'1'" style="color:#1da130;">↑售卖</span>
+                    <span *ngSwitchCase="'-1'" style="color: #FF0000;">↓停售</span>
+                  </td>
+                  <td>{{itemlog.oper_user}}</td>
+                  <td>{{itemlog.comment}}</td>
+                </tr>
+              </tbody>
+            </nz-table>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,129 @@
+<div class="zh-serchbox">
+  <table class="table zh-serchtable black-muted-bg">
+    <tbody>
+      <tr>
+        <td>
+          <table class="table zh-serch-table">
+            <tr>
+              <td class="zh-zdname" width="12%">商品编码</td>
+              <td class="zh-textbox" width="21%">
+                <input nz-input placeholder="请输入商品编码" [(ngModel)]="params.search.code">
+              </td>
+              <td class="zh-zdname" width="12%">商品条码</td>
+              <td class="zh-textbox" width="21%">
+                <input nz-input placeholder="请输入商品条码" [(ngModel)]="params.search.barcode">
+              </td>
+              <td class="zh-zdname" width="12%">商品名称</td>
+              <td class="zh-textbox">
+                <input nz-input placeholder="请输入商品名称" [(ngModel)]="params.search.name">
+              </td>
+            </tr>
+            <tr>
+              <td class="zh-zdname">状态</td>
+              <td class="zh-textbox">
+                <nz-select style="width: 150px;" [(ngModel)]="params.search.status" nzAllowClear>
+                  <nz-option nzValue="1" nzLabel="有效"></nz-option>
+                  <nz-option nzValue="-1" nzLabel="无效"></nz-option>
+                </nz-select>
+              </td>
+              <td class="zh-zdname">渠道</td>
+              <td class="zh-textbox">
+                <nz-select style="width: 150px;" [(ngModel)]="params.search.channel_keyword" nzAllowClear>
+                  <nz-option *ngFor="let channel of channels;" [nzValue]="channel.channel_keyword" [nzLabel]="channel.name"></nz-option>
+                </nz-select>
+              </td>
+              <td class="zh-zdname">线上品类</td>
+              <td class="zh-textbox">
+                <div>
+                  <nz-select style="width: 85px;" [(ngModel)]="params.search.online_sup_code" nzAllowClear
+                    (ngModelChange)="getSubOnlineCategories(params.search.online_sup_code,params.search)">
+                    <nz-option *ngFor="let category of firstCategories;" [nzValue]="category.code" [nzLabel]="category.name"></nz-option>
+                  </nz-select>
+                  <nz-select style="width: 85px;" [(ngModel)]="params.search.online_cat_code" nzAllowClear>
+                    <nz-option *ngFor="let category of subCategories;" [nzValue]="category.code" [nzLabel]="category.name"></nz-option>
+                  </nz-select>
+                </div>
+              </td>
+            </tr>
+          </table>
+        </td>
+        <td>
+          <button nz-button nzType="primary" style="margin-right:10px;" (click)="search(params)">查询</button>
+          <button nz-button nzType="default" (click)="Reset()">重置</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+<my-page [params]='params' [pagecount]='pageSize' [changecount]='changecount' (childparams)="childparams($event)"></my-page>
+<div class="horizontal-scroll">
+  <div class="zh-listhead1">
+    <button nz-button nzType="default" style="margin-right:2px;" (click)="download('渠道黑名单导入模板')">下载模板</button>
+    <button nz-button nzType="default" (click)="addexport()"><i nz-icon type="file-excel" theme="outline"></i>导出到CSV文件</button>
+    <a class="a-upload">
+      <input type="file" #file2 (change)="channelblackInput(file2)"><i nz-icon type="upload"></i>渠道黑名单导入
+    </a>
+  </div>
+  <nz-table #nzTable [nzData]="blacklists" [nzShowPagination]="false" [nzFrontPagination]="false" nzBordered>
+    <thead>
+      <tr class="tablehead">
+        <th nzWidth="6%">序号</th>
+        <th nzWidth="6%">状态</th>
+        <th nzWidth="9%">渠道</th>
+        <th nzWidth="9%">录入类型</th>
+        <th nzWidth="12%">商品编码</th>
+        <th nzWidth="13%">商品条码</th>
+        <th nzWidth="13%">商品名称</th>
+        <th nzWidth="12%">更新时间</th>
+        <th nzWidth="10%">备注</th>
+        <th>操作</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let blacklist of blacklists;let i=index">
+        <td>{{cow+i+1}}</td>
+        <td style="text-align:center;" [ngSwitch]="blacklist.status">
+          <i nz-icon type="close-circle" style="color:#f00;" theme="outline" *ngSwitchCase="'-1'"></i>
+          <i nz-icon type="check-circle" style="color:#5cb85c;" theme="outline" *ngSwitchDefault></i>
+        </td>
+        <td>{{blacklist.channel_keyword}}</td>
+        <td [ngSwitch]="blacklist.type">
+          <span *ngSwitchCase="'U'">用户添加</span>
+          <span *ngSwitchCase="'Q'">渠道添加</span>
+        </td>
+        <td>{{blacklist.code}}</td>
+        <td>{{blacklist.barcode}}</td>
+        <td>{{blacklist.name}}</td>
+        <td>{{blacklist.timestamp}}</td>
+        <td>{{blacklist.memo}}</td>
+        <td>
+          <span [ngSwitch]="blacklist.status">
+            <button nz-button nzType="danger" *ngSwitchCase="'1'" (click)="delblack(blacklist)">移除渠道黑名单</button>
+            <button nz-button nzType="primary" *ngSwitchCase="'-1'" (click)="delblack(blacklist)">恢复渠道黑名单</button>
+          </span>
+        </td>
+      </tr>
+    </tbody>
+  </nz-table>
+</div>
+
+<!-- 导入状态提示 -->
+<!-- <div class="modal fade" [class.in]="importtip" *ngIf="results">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" (click)="closeimportip()">
+          &times;
+        </button>
+        <h4 class="modal-title" id="myModalLabel">
+          导入状态
+        </h4>
+      </div>
+      <form>
+        <div class="modal-body" style="max-height: 660px;overflow-y: scroll;">
+          <import-tip [importres]="results"></import-tip>
+        </div>
+      </form>
+    </div>
+  </div>
+</div> -->

@@ -1,0 +1,208 @@
+<div class="zh-card" *ngIf="orderdate">
+  <div class="zh-cardhead">
+    <div class="leftbox">
+      <div class="zh-xh">
+        <div class="zh-channeltag">
+          <my-channeltags [getchannel]="orderdate.channel_keyword"></my-channeltags>
+        </div>
+        <span class="zh-orderxh">#{{orderdate?.channel_order_seq}}</span>
+      </div>
+      <div class="zh-sheetno">
+        <p>订单号:{{orderdate.channel_sheetno}}</p>
+        <p>门店:{{orderdate.region_name}}</p>
+      </div>
+      <span>
+        <nz-tag *ngIf="orderdate.strike==='1'" [nzColor]="'#f50'">已冲销</nz-tag>
+        <nz-tag *ngIf="orderdate.sghx==='1'" [nzColor]="'#f50'">超卖</nz-tag>
+      </span>
+    </div>
+    <div class="zh-odstauts">
+      <span>{{orderdate.create_time}}创建</span>
+      <span class="odstauts">{{orderdate.returnStatus.test}}/{{orderdate.returnStatus.pos}}</span>
+    </div>
+  </div>
+  <div class="zh-cardbody">
+    <div class="zh-client">
+      <ul>
+        <li>{{orderdate.receiver.name}}</li>
+        <li>{{orderdate.receiver.mobile}}</li>
+        <li>退货单号:{{orderdate.sheetno}}</li>
+      </ul>
+    </div>
+    <div class="zh-orderdetail">
+      <div class="zh-detailhead">
+        <span class="goodsnum">商品信息</span>
+        <a class="goodstoggle" (click)="toggledetail(orderdate.sheetno)">
+          <span *ngIf="zk">展开
+            <i class="anticon anticon-down"></i>
+          </span>
+          <span *ngIf="!zk">收起
+            <i class="anticon anticon-up"></i>
+          </span>
+        </a>
+      </div>
+      <div class="zh-detailbox" *ngIf="ordersdetailnew">
+        <div class="zh-detaillist">
+          <nz-table #nzTable [nzData]="ordersdetailnew" [nzShowPagination]="false" [nzFrontPagination]="false"
+            nzBordered>
+            <thead>
+              <tr>
+                <th>商品</th>
+                <th width="10%">编码</th>
+                <th width="10%">退货数量</th>
+                <th width="10%">单价</th>
+                <th width="10%">总价</th>
+                <th width="10%">整单优惠</th>
+                <th width="10%">单品补贴</th>
+
+                <!-- <th width="10%">优惠金额</th> -->
+                <!-- <th width="10%">退货金额</th> -->
+                <!-- <th width="10%">佣金</th> -->
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let detaillist of nzTable.data;let i=index">
+                <td>{{detaillist.item_name}}
+                  <nz-tag *ngIf="detaillist.sghx==='1'" [nzColor]="'#f50'">超卖</nz-tag>{{detaillist.name}}
+                  <div class="barcodebox">条码：{{detaillist.barcode}}</div>
+                </td>
+                <td>{{detaillist.item_code}}</td>
+                <td>X{{detaillist.return_qty}}</td>
+                <td>¥{{detaillist.return_price}}</td>
+                <td>¥{{detaillist.item_money}}</td>
+                <td>商家:¥<span *ngIf="detaillist.disc_value">{{detaillist.disc_value}}</span><span *ngIf="!detaillist.disc_value">0.00</span>
+                  <div>平台:¥<span *ngIf="detaillist.disc_value_pt">{{detaillist.disc_value_pt}}</span><span *ngIf="!detaillist.disc_value_pt">0.00</span></div>
+                </td>
+                <td>商家:¥<span *ngIf="detaillist.disc_bt_sj">{{detaillist.disc_bt_sj}}</span><span *ngIf="!detaillist.disc_bt_sj">0.00</span>
+                  <div>平台:¥<span *ngIf="detaillist.disc_bt">{{detaillist.disc_bt}}</span><span *ngIf="!detaillist.disc_bt">0.00</span></div>
+                </td>
+
+                <!-- <td>{{detaillist.disc_money}}</td> -->
+                <!-- <td>¥{{detaillist.return_money}}</td> -->
+                <!-- <td>{{detaillist.commission_value}}</td> -->
+              </tr>
+            </tbody>
+          </nz-table>
+        </div>
+      </div>
+    </div>
+
+    <div class="zh-amount">
+      <div class="zh-amounthead">
+        <span class="goodsamount">金额</span>
+        <a class="goodstoggle" (click)="jetoggledetail()">
+          <span *ngIf="jezk">展开
+            <i class="anticon anticon-down"></i>
+          </span>
+          <span *ngIf="!jezk">收起
+            <i class="anticon anticon-up"></i>
+          </span>
+        </a>
+      </div>
+      <div class="zh-amountlist">
+        <ul>
+          <li>退货金额:
+            <span class="redspan" *ngIf="orderdate.total_sale_value">¥{{orderdate.total_sale_value|number:'1.2-2'}}</span>
+            <span class="redspan" *ngIf="!orderdate.total_sale_value">¥0.00</span>
+          </li>
+          <li>商品:
+            <span class="largespan" *ngIf="orderdate.total_item_value">¥{{orderdate.total_item_value|number:'1.2-2'}}</span>
+            <span class="largespan" *ngIf="!orderdate.total_item_value">¥0.00</span>
+          </li>
+          <li>支付:
+            <span *ngIf="orderdate.total_pay_value">¥{{orderdate.total_pay_value|number:'1.2-2'}}</span>
+            <span *ngIf="!orderdate.total_pay_value">¥0.00</span>
+          </li>
+          <li *ngIf="!jezk">配送:
+            <span *ngIf="orderdate.payable_logistics_value">¥{{orderdate.payable_logistics_value|number:'1.2-2'}}</span>
+            <span *ngIf="!orderdate.payable_logistics_value">¥0.00</span>
+          </li>
+          <li *ngIf="!jezk">包装:
+            <span *ngIf="orderdate.package_fee">¥{{orderdate.package_fee|number:'1.2-2'}}</span>
+            <span *ngIf="!orderdate.package_fee">¥0.00</span>
+          </li>
+          <li *ngIf="!jezk">餐盒费:
+            <span *ngIf="orderdate.box_value">¥{{orderdate.box_value|number:'1.2-2'}}</span>
+            <span *ngIf="!orderdate.box_value">¥0.00</span>
+          </li>
+          <li *ngIf="!jezk">佣金:
+            <span *ngIf="orderdate.commission_value">¥{{orderdate.commission_value|number:'1.2-2'}}</span>
+            <span *ngIf="!orderdate.commission_value">¥0.00</span>
+          </li>
+          <li *ngIf="!jezk" class="alloffer">
+            <nz-dropdown>
+              <a nz-dropdown>
+                整单总优惠:
+                <span *ngIf="orderdate.total_disc_value">¥{{orderdate.total_disc_value|number:'1.2-2'}}</span>
+                <span *ngIf="!orderdate.total_disc_value">¥0.00</span>
+                <i class="anticon anticon-down"></i>
+              </a>
+              <ul nz-menu>
+                <li nz-menu-item>
+                  商家优惠:
+                  <span *ngIf="orderdate.total_sj_disc">¥{{orderdate.total_sj_disc|number:'1.2-2'}}</span>
+                  <span *ngIf="!orderdate.total_sj_disc">¥0.00</span>
+                </li>
+                <li nz-menu-item>
+                  平台优惠:
+                  <span *ngIf="orderdate.total_pt_disc">¥{{orderdate.total_pt_disc|number:'1.2-2'}}</span>
+                  <span *ngIf="!orderdate.total_pt_disc">¥0.00</span>
+                </li>
+              </ul>
+            </nz-dropdown>
+          </li>
+          <li *ngIf="!jezk" class="alloffer">
+            <nz-dropdown>
+              <a nz-dropdown>
+                单品总优惠:
+                <span *ngIf="orderdate.total_dp_disc">¥{{orderdate.total_dp_disc|number:'1.2-2'}}</span>
+                <span *ngIf="!orderdate.total_dp_disc">¥0.00</span>
+                <i class="anticon anticon-down"></i>
+              </a>
+              <ul nz-menu>
+                <li nz-menu-item>
+                  商家优惠:
+                  <span *ngIf="orderdate.total_sj_dp">¥{{orderdate.total_sj_dp|number:'1.2-2'}}</span>
+                  <span *ngIf="!orderdate.total_sj_dp">¥0.00</span>
+                </li>
+                <li nz-menu-item>
+                  平台优惠:
+                  <span *ngIf="orderdate.total_pt_dp">¥{{orderdate.total_pt_dp|number:'1.2-2'}}</span>
+                  <span *ngIf="!orderdate.total_pt_dp">¥0.00</span>
+                </li>
+              </ul>
+            </nz-dropdown>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <div class="zh-ordertimes">
+      <span *ngIf="orderdate.pos_time">核销时间:{{orderdate.pos_time}}</span>
+    </div>
+    <div class="zh-ordertimes" *ngIf="orderprocessingswitch&&orderdate?.returnStatus?.test === '待处理'">
+      <span style="margin-right:15px;">是否同意退货申请</span>
+      <nz-popover [nzTitle]="'请输入驳回备注'" [(nzVisible)]="visible" [nzTrigger]="'click'">
+        <!-- <input type="button" nz-button nz-popover class="btn btn-xs btn-primary" value="驳回" (click)="showremark(orderdate,'1')" style="cursor:pointer;margin-right:10px;" /> -->
+        <button nz-button nz-popover [nzType]="'primary'" [nzSize]="'small'" style="margin-right: 10px;">驳回</button>
+        <ng-template #nzTemplate>
+          <textarea style="margin:5px;height: 60px;color:#333;border:1px solid #f1f1f1;"  class="form-control"
+             [(ngModel)]="remark"  id="remark"  name="remark"  placeholder="输入驳回备注"></textarea>
+          <a style="margin-right:10px;" (click)="returnorderprocessing(orderdate,'1')">确定驳回</a> <a (click)='closeMe()'>关闭</a>
+        </ng-template>
+      </nz-popover>
+      <!-- <input type="button" class="btn btn-xs btn-primary" value="驳回" (click)="showremark(orderdate,'1')" style="cursor:pointer;margin-right:10px;" /> -->
+      <button nz-button nz-popover [nzType]="'default'" [nzSize]="'small'" style="margin-right: 10px;" *ngIf="orderdate?.dutyAssume === '10'||orderdate?.dutyAssume === '40'"
+        (click)="returnorderprocessing(orderdate,'2')">同意退款</button>
+      <button nz-button nz-popover [nzType]="'default'" [nzSize]="'small'" *ngIf="orderdate?.dutyAssume === '40'"
+        (click)="returnorderprocessing(orderdate,'3')">同意退货</button>
+      <!-- <div>
+                <span style="color: #f00;">*</span>驳回备注:<textarea style="margin:5px;height: 60px;width:65%;"  class="form-control"
+                     [(ngModel)]="remark"  id="remark"  name="remark"  placeholder="输入驳回备注"></textarea><input type="button"
+                    value="确定驳回" (click)="" class="btn btn-xs btn-primary" />
+            </div> -->
+    </div>
+    <div class="zh-ordertimes" *ngIf="orderprocessingswitch&&orderdate?.dutyAssume === '40'&&orderdate?.returnStatus?.test === '处理中'">
+      <input type="button" class="btn btn-xs btn-primary" value="确认收货" (click)="confirmreceipt(orderdate)" style="cursor:pointer;" />
+    </div>
+  </div>
+</div>

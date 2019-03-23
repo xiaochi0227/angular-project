@@ -1,0 +1,32 @@
+<div style="color:#f00;margin-bottom:8px;border-bottom:1px solid #f1f1f1;">提示:图片命名必须为商品条码(例：6928804011142.jpg),图片最大为2M</div>
+<div nz-row>
+  <div nz-col nzSpan="8" class="body-left">
+    <div>
+      <app-upload [nzuploadtype]="'drag'" [onUploaded]="uploadimg" [nzLimit]="100" [showuploadlist]="true">
+      </app-upload>
+    </div>
+    <div class="margin">
+      <label>图片名称类型:</label>
+      <nz-radio-group [(ngModel)]="paramn">
+        <label nz-radio nzValue="1">条码</label>
+        <label nz-radio nzValue="2">编码</label>
+      </nz-radio-group>
+    </div>
+    <div>
+      <label>是否覆盖原图:</label>
+      <nz-radio-group [(ngModel)]="cover">
+        <label nz-radio nzValue="1">是</label>
+        <label nz-radio nzValue="2">否</label>
+      </nz-radio-group>
+    </div>
+  </div>
+  <div nz-col nzSpan="16" class="body-right">
+    <ul>
+      <li *ngFor="let item of fileList">
+        <img src="{{item.remote_url}}" style="background:#f1f1f1;">
+        <span>{{item.fileName}}</span>
+        <div class="fr" [ngStyle]="{'color':item.success?'#87d068':'#f50'}">{{item.msg}}</div>
+      </li>
+    </ul>
+  </div>
+</div>

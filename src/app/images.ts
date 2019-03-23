@@ -1,0 +1,10 @@
+export const bg = './assets/img/bg.png';
+export const fragmentmap = './assets/img/fragmentmap.jpg';
+export const iillustration = './assets/img/iillustration.png';
+export const logo = './assets/img/logo.png';
+export const whitelogo = '../assets/img/whitelogo.png';
+export const exceptionimg403 = '../assets/img/403.png';
+export const exceptionimg404 = '../assets/img/404.png';
+export const deldgg = '../assets/img/del.png';
+export const beta = '../assets/img/beta.png';
+export const loadingimage = 'assets/img/loading.png';

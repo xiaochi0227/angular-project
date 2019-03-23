@@ -1,0 +1,394 @@
+@import '../../../../styles.less';
+
+
+/*搜索条件样式*/
+// .zh-serchbox{}
+.zh-serchbox .zh-serchtable {
+  margin-bottom: 0px;
+  border-top: 1px solid #fff;
+  margin-bottom: 15px;
+}
+
+.zh-serchbox .zh-serchtable td {
+  vertical-align: middle;
+  border-top: none;
+}
+
+.zh-serchbox .zh-serchtable .zh-zdname {
+  text-align: right;
+  vertical-align: middle;
+}
+
+.zh-serchbox .zh-serchtable .zh-textbox {
+  text-align: left;
+  vertical-align: middle;
+}
+
+.zh-serchbox .zh-serchtable .zh-serch-table {
+  margin-bottom: 0;
+}
+
+.zh-serchbox .zh-serchtable .zh-serch-table td {
+  border-top: 0;
+  height: 50px;
+}
+
+.zh-serchbox input[type="radio"] {
+  vertical-align: middle;
+  margin-right: 5px;
+}
+
+.zh-serchbox .table .table {
+  background: none;
+}
+
+.table tbody+tbody {
+  border-top: none;
+}
+
+table td {
+  vertical-align: middle;
+}
+
+.zh-dsrtable {
+  border: 1px solid rgba(225, 225, 225, 0.2);
+  border-top: none;
+}
+
+.zh-dsrtable span {
+  text-align: center;
+}
+
+.zh-dsrtable td,
+.zh-dsrtable th {
+  text-align: center;
+  overflow: hidden;
+  vertical-align: middle;
+}
+
+.zh-dsrtable th {
+  background: rgba(63, 122, 188, 0.5);
+  color: #fff;
+  font-weight: bold;
+  word-wrap: break-word !important;
+  white-space: normal !important;
+  word-break: break-all !important;
+}
+
+.zh-scrolldiv {
+  max-height: 420px;
+  overflow-y: scroll;
+}
+
+@media screen and (min-height: 900px) {
+  .zh-scrolldiv {
+    max-height: 670px;
+  }
+}
+
+@media screen and (max-height: 800px) {
+  .zh-scrolldiv {
+    max-height: 380px;
+  }
+}
+
+.zh-listhead {
+  border: 1px solid rgba(225, 225, 225, 0.3);
+  padding: 5px 0;
+  margin-bottom: 15px;
+  text-align: center;
+}
+
+.btngroup {
+  display: inline-block;
+  margin: 0 15px;
+}
+
+.datebox {
+  display: inline-block;
+  width: 380px;
+}
+
+.billingtype {
+  display: inline-block;
+  vertical-align: middle;
+  margin: 0 10px;
+
+  input[type="radio"] {
+    vertical-align: -2px !important;
+  }
+}
+
+.gdtd {
+  padding: 0 !important;
+  width: 135px;
+  vertical-align: middle;
+
+  span {
+    display: inline-block;
+  }
+}
+
+.gdspan {
+  display: inline-block !important;
+  width: 65px;
+  text-align: left;
+  vertical-align: middle;
+
+  label {
+    margin-bottom: 0 !important;
+  }
+}
+
+.label {
+  display: inline;
+  padding: .2em .6em .3em;
+  font-size: 75%;
+  font-weight: 700;
+  line-height: 1;
+  color: #fff;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: baseline;
+  border-radius: .25em;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  margin-right: 3px;
+}
+
+.label-success {
+  background-color: #5cb85c;
+}
+
+.label-default {
+  background-color: #777;
+}
+
+.label-warning {
+  background-color: #f0ad4e;
+}
+
+.zh-nzmodalstyle {
+  color: rgba(0, 0, 0, 0.65) !important;
+}
+
+.especially {
+  border: 1px solid rgba(7, 2, 2, 0.116)
+}
+
+.table>tbody>tr>td {
+  // line-height: 70px;
+  margin-top: 10px;
+  padding: 15px 8px;
+
+}
+
+.table>tbody>tr>td input::-webkit-input-placeholder {
+  /* placeholder颜色  */
+  color: #ccc;
+  /* placeholder字体大小  */
+  font-size: 12px;
+  /* placeholder位置  */
+  text-align: left;
+
+}
+
+// .ng-touched {
+//   border:1px solid #ccc;
+//   line-height:35px !important;
+//   border-radius:2% !important;
+// }
+.alert {
+  padding: 0px;
+  margin: 0px;
+  // border: 1px solid transparent;
+  // border-radius: 4px;
+  // height:20px;
+  // width:440px;
+  // margin-left:170px;
+  float: left !important;
+  line-height: 20px;
+}
+
+.table_a td {
+  color: black;
+
+}
+
+.no-gutters {
+  margin-right: 0;
+  margin-left: 0;
+
+  >.col,
+  >[class*="col-"] {
+    padding-right: 0;
+    padding-left: 0;
+  }
+}
+
+.table_a td {
+  color: white;
+  border-bottom: 1px solid white;
+
+  a:hover {
+    color: red;
+  }
+}
+
+.pm_actbox td {
+  padding: 15px 0 !important;
+
+}
+
+.pm_goods {
+  cursor: pointer;
+
+  :focus {
+    background-color: rgb(95, 163, 202);
+  }
+}
+
+.zh-upload {
+  position: relative;
+  cursor: pointer;
+  overflow: hidden;
+  display: inline-block;
+  *display: inline;
+  *zoom: 1
+}
+
+.zh-upload input[type="file"] {
+  position: absolute;
+  font-size: 100px;
+  right: 0;
+  top: 0;
+  opacity: 0;
+  filter: alpha(opacity=0);
+  cursor: pointer;
+}
+
+.table_b {
+  color: black;
+  width: 100%;
+
+  td input[type="text"] {
+    border: 1px solid black;
+    color: black;
+  }
+}
+
+table>td>select {
+  color: black;
+
+}
+
+// .row span a :hover {
+//   color:#00abff ;
+// }
+
+// table {
+//   border-right: 1px solid white;
+//   border-bottom: 1px solid white;
+.selected {
+  background-color: rgb(64, 115, 157);
+}
+
+
+
+
+
+
+
+
+
+.zh-onlinecategorytable {
+  width: 100%;
+
+  td {
+    height: 35px;
+  }
+}
+
+.zh-cateheadbts {
+  padding: 5px 10px;
+  margin: 0;
+}
+
+.zh-tip {
+  color: #f00;
+  padding: 3px 10px;
+  line-height: 16px;
+  margin: 0;
+  -webkit-margin-before: 0;
+  -webkit-margin-after: 0;
+}
+
+.zh-categoriesbox {
+  padding-top: 5px;
+  max-height: 450px;
+  overflow-y: scroll;
+}
+
+.zh-categoriesbox .zh-caterows {
+  width: 100%;
+  border-top: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.zh-categoriesbox .zh-caterows .zh-bordertd {
+  border: none;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+  padding: 5px;
+}
+
+.zh-caterows .zh-level {
+  width: 100%;
+  margin-bottom: 5px;
+}
+
+.zh-caterows .zh-level td {
+  border: none;
+  background: none;
+  padding: 0;
+}
+
+.zh-caterows .table {
+  background: none;
+}
+
+.zh-caterows .table td {
+  padding: 0;
+}
+
+.zh-categoriesbox .zh-icon1 {
+  margin-left: 50px;
+}
+
+.zh-toggleicon {
+  margin: 0 8px;
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  line-height: 18px;
+  padding: 0 !important;
+  border: 1px solid #333;
+  color: #333;
+  font-size: 16px;
+  text-align: center;
+  vertical-align: middle;
+  cursor: pointer;
+  background: none;
+}
+
+.zh-addtable {
+  margin-top: 10px;
+  width: 100%;
+  background: rgba(255, 255, 255, 0.1) !important;
+}
+
+.zh-addtable td {
+  border: none !important;
+  padding: 3px;
+}
+
+.zh-addtable td .form-control {
+  width: 80% !important;
+}

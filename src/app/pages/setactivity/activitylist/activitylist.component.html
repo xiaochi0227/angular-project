@@ -1,0 +1,56 @@
+<app-search-bar [queryList]='queryList' [searchStart]="searchStart" (searchSubOnlineCategories)="getSelection('online_cat_code')"
+  (childemit)="search($event)"></app-search-bar>
+
+<div class="zh-serchbox textcenter">
+  <button nz-button nzType="default" (click)="addNewActive()">新建活动</button>
+</div>
+<my-page [params]='params' [pagecount]='pageSize' [changecount]='pageSize.count' (childparams)="childparams($event)"></my-page>
+
+<nz-table nzSize="samll" #basicTable [nzData]="activeList" nzShowPagination="false">
+  <thead>
+    <tr>
+      <th nzWidth="10%">活动名称</th>
+      <th nzWidth="10%">活动状态</th>
+      <th nzWidth="20%">上线渠道</th>
+      <th nzWidth="20%">所属门店</th>
+      <th nzWidth="15%">活动日期</th>
+      <th nzWidth="10%">最后修改人</th>
+      <th>操作</th>
+    </tr>
+  </thead>
+  <tbody>
+
+    <tr *ngFor="let item of basicTable.data;let i = index;">
+      <td>{{item.activity_name}}</td>
+      <td>
+
+        <span [ngSwitch]="item.status">
+          <nz-tag *ngSwitchCase="1" [nzColor]="'#108ee9'">未开始</nz-tag>
+          <nz-tag *ngSwitchCase="2" [nzColor]="'#87d068'">进行中</nz-tag>
+          <nz-tag *ngSwitchCase="3" [nzColor]="'red'">已结束</nz-tag>
+        </span>
+      </td>
+      <td>
+        <span *ngFor="let channel of item.channels;let i=index">{{channel.name}}<span *ngIf="item.channels.length!==i+1">,</span></span>
+      </td>
+
+      <td style="padding-right:0;">
+        <div class="content-bottom-dl">
+          <span *ngFor="let store of item.stores;let i = index">{{store.region_name}}
+            <span *ngIf="item.stores.length!==i+1">,</span>
+          </span>
+        </div>
+      </td>
+      <td>{{item.online_time}}-{{item.offline_time}}</td>
+      <td>{{item.oper_user}}</td>
+      <td>
+
+
+
+        <button nz-button nzType="primary" nzSize="small" *ngIf="item.status != '3'" (click)="pm_moify(item)">修改</button>
+        <button nz-button nzType="default" nzSize="small" *ngIf="item.status == '2'" (click)="pm_offline(item)">提前下线</button>
+        <button nz-button nzType="danger" nzSize="small" (click)="pm_delactive(item)">删除</button>
+      </td>
+    </tr>
+  </tbody>
+</nz-table>

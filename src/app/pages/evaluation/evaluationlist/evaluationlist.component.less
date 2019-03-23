@@ -1,0 +1,59 @@
+.table-my {
+  background: #fbfbfb;
+  border: 1px solid #d9d9d9;
+  border-radius: 6px;
+  padding: 15px;
+  margin-top: 10px;
+  position: relative;
+  .list-header {
+    font-size: 16px;
+    font-weight: 400;
+  }
+  .return-btn{
+    position: absolute;
+    bottom: 15px;
+    right: 15px;
+  }
+
+  .body-sjpj {
+    display: flex;
+
+    .body-sjpj-left {
+      position: relative;
+
+      span {
+        position: absolute;
+        top: 50%;
+        transform: translate(0%, -50%);
+      }
+    }
+  }
+
+  .list-body {
+    label {
+      text-align: right;
+      display: inline-block;
+      width: 100px;
+      padding-right: 15px;
+    }
+    i{
+      padding:0 10px;
+    }
+
+    .body-sjpj-right>div {
+      padding: 7px;
+    }
+  }
+
+  .anticon-dislike {
+    color: red;
+  }
+
+  .nticon-like {
+    color: orange;
+  }
+
+  &:hover {
+    background: #d3f1d4;
+  }
+}

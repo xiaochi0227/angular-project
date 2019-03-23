@@ -1,0 +1,32 @@
+<div class="zh-serchbox">
+  <header>
+    <h3>操作提示</h3>
+    <div>1.该页面展示了功能设置的所有功能</div>
+    <div>2.默认关闭所有功能，用户可以点击开关选择打开或关闭，只有开关打开时该功能才有效</div>
+  </header>
+  <div>
+    <ul>
+      <li>
+        <label nz-checkbox [(ngModel)]="parmes.order_examine">订单审批功能</label>
+      </li>
+      <li>
+        <label nz-checkbox [(ngModel)]="parmes.sj_delivery">商家自配送功能</label>
+      </li>
+      <li>
+        <label nz-checkbox [(ngModel)]="parmes.allchecked" (nzCheckedChange)="checkAll($event)">商品复核功能</label>
+        <i class="anticon anticon-down" *ngIf="!showStoreList" (click)=isShowStorelist()></i>
+        <i class="anticon anticon-up" *ngIf="showStoreList" (click)=isShowStorelist()></i>
+
+      </li>
+      <div nz-row *ngIf="showStoreList">
+        <span nz-col nzXs="12" nzSm="8" nzMd="8" nzLg="8" nzXl="8" *ngFor="let item of storeList">
+          <label nz-checkbox [(ngModel)]="item.sfxz" (nzCheckedChange)="changeAllchecked()" >{{item.codename}}</label>
+        </span>
+
+      </div>
+    </ul>
+  </div>
+  <footer>
+    <button nz-button nzType="primary" (click)="settingsave()">提交</button>
+  </footer>
+</div>

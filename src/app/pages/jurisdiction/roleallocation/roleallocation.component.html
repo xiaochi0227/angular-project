@@ -1,0 +1,80 @@
+<div class="export-wrapper textcenter">
+  <button nz-button nzType="default" (click)="gotoaddrole()">添加角色</button>
+</div>
+<div class="table-wrapper">
+  <nz-table #nzTable [nzData]="roleList" nzBordered nzSize="middle" nzShowPagination="false" nzFrontPagination="false">
+    <thead>
+      <tr>
+        <th>角色编号</th>
+        <th>角色名称</th>
+        <th>描述</th>
+        <th>操作</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let item of nzTable.data;let i=index">
+        <ng-container *ngIf="item.rolename!=='admin'">
+          <td>{{item.rolecode}}</td>
+          <td>{{item.rolename}}</td>
+          <td>{{item.remarks}}</td>
+          <td>
+            <div class="editable-row-operations">
+              <a *ngIf="item.ID!=='309df51a96d6286e2faf388e1b2120c2'&&item.ID!=='db8a97478f8525bcbe72935a1835c81c'"
+                (click)='showModel(item)'>分配权限</a>
+              <a *ngIf="item.ID!=='309df51a96d6286e2faf388e1b2120c2'&&item.ID!=='db8a97478f8525bcbe72935a1835c81c'"
+                (click)='delRole(item)'>删除</a>
+            </div>
+          </td>
+        </ng-container>
+      </tr>
+    </tbody>
+  </nz-table>
+</div>
+
+<!-- 新增用户 -->
+<nz-modal nzWidth="60%" [(nzVisible)]="totaldiv" nzTitle="权限分配" (nzOnCancel)="closediv()" (nzOnOk)="btnAffirm()">
+<ul class="modal-body">
+  <li *ngFor="let items of navList;let i=index">
+    <p>
+      <input class="zh-toggleicon" *ngIf="!items.zs" type="button" value="-" (click)="isShow($event,i)">
+      <input class="zh-toggleicon" *ngIf="items.zs" type="button" value="+" (click)="isShow($event,i)">
+      <label class="checkbox-inline custom-checkbox nowrap allmd">
+        <input type="checkbox" (click)="getSelected($event,items)"
+          [checked]="items.sfxz" /><span>{{items.menuname}}</span>
+      </label>
+    </p>
+    <div *ngIf="items.List">
+      <ul *ngIf="!items.zs">
+        <li *ngFor="let nav of items.List;let j=index" class="menulist">
+          <p class="twomenu">
+            <i></i>
+            <label class="checkbox-inline custom-checkbox nowrap allmd">
+              <input type="checkbox" name="sfxz" (change)="getSelected1($event,nav,i)" [checked]="nav.sfxz" /><span>
+                {{nav.menuname}}</span>
+            </label>
+          </p>
+          <div class="btnlist" *ngIf="nav.powerbtn">
+            <div *ngFor="let btns of nav.powerbtn">
+              <p *ngIf="!btns.btncode">
+                <label class="checkbox-inline custom-checkbox nowrap allmd" *ngFor="let btn of btns.groupings">
+                  <input type="checkbox" name="sfxz" (change)="xzCheck(btn,i,j)" [checked]="btn.sfxz" /><span
+                    class="btns">{{btn.btnname}}</span>
+                </label>
+              </p>
+              <p *ngIf="btns.btncode">
+                <label class="checkbox-inline custom-checkbox nowrap allmd" *ngFor="let btn of btns.groupings">
+                  <input type="checkbox" name="sfxz" (change)="xzCheck(btn,i,j)" [checked]="btn.sfxz" /><span
+                    class="btns">{{btn.btnname}}</span>
+                </label>
+              </p>
+            </div>
+
+          </div>
+        </li>
+      </ul>
+    </div>
+
+  </li>
+</ul>
+</nz-modal>
+

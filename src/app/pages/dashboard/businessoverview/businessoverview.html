@@ -1,0 +1,123 @@
+<div class="headpie">
+  <app-piechart></app-piechart>
+</div>
+<div class="ordercharts">
+  <nz-card>
+    <nz-card-tab>
+      <nz-tabset nzSize="large" [(nzSelectedIndex)]="index2" [nzTabBarExtraContent]="extraTemplate">
+        <nz-tab nzTitle="订单额"></nz-tab>
+        <nz-tab nzTitle="订单量"></nz-tab>
+        <ng-template #extraTemplate>
+          <div class="searchitem">
+            <a>日视图</a>
+            <a>月视图</a>
+            <a>年视图</a>
+            <a>全部</a>
+            <nz-range-picker [nzFormat]="dateFormat"></nz-range-picker>
+          </div>
+        </ng-template>
+      </nz-tabset>
+    </nz-card-tab>
+    <div class="chartcontent">
+      <div class="chartbox">
+        <div class="orderchart">
+          <img style="width:100%;height:300px;">
+        </div>
+
+      </div>
+      <div class="ranking">
+        <div class="rankingbox">
+          <table class="rankingtable">
+            <thead>
+              <tr>
+                <th colspan="3">企业订单额排行</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>
+                  <nz-badge [nzCount]="1" [nzStyle]="{ backgroundColor: '#fff', color: '#999', boxShadow: '0 0 0 1px #d9d9d9 inset' }"></nz-badge>
+                  企业名称
+                </td>
+                <td>88家</td>
+                <td>888,999元</td>
+              </tr>
+              <tr>
+                <td>
+                  <nz-badge [nzCount]="2" [nzStyle]="{ backgroundColor: '#fff', color: '#999', boxShadow: '0 0 0 1px #d9d9d9 inset' }"></nz-badge>
+                  企业名称
+                </td>
+                <td>88家</td>
+                <td>888,999元</td>
+              </tr>
+              <tr>
+                <td>
+                  <nz-badge [nzCount]="3" [nzStyle]="{ backgroundColor: '#fff', color: '#999', boxShadow: '0 0 0 1px #d9d9d9 inset' }"></nz-badge>
+                  企业名称
+                </td>
+                <td>88家</td>
+                <td>888,999元</td>
+              </tr>
+              <tr>
+                <td>
+                  <nz-badge [nzCount]="4" [nzStyle]="{ backgroundColor: '#fff', color: '#999', boxShadow: '0 0 0 1px #d9d9d9 inset' }"></nz-badge>
+                  企业名称
+                </td>
+                <td>88家</td>
+                <td>888,999元</td>
+              </tr>
+              <tr>
+                <td>
+                  <nz-badge [nzCount]="5" [nzStyle]="{ backgroundColor: '#fff', color: '#999', boxShadow: '0 0 0 1px #d9d9d9 inset' }"></nz-badge>
+                  企业名称
+                </td>
+                <td>88家</td>
+                <td>888,999元</td>
+              </tr>
+              <tr>
+                <td>
+                  <nz-badge [nzCount]="6" [nzStyle]="{ backgroundColor: '#fff', color: '#999', boxShadow: '0 0 0 1px #d9d9d9 inset' }"></nz-badge>
+                  企业名称
+                </td>
+                <td>88家</td>
+                <td>888,999元</td>
+              </tr>
+              <tr>
+                <td>
+                  <nz-badge [nzCount]="7" [nzStyle]="{ backgroundColor: '#fff', color: '#999', boxShadow: '0 0 0 1px #d9d9d9 inset' }"></nz-badge>
+                  企业名称
+                </td>
+                <td>88家</td>
+                <td>888,999元</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+    </div>
+  </nz-card>
+</div>
+<div class="storedata">
+  <div class="storestab">
+    <nz-card>
+      <nz-card-tab>
+        <nz-tabset nzSize="large" [(nzSelectedIndex)]="index2">
+          <nz-tab nzTitle="新门店上线趋势"></nz-tab>
+          <nz-tab nzTitle="虚拟门店上线趋势"></nz-tab>
+        </nz-tabset>
+      </nz-card-tab>
+      <div>
+        <img style="width:100%;height:300px;">
+      </div>
+    </nz-card>
+  </div>
+  <div class="proportion">
+    <nz-card [nzBordered]="false" style="margin-left:16px;" nzTitle="线上门店占比">
+      <div>
+        <img style="width:100%;height:300px;">
+      </div>
+
+    </nz-card>
+  </div>
+</div>

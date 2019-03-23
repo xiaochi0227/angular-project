@@ -1,0 +1,243 @@
+<div class="zh-serchbox textcenter" nz-row>
+  <!-- <input nz-input placeholder="门店编号/门店名称/发票税号/发票公司" [(ngModel)]="search"> -->
+
+  <div nz-col nzSpan="18">
+    <nz-input-group [nzSuffix]="suffixTemplate">
+      <input type="text" nz-input placeholder="门店编号/门店名称/发票税号/发票公司" (keyup.enter)="search(param)" [(ngModel)]="param">
+      <ng-template #suffixTemplate><i nz-icon type="close-circle" (click)="reset(param)"></i></ng-template>
+    </nz-input-group>
+  </div>
+  <div nz-col nzSpan="6">
+    <button nz-button nzType="primary" (click)="search(param)">查询</button>
+    <button nz-button nzType="default" (click)="reset()">重置</button>
+  </div>
+</div>
+<nz-tabset [nzSelectedIndex]="selectedIndex">
+
+  <nz-tab nzTitle="发票公司" (nzClick)="search(0)">
+    <div style="height:40px">
+      <span *ngIf="invoicelist">共计 {{invoicelist.length}} 条信息</span>
+      <button class="fr" nz-button nzType="primary" (click)="addInvoice()">新增</button>
+    </div>
+    <nz-table #basicTable [nzData]="invoicelist" nzShowPagination="false">
+      <thead>
+        <tr>
+          <th style="text-align:left">发票公司</th>
+          <th>发票税号</th>
+          <th>负责人</th>
+          <th>联系电话</th>
+          <th>当前状态</th>
+          <th>操作</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of basicTable.data;let i = index;">
+          <td>{{item.invoice_company}}</td>
+          <td>{{item.invoice_no}}</td>
+          <td>{{item.principal}}</td>
+          <td>{{item.tel}}</td>
+          <td>
+            <nz-tag [nzColor]="'green'" *ngIf="item?.invoice_switch==true">已启用</nz-tag>
+            <nz-tag [nzColor]="'magenta'" *ngIf="item?.invoice_switch==false||!item.invoice_switch">禁用</nz-tag>
+          </td>
+          <td>
+            <button nz-button nzType="danger" (click)="stopEmploy(item)" *ngIf="item?.invoice_switch==true" [disabled]="isDisable">禁用</button>
+            <button nz-button nzType="primary" (click)="stopEmploy(item)" *ngIf="item?.invoice_switch==false||!item?.invoice_switch"
+              [disabled]="isDisable">启用</button>
+            <button nz-button nzType="primary" (click)="comPile(item)" [disabled]="isDisable">编辑</button>
+            <!-- <button nz-button nzType="primary" (click)="delCompany(item)" class="ng-btn btn btn-success btn-xs">删除</button> -->
+          </td>
+        </tr>
+      </tbody>
+    </nz-table>
+  </nz-tab>
+  <nz-tab nzTitle="发票门店信息" (nzClick)="search(1)">
+    <div style="height:40px">
+      <span *ngIf="invoiceStorelist">共计 {{invoiceStorelist.length}} 条信息</span>
+      <button class="fr" nz-button nzType="primary" (click)="bathOperationStopShop(1)" [disabled]="isUsed">批量启用</button>
+      <button class="fr" nz-button nzType="primary" (click)="bathOperationStopShop(0)" [disabled]="isUsed">批量关闭</button>
+    </div>
+    <div *ngIf="invoiceStorelist">
+
+      <nz-table #basicTable1 [nzFrontPagination]="'false'" [nzData]="invoiceStorelist" nzShowPagination="false">
+        <thead>
+          <tr>
+            <th nzShowCheckbox #checkValue [(nzChecked)]='checked' [nzIndeterminate]='indeterminate' (click)="setimportallstore(checkValue)"></th>
+            <th>门店编号</th>
+            <th>门店名称</th>
+            <th>发票公司</th>
+            <th>是否启用电子发票</th>
+            <th>操作</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr *ngFor="let item of basicTable1.data;let i = index;">
+            <td nzShowCheckbox [(nzChecked)]="item.sfxz" (click)="checkList(checkValue,item)"></td>
+            <td>{{item.storecode}}</td>
+            <td>{{item.storename}}</td>
+            <td>{{item.invoice_company}}
+              <nz-tag [nzColor]="'green'" *ngIf="item?.invoice_switch==true">启用中</nz-tag>
+              <nz-tag [nzColor]="'magenta'" *ngIf="item?.invoice_switch==false||!item.invoice_switch">已禁用</nz-tag>
+              <!-- <span class="text-isused" [ngStyle]="{'background-color': item.invoice_switch===true?'#8bd22f':'#f95372'}">
+                {{item.invoice_switch===true?'启用中':'已禁用'}}
+              </span> -->
+            </td>
+            <td>
+              <nz-switch [(ngModel)]="item.isAdd" [nzDisabled]="!item.invoice_switch" (ngModelChange)="onSwitch(item)">
+                <span checked>开</span>
+                <span unchecked>关</span>
+              </nz-switch>
+            </td>
+            <td style="text-align:right;">
+              <button nz-button nzType="primary" (click)="showInfos(item)" class="ng-btn btn btn-info btn-xs">查看</button>
+            </td>
+          </tr>
+        </tbody>
+      </nz-table>
+    </div>
+
+  </nz-tab>
+</nz-tabset>
+
+
+<nz-modal [nzVisible]="isVisible" [nzWidth]="750" [nzTitle]="modeltitle" [nzContent]="modalContent" (nzOnCancel)="handleCancel($event)"
+  (nzOnOk)="handleOk(userdetails)" [nzOkLoading]="isConfirmLoading">
+  <ng-template #modalContent>
+    <div class="ng-modal">
+      <span class="span"><span style="color:brown">* </span>发票公司名称：</span>
+      <input nz-input type="text" placeholder="单行输入" [(ngModel)]="userdetails.compony">
+    </div>
+    <div class="ng-modal">
+      <span class="span"><span style="color:brown">* </span>发票税号：</span>
+      <input nz-input type="text" placeholder="单行输入" [(ngModel)]="userdetails.dutynum">
+    </div>
+    <div class="ng-modal">
+      <span class="span">负责人：</span>
+      <input nz-input type="text" placeholder="单行输入" [(ngModel)]="userdetails.principal">
+    </div>
+    <div class="ng-modal">
+      <span class="span">联系电话：</span>
+      <input nz-input type="text" placeholder="单行输入" [(ngModel)]="userdetails.tel">
+    </div>
+    <div class="ng-modal" style="display: flex;">
+      <span class="span"><span style="color:brown">* </span>证书文件：</span>
+      <span class="fileinput-button">
+        <app-upload [uploadtype]="'button'" [fileList]="fileList" [uploadname]="filetext" [onUploaded]="uploader"
+          [nzLimit]="'1'" [showuploadlist]="true"></app-upload>
+      </span>
+      <span style="margin: 5px 0 0 30px;font-size:10px;color:brown">* 仅支持pfx文件,一个文件</span>
+    </div>
+    <div class="showFile" *ngIf="isFilelist">
+      {{filelistname}}
+      <!-- <i class="anticon anticon-close-circle-o" (click)="fileEmpty()"></i> -->
+    </div>
+    <a class="filedButton downbutton" *ngIf="downfileButton" [href]="fileUrl" target="_blank">点击下载证书文件</a>
+    <div class="ng-modal">
+      <span class="span"><span style="color:brown">* </span>证书密码：</span>
+      <input nz-input type="text" placeholder="单行输入" [(ngModel)]="userdetails.passward">
+    </div>
+    <div class="ng-modal">
+      <span class="span"><span style="color:brown">* </span>APPID：</span>
+      <input nz-input type="text" placeholder="单行输入" [(ngModel)]="userdetails.appid">
+    </div>
+    <div class="ng-modal">
+      <span class="span"><span style="color:brown">* </span>密钥：</span>
+      <input nz-input type="text" placeholder="单行输入" [(ngModel)]="userdetails.secretkey">
+    </div>
+    <div class="ng-modal">
+      <span class="span"><span style="color:brown">* </span>收款人：</span>
+      <input nz-input type="text" placeholder="单行输入" [(ngModel)]="userdetails.receiver">
+    </div>
+    <div class="ng-modal">
+      <span class="span"><span style="color:brown">* </span>复核人：</span>
+      <input nz-input type="text" placeholder="单行输入" [(ngModel)]="userdetails.reviewer">
+    </div>
+    <div class="ng-modal">
+      <span class="span"><span style="color:brown">* </span>开票人：</span>
+      <input nz-input type="text" placeholder="单行输入" [(ngModel)]="userdetails.drawer">
+    </div>
+    <div class="ng-modal">
+      <span class="span"><span style="color:brown">* </span>发票地址：</span>
+      <input nz-input type="text" placeholder="单行输入" [(ngModel)]="userdetails.invoice_address">
+    </div>
+    <div class="ng-modal">
+      <span class="span"><span style="color:brown">* </span>开户行：</span>
+      <input nz-input type="text" placeholder="单行输入" [(ngModel)]="userdetails.open_bank">
+    </div>
+    <div class="ng-modal">
+      <span><span style="color:brown">* </span>请选择使用该发票公司的门店：</span>
+      <nz-select style="width: 250px;text-indent: 6px;" [nzMode]="'multiple'" [nzPlaceHolder]="'请选择门店'" [(ngModel)]="userdetails.invoiceStorecode"
+        [nzNotFoundContent]="'没有找到此门店'">
+        <nz-option *ngFor="let item of storecode" [nzLabel]="item.codename" [nzValue]="item.codename">
+
+        </nz-option>
+      </nz-select>
+    </div>
+    <div class="ng-modal">
+      <span>请选择使用电子发票功能的门店：</span>
+      <nz-select style="width: 250px;text-indent: 6px;" [nzMode]="'multiple'" [nzPlaceHolder]="'请选择门店'" [(ngModel)]="userdetails.electronicStorecode"
+        [nzNotFoundContent]="'没有找到此门店'">
+        <nz-option *ngFor="let item of userdetails.invoiceStorecode" [nzLabel]="item" [nzValue]="item">
+
+        </nz-option>
+      </nz-select>
+      <span style="margin-left:15px;font-size:10px;color:brown">请先选择使用发票公司的门店</span>
+    </div>
+  </ng-template>
+</nz-modal>
+
+<!-- 对话框 -->
+<nz-modal [nzVisible]="isVisible1" nzWidth="750px" nzTitle="查看公司发票信息" [nzContent]="modalContentinfo" (nzOnCancel)="handleCancel($event)"
+  [nzOkText]="null">
+  <ng-template #modalContentinfo>
+    <div class="modal-info">
+      <div class="info-top">
+        <div class="info-span">发票公司名称：</div>
+        <div class="info-span-two">{{userdetails.compony}}</div>
+      </div>
+      <div class="info-top">
+        <div class="info-span">发票税号：</div>
+        <div class="info-span-two">{{userdetails.dutynum}}</div>
+      </div>
+      <div class="info-top">
+        <div class="info-span">负责人：</div>
+        <div class="info-span-two">{{userdetails.principal}}</div>
+      </div>
+      <div class="info-top">
+        <div class="info-span">收款人：</div>
+        <div class="info-span-two">{{userdetails.receiver}}</div>
+      </div>
+      <div class="info-top">
+        <div class="info-span">复核人：</div>
+        <div class="info-span-two">{{userdetails.reviewer}}</div>
+      </div>
+      <div class="info-top">
+        <div class="info-span">开票人：</div>
+        <div class="info-span-two">{{userdetails.drawer}}</div>
+      </div>
+      <div class="info-top">
+        <div class="info-span">联系电话：</div>
+        <div class="info-span-two">{{userdetails.tel}}</div>
+      </div>
+      <div class="info-top">
+        <div class="info-span">证书文件：</div>
+        <a class="info-span-two"  [href]="fileUrl" target="_blank" title="点击可进行下载证书文件">
+          {{filelistname}}
+        </a>
+      </div>
+      <div class="info-top">
+        <div class="info-span">证书密码：</div>
+        <div class="info-span-two">{{userdetails.passward}}</div>
+      </div>
+      <div class="info-top">
+        <div class="info-span">APPID：</div>
+        <div class="info-span-two">{{userdetails.appid}}</div>
+      </div>
+      <div class="info-top">
+        <div class="info-span">密钥：</div>
+        <div class="info-span-two">{{userdetails.secretkey}}</div>
+      </div>
+    </div>
+  </ng-template>
+</nz-modal>

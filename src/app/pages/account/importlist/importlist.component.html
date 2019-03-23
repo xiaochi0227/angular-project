@@ -1,0 +1,40 @@
+<div class="widgets">
+  <div class="row">
+    <div class="horizontal-scroll">
+      <nz-table #basicTable nzShowSizeChanger [nzFrontPagination]="false" [nzLoading]="loading" [nzTotal]="count"
+        [(nzPageIndex)]="params.page_no" [(nzPageSize)]="params.page_size" (nzPageIndexChange)="getimportlists()"
+        (nzPageSizeChange)="search()" [nzData]="importlists">
+        <thead>
+          <tr>
+            <th width="5%">序号</th>
+            <th width="25%">导入文件名</th>
+            <th width="18%">导入时间</th>
+            <th width="18%">完成时间</th>
+            <th width="10%">导入状态</th>
+            <th>操作</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let import of basicTable.data;let i=index">
+            <td>{{cow+i+1}}</td>
+            <td>{{import.filename}}</td>
+            <td>{{import.start_time}}</td>
+            <td>{{import.end_time}}</td>
+            <td>{{import.status}}</td>
+            <td>
+              <input type="button" nz-button nzType="primary" value="下载导入文件" (click)="getfile(import.filepath,import.filename)">
+              <input type="button" *ngIf="import.status==='导入成功'" nz-button nzType="primary" value="查看导入结果" (click)="findresult(import.result)">
+              <!-- value="查看导入结果" /> -->
+            </td>
+          </tr>
+        </tbody>
+      </nz-table>
+      <iframe #xzifr name="xzifr" style="display:none"></iframe>
+    </div>
+  </div>
+</div>
+
+<!-- 导入状态提示 -->
+<nz-modal [(nzVisible)]="isVisible" nzTitle="导入结果" (click)="isVisible=false" nzFooter=" ">
+  <p>{{results.code}}</p>
+</nz-modal>

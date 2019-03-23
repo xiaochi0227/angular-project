@@ -1,0 +1,7 @@
+{
+    "/v2": {
+      "target": "https://test.my-glory.net",
+      "secure": false,
+      "changeOrigin": true   
+    }
+  }

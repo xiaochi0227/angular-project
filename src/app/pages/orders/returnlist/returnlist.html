@@ -1,0 +1,279 @@
+<div *ngIf="newvision">
+  <div class="zh-serchbox">
+    <table class="table zh-serchtable black-muted-bg">
+      <tbody>
+        <tr>
+          <td>
+            <table class="table zh-serch-table">
+              <tr>
+                <td class="zh-zdname">渠道订单号</td>
+                <td class="zh-textbox">
+                  <input nz-input placeholder="请输入渠道订单号" [(ngModel)]="params.search.channel_sheetno">
+                </td>
+                <td class="zh-zdname">退货单号</td>
+                <td class="zh-textbox">
+                  <input nz-input placeholder="请输入退货单号" [(ngModel)]="params.search.sheetno">
+                </td>
+                <td class="zh-zdname">门店</td>
+                <td class="zh-textbox" *ngIf="stores">
+                  <nz-select style="width: 180px;" [(ngModel)]="params.search.region_code" nzShowSearch nzAllowClear
+                    nzPlaceHolder="请选择门店名称">
+                    <nz-option *ngFor="let store of stores" [nzValue]="store.code" [nzLabel]="store.codename"></nz-option>
+                  </nz-select>
+                </td>
+              </tr>
+              <tr *ngIf="hidesearch">
+                <td class="zh-zdname">选择时间</td>
+                <td colspan="3" style="text-align:left;">
+                  <nz-radio-group [(ngModel)]="params.search.date_type" style="display:inline-block;">
+                    <label nz-radio nzValue="return_time">退货</label>
+                    <label nz-radio nzValue="pos_time">核销</label>
+                  </nz-radio-group>
+                  <span style="display: inline-block;width:280px;">
+                    <my-daterange [_startDate]="_startDate" [_endDate]="_endDate" (startchange)="startchange($event)"
+                      (endchange)="endchange($event)"></my-daterange>
+                  </span>
+                </td>
+                <td class="zh-zdname">手机号</td>
+                <td class="zh-textbox">
+                  <input nz-input placeholder="请输入手机号" [(ngModel)]="params.search.mobile">
+                </td>
+              </tr>
+              <tr *ngIf="hidesearch">
+                <td class="zh-zdname" style="vertical-align: top;">渠道</td>
+                <td colspan="5" class="zh-textbox" style="vertical-align: top;">
+                  <nz-tag (click)="getchannel()" [nzColor]="'#00abff'">全部渠道</nz-tag>
+                  <span *ngFor="let channel of channels;" style="cursor: pointer;" (click)="getchannel(channel.channel_keyword)">
+                    <my-channeltags [getchannel]="channel.channel_keyword"></my-channeltags>
+                  </span>
+                </td>
+              </tr>
+              <tr *ngIf="hidesearch">
+                <td class="zh-zdname" style="vertical-align: top;">退货单状态</td>
+                <td colspan="5" class="zh-textbox" style="vertical-align: top;">
+                  <span>
+                    <nz-button-group>
+                      <button nz-button [nzType]="status===''?'primary':'default'" (click)="getorderstatus('')">全部状态</button>
+                      <button nz-button [nzType]="status==='0'?'primary':'default'" (click)="getorderstatus('0')">已取消</button>
+                      <button nz-button [nzType]="status==='1'?'primary':'default'" (click)="getorderstatus('1')">待处理</button>
+                      <button nz-button [nzType]="status==='2'?'primary':'default'" (click)="getorderstatus('2')">处理中</button>
+                      <button nz-button [nzType]="status==='4'?'primary':'default'" (click)="getorderstatus('4')">已拒绝</button>
+                      <button nz-button [nzType]="status==='5'?'primary':'default'" (click)="getorderstatus('5')">已退货</button>
+                      <button nz-button [nzType]="status==='6'?'primary':'default'" (click)="getorderstatus('6')">已退款</button>
+                    </nz-button-group>
+                  </span>
+                </td>
+              </tr>
+              <tr *ngIf="hidesearch">
+                <td class="zh-zdname" style="vertical-align: top;">核销状态</td>
+                <td colspan="5" class="zh-textbox" style="vertical-align: top;">
+                  <span>
+                    <nz-button-group>
+                      <button nz-button [nzType]="hxzt===''?'primary':'default'" (click)="getorderhxzt('')">全部状态</button>
+                      <button nz-button [nzType]="hxzt==='1'?'primary':'default'" (click)="getorderhxzt(1)">已核销</button>
+                      <button nz-button [nzType]="hxzt==='2'?'primary':'default'" (click)="getorderhxzt(2)">未核销</button>
+                    </nz-button-group>
+                  </span>
+                </td>
+              </tr>
+            </table>
+          </td>
+          <td>
+            <button nz-button nzType="primary" style="margin-right:10px;" (click)="getReturnlistQuery()">查询</button>
+            <button nz-button nzType="default" (click)="OrderRest()">重置</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <input value="展开更多↓" type="button" (click)="togglesearch($event)" style="display:block;width:100%;color:#333;background:rgba(240, 240, 240, 0.2);border: 1px solid rgba(225, 225, 225, 0.3);text-align: center;padding:3px 0;cursor: pointer;" />
+  </div>
+  <my-page [params]='params' [pagecount]='pageSize' [changecount]='changecount' (childparams)="childparams($event)"></my-page>
+  <div class="horizontal-scroll" style="min-height: 500px;">
+    <nz-table #nzTable [nzData]="returnlists" [nzShowPagination]="false" [nzFrontPagination]="false" nzBordered>
+      <thead>
+        <tr>
+          <th colspan="13">
+            <button nz-button nzType="default" (click)="addexport()"><i nz-icon type="file-excel" theme="outline"></i>导出到CSV文件</button>
+            <a (click)="selectvision('1')" style="color:#f00;">切换到新版本</a>
+          </th>
+        </tr>
+        <tr>
+          <th>序号</th>
+          <th>POS核销状态</th>
+          <th class="browser-icons">渠道</th>
+          <th>门店</th>
+          <th>渠道订单号</th>
+          <th>退货单号</th>
+          <th>退货金额</th>
+          <th>佣金</th>
+          <th>退货人</th>
+          <th>退货人手机号</th>
+          <th>退货时间</th>
+          <th>创建时间</th>
+          <th>核销时间</th>
+        </tr>
+      </thead>
+      <tbody *ngFor="let returnlist of nzTable.data;let i=index">
+        <tr (click)="getreturndetail(returnlist.sheetno,returnlist)" [class.zh-selected]="returnlist === selectedreturn"
+          style="cursor:pointer;">
+          <td>{{cow+i+1}}</td>
+          <td style="text-align: center;">
+            <nz-tag *ngIf="returnlist.strike==='1'" [nzColor]="'#f50'">已冲销</nz-tag>
+            <nz-tag *ngIf="returnlist.sghx!==''&& returnlist.sghx" [nzColor]="'#f50'">超卖</nz-tag>
+            <div style="color:#f60;font-weight:bold;">
+              <span>{{returnlist.returnStatus.test}}</span>/<span>{{returnlist.returnStatus.pos}}</span>
+            </div>
+          </td>
+          <td ngClass="nowrap" [ngSwitch]="returnlist.channel_keyword" class="zh-qd textcenter">
+            <my-channeltags [getchannel]="returnlist.channel_keyword"></my-channeltags>
+          </td>
+          <td>{{returnlist.region_name}}</td>
+          <td class="textcenter">{{returnlist.channel_sheetno}}</td>
+          <td class="textcenter">{{returnlist.sheetno}}</td>
+          <td class="textright">{{returnlist.total_sale_value}}</td>
+          <td class="textright">{{returnlist.commission_value}}</td>
+          <td class="textcenter">{{returnlist.receiver.name}}</td>
+          <td class="textcenter">{{returnlist.receiver.mobile}}</td>
+          <td>{{returnlist.return_time}}</td>
+          <td>{{returnlist.create_time}}</td>
+          <td>{{returnlist.pos_time}}</td>
+        </tr>
+        <tr class="zh-selectorder" *ngIf="returndetails">
+          <td colspan="13">
+            <nz-table #nzTable [nzData]="returndetails" [nzShowPagination]="false" [nzFrontPagination]="false"
+              nzBordered>
+              <thead>
+                <tr>
+                  <td>序号</td>
+                  <td>商品编码</td>
+                  <td>商品条码</td>
+                  <td>商品名称</td>
+                  <td>单价</td>
+                  <td>退货数量</td>
+                  <td>商品金额</td>
+                  <td>优惠金额</td>
+                  <td>退货金额</td>
+                  <td>佣金</td>
+                </tr>
+              </thead>
+      <tbody>
+        <tr *ngFor="let returndetail of nzTable.data;let i=index">
+          <td width="5%">{{i+1}}</td>
+          <td width="10%">
+            <div>
+              <nz-tag *ngIf="returndetail.sghx!==''&& returndetail.sghx" [nzColor]="'#f50'">超卖</nz-tag>
+            </div>
+            {{returndetail.item_code}}
+          </td>
+          <td width="15%">{{returndetail.barcode}}</td>
+          <td width="18%">{{returndetail.item_name}}</td>
+          <td width="8%">{{returndetail.return_price}}</td>
+          <td width="9%">{{returndetail.return_qty}}</td>
+          <td width="9%">{{returndetail.item_money}}</td>
+          <td width="9%">{{returndetail.disc_money}}</td>
+          <td width="9%">{{returndetail.return_money}}</td>
+          <td>{{returndetail.commission_value}}</td>
+        </tr>
+      </tbody>
+    </nz-table>
+    </td>
+    </tr>
+    </tbody>
+    </nz-table>
+  </div>
+</div>
+
+<!--新版页面-->
+<div class="zh_ordersbox" *ngIf="!newvision">
+  <ul class="searchul black-muted-bg">
+    <li>
+      <span class="searchname" style="vertical-align: middle;">输入搜索</span>
+      <span class="searchtext">
+        <nz-input-group nzCompact>
+          <nz-select [(ngModel)]="selectsearchtype">
+            <nz-option [nzLabel]="'退货单号'" [nzValue]="1"></nz-option>
+            <nz-option [nzLabel]="'渠道订单号'" [nzValue]="2"></nz-option>
+            <nz-option [nzLabel]="'手机号'" [nzValue]="3"></nz-option>
+          </nz-select>
+          <input type="text" [(ngModel)]="selectsearchvalue" nz-input style="width: 200px;">
+          <button nz-button [nzShape]="'circle'" (click)="selectsearch(selectsearchtype,selectsearchvalue)">
+            <i class="anticon anticon-search"></i>
+          </button>
+        </nz-input-group>
+      </span>
+      <span class="storetext" *ngIf="stores">
+        <nz-select style="width: 180px;" [(ngModel)]="params.search.region_code" nzShowSearch nzAllowClear
+          nzPlaceHolder="请选择门店名称">
+          <nz-option *ngFor="let store of stores" [nzValue]="store.code" [nzLabel]="store.codename"></nz-option>
+        </nz-select>
+      </span>
+    </li>
+    <li>
+      <span class="searchname">选择日期</span>
+      <span style="display:inline-block;">
+        <nz-radio-group [(ngModel)]="params.search.date_type" style="display:inline-block;">
+          <label nz-radio nzValue="return_time">退货</label>
+          <label nz-radio nzValue="pos_time">核销</label>
+        </nz-radio-group>
+        <span style="display: inline-block;width:280px;">
+          <my-daterange [_startDate]="_startDate" [_endDate]="_endDate" (startchange)="startchangenew($event)"
+            (endchange)="endchangenew($event)"></my-daterange>
+        </span>
+      </span>
+      <!-- <span style="display:inline-block;">
+          <nz-radio-group [(ngModel)]="dateValue" (click)="getdate(dateValue)">
+            <label nz-radio-button nzValue="1">今天</label>
+            <label nz-radio-button nzValue="2">昨天</label>
+            <label nz-radio-button nzValue="3">前天</label>
+            <label nz-radio-button nzValue="4">上周</label>
+            <label nz-radio-button nzValue="5">本月</label>
+          </nz-radio-group>
+        </span> -->
+    </li>
+    <li style="margin-top:16px;">
+      <span class="searchname">退货单状态</span>
+      <span>
+        <nz-radio-group [(ngModel)]="params.search.test" (click)="getreturnlist(params)">
+          <label nz-radio nzValue="">全部</label>
+          <label nz-radio nzValue="0">已取消</label>
+          <label nz-radio nzValue="1">待处理</label>
+          <label nz-radio nzValue="2">处理中</label>
+          <label nz-radio nzValue="4">已拒绝</label>
+          <label nz-radio nzValue="5">已退货</label>
+          <label nz-radio nzValue="6">已退款</label>
+        </nz-radio-group>
+      </span>
+    </li>
+    <li style="margin-top:16px;">
+      <span class="searchname">核销状态</span>
+      <span>
+        <nz-radio-group [(ngModel)]="params.search.hxzt" (click)="getorderhxzt(params.search.hxzt)">
+          <label nz-radio nzValue="">全部</label>
+          <label nz-radio nzValue="1">已核销</label>
+          <label nz-radio nzValue="2">未核销</label>
+        </nz-radio-group>
+      </span>
+    </li>
+    <button nz-button [nzType]="'primary'" [nzSize]="'small'" (click)="OrderRest()" style="position: absolute;right:20px;top:20px;">
+      <span>重置查询条件</span>
+    </button>
+    <a (click)="selectvision('0')" style="position: absolute;color:#f00;right:20px;top:50px;">切换到旧版本</a>
+  </ul>
+  <my-page [params]='params' [pagecount]='pageSize' [changecount]='changecount' (childparams)="childparams($event)"></my-page>
+  <div class="zh-channeltabs">
+    <nz-tabset [nzTabBarExtraContent]="tabBarExtraContent" [nzSelectedIndex]="selectedindex">
+      <nz-tab *ngFor="let channel of channels;let j = index;" [nzTitle]="channel.name" (nzClick)="channeltabs(channel.channel_keyword,j)">
+        <div *ngIf="returnlists&&selectedindex === j">
+          <my-returnordercard *ngFor="let returnlist of returnlists;let i = index;" [orderdate]='returnlist'
+            [orderprocessingswitch]="orderprocessingswitch" [num]='i' (updatelist)="updatelist($event)"></my-returnordercard>
+        </div>
+        <div *ngIf="returnlists&&returnlists.length === 0" style="color:#333;">未查询到数据!</div>
+      </nz-tab>
+    </nz-tabset>
+    <ng-template #tabBarExtraContent>
+      <button nz-button [nzType]="'default'" (click)="addexport()">
+        <span>导出到CSV文件</span>
+      </button>
+    </ng-template>
+  </div>
+</div>

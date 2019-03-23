@@ -1,0 +1,207 @@
+<div nz-row class="zh-serchbox">
+  <div nz-col nzSpan="16" class="col-sm-8 col-8" style="margin:30px 0;">
+    <span style="color:#FF9900">拖动一级、二级分类可以调整分类顺序</span>
+    <button nz-button nz-dropdown (click)="savesortorder()">
+      保存顺序
+    </button>
+  </div>
+  <div nz-col nzSpan="4" style="margin:30px 0;">
+    <button nz-button nz-dropdown>
+      <app-upload [onUploaded]="" nzLimit="3" [uploadname]="'批量导入商品'" [uploadtype]="'text'"></app-upload>
+    </button>
+    <!-- <app-upload [onUploaded]="uploaded" nzLimit="3" [theme]="false" [contentText]="'促销商品导入'"></app-upload> -->
+  </div>
+  <div nz-col nzSpan="4" style="margin:30px 0;">
+    <a class="ant-btn" href="http://www.m-glory.net/newadmin/templete/活动分类导入模板.xlsx">下载模板</a>
+
+  </div>
+</div>
+<div nz-row>
+  <div>
+    <nz-modal [nzVisible]="isVisible" [nzTitle]="modalTitle" [nzContent]="modalContent" [nzFooter]="modalFooter"
+      (nzOnCancel)="handleCancel()">
+      <ng-template #modalTitle>
+        {{modaltitle}}
+      </ng-template>
+      <ng-template #modalContent>
+        <div *ngIf="!flag">
+          <ul class="modal-ul">
+            <li>
+              <label>
+                <span style="color:red">*</span>
+                分类名称
+              </label>
+              <input type="text" nz-input class="form-control" [(ngModel)]="newfirstclass.name">
+            </li>
+            <li>
+              <label>
+                <span style="color:red">*</span>
+                分类编码
+              </label>
+              <input type="text" nz-input class="form-control" [(ngModel)]="newfirstclass.name">
+            </li>
+            <li>
+              <label>
+                <span style="color:red">*</span>
+                分类编码
+              </label>
+              <input type="text" nz-input class="form-control" [(ngModel)]="newfirstclass.code" [disabled]="nomodify">
+            </li>
+            <li>
+              <label>
+                <span style="color:red">*</span>
+                是否启用
+              </label>
+              <nz-select [(ngModel)]="newfirstclass.status" nzAllowClear>
+                <option value="1">启用</option>
+                <option value="2">停用</option>
+              </nz-select>
+            </li>
+          </ul>
+        </div>
+        <!-- 二级分类 -->
+        <div *ngIf="flag">
+          <ul class="modal-ul">
+            <li>
+              <label>
+                <span style="color:red">*</span>
+                所属活动一级分类
+              </label>
+              <span>{{newsecondclass.parentName}}</span>
+            </li>
+            <li>
+              <label>
+                <span style="color:red">*</span>
+                分类名称
+              </label>
+              <input type="text" nz-input class="form-control" [(ngModel)]="newsecondclass.name">
+            </li>
+            <li>
+              <label>
+                <span style="color:red">*</span>
+                分类编码
+              </label>
+              <input type="text" nz-input class="form-control" [(ngModel)]="newsecondclass.name" [disabled]="nomodify">
+            </li>
+            <li>
+              <label>
+                <span style="color:red">*</span>
+                是否启用
+              </label>
+              <nz-select [(ngModel)]="newfirstclass.status" nzAllowClear>
+                <option value="1">启用</option>
+                <option value="2">停用</option>
+              </nz-select>
+            </li>
+          </ul>
+        </div>
+      </ng-template>
+      <ng-template #modalFooter>
+        <button nz-button [nzType]="'default'" [nzSize]="'large'" (click)="handleCancel($event)">
+          取 消
+        </button>
+        <button nz-button [nzType]="'primary'" [nzSize]="'large'" (click)="handleOk($event)" [nzLoading]="isConfirmLoading">
+          提 交
+        </button>
+      </ng-template>
+    </nz-modal>
+  </div>
+  <div nz-col nzSpan="12" style="padding:0; margin-top:10px;">
+    <div class="table-header clear">
+      <div class="fl">
+        一级分类
+      </div>
+      <div class="fr">
+        <button nz-button [nzType]="'primary'" (click)="pm_newone()" [nzLoading]="isConfirmLoading">
+          新增一级分类
+        </button>
+      </div>
+    </div>
+    <nz-table #borderedTable nzBordered [nzData]="fllist">
+      <thead>
+        <tr>
+          <th>分类名称</th>
+          <th>分类编码</th>
+          <th>分类启用状态</th>
+          <th>
+            操作
+
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let data of borderedTable.data">
+          <td>{{item.name}}</td>
+          <td>{{item.code}}</td>
+          <td>
+            <span [ngSwitch]="item.status">
+              <span *ngSwitchCase="1">启用</span>
+              <span *ngSwitchCase="2">停用</span>
+            </span>
+          </td>
+          <td>
+            <button nz-button nz-dropdown (click)="pm_modifyone(item)">
+              修改
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </nz-table>
+  </div>
+
+  <div nz-col nzSpan="12" style="padding:0;margin-top:10px;">
+    <div class="table-header">
+      <div class="fl">
+        二级分类
+      </div>
+      <div class="fr">
+        <button nz-button [nzType]="'primary'" (click)="pm_newone()" [nzLoading]="isConfirmLoading">
+          新增二级分类
+        </button>
+      </div>
+    </div>
+    <nz-table #borderedTable nzBordered [nzData]="newsecondlist">
+      <thead>
+        <tr>
+          <th>分类名称</th>
+          <th>分类编码</th>
+          <th>分类启用状态</th>
+          <th>
+            操作
+
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let data of borderedTable.data">
+          <td>{{item.name}}</td>
+          <td>{{item.code}}</td>
+          <td>
+            <span [ngSwitch]="item.status">
+              <span *ngSwitchCase="1">启用</span>
+              <span *ngSwitchCase="2">停用</span>
+            </span>
+          </td>
+          <td>
+            <button nz-button nz-dropdown (click)="pm_modifyone(item)">
+              修改
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </nz-table>
+  </div>
+</div>
+
+<div style="border:none;">
+  <button nz-button nz-dropdown (click)="pm_back()">
+    返回
+  </button>
+</div>
+<nz-modal [(nzVisible)]="results" nzTitle="导入状态" (nzOnCancel)="handleCancel()" (nzOnOk)="handleOk($event)">
+  <import-tip [importres]="results"></import-tip>
+</nz-modal>
+
+<nz-modal [(nzVisible)]="new_results" nzTitle="导入状态" (nzOnCancel)="handleCancel()" (nzOnOk)="handleOk($event)">
+  <import-tip [importres]="new_results"></import-tip>
+</nz-modal>

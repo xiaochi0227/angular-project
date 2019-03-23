@@ -1,0 +1,63 @@
+<app-search-bar [queryList]='queryList'   (childemit)="search($event)"></app-search-bar>
+
+<div nz-row [nzGutter]="6" *ngIf="res" style="margin-bottom: 24px">
+  <div nz-col [nzSpan]="6">
+    <nz-card nzTitle="商品金额合计（元）">
+      {{res.item_money}}
+    </nz-card>
+  </div>
+  <div nz-col [nzSpan]="6">
+    <nz-card nzTitle="总折扣合计（元）">
+      {{res.disc_money}}
+    </nz-card>
+  </div>
+  <div nz-col [nzSpan]="6">
+    <nz-card nzTitle="渠道承担金额合计（元）">
+      {{res.disc_bt}}
+    </nz-card>
+  </div>
+  <div nz-col [nzSpan]="6">
+    <nz-card nzTitle="商家承担金额合计（元）">
+      {{res.disc_bt_sj}}
+    </nz-card>
+  </div>
+</div>
+
+<div class="zh-serchbox textcenter">
+  <button nz-button nzType="default" (click)="addexport()">导出到CSV文件</button>
+</div>
+<my-page [params]='params' [pagecount]='pageSize' [changecount]='pageSize.count' (childparams)="childparams($event)"></my-page>
+
+<nz-table  #basicTable [nzData]="promotionslists" nzShowPagination="false">
+  <thead>
+    <tr>
+      <th nzWidth="5%">活动名称</th>
+      <th nzWidth="9%">活动渠道</th>
+      <th nzWidth="10%">门店名称</th>
+      <th nzWidth="10%">商品名称</th>
+      <th nzWidth="10%">商品编码/条码</th>
+      <th nzWidth="6%">数量</th>
+      <th nzWidth="9%">商品原价（元）</th>
+      <th nzWidth="9%">商品金额（元）</th>
+      <th nzWidth="9%">总折扣（元）</th>
+      <th nzWidth="9%">渠道承担金额（元）</th>
+      <th nzWidth="9%">商家承担金额（元）</th>
+    </tr>
+  </thead>
+  <tbody>
+
+    <tr *ngFor="let promotionslist of basicTable.data;let i = index;">
+      <td>{{promotionslist?.activity_id}}</td>
+      <td>{{promotionslist?.channel_keyword}}</td>
+      <td>{{promotionslist?.region_name}}</td>
+      <td>{{promotionslist?.item_name}}</td>
+      <td>{{promotionslist?.item_code}}/{{promotionslist?.barcode}}</td>
+      <td>{{promotionslist?.sale_qty}}</td>
+      <td>{{promotionslist?.original_price}}</td>
+      <td>{{promotionslist?.sale_value}}</td>
+      <td>{{promotionslist?.disc_bt_total}}</td>
+      <td>{{promotionslist?.disc_bt}}</td>
+      <td>{{promotionslist?.disc_bt_sj}}</td>
+    </tr>
+  </tbody>
+</nz-table>

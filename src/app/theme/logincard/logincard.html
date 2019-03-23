@@ -1,0 +1,26 @@
+<div class="logincard">
+  <div class="cardhead">
+    <img [src]="logo" class="logo" alt="牵牛花">
+    <span class="title">
+      <h2>牵牛花</h2>
+      <p>牵手线上线下大牛,一起开花结果</p>
+    </span>
+  </div>
+  <div class="cardbody">
+    <div class="leftimg">
+      <img [src]="iillustration">
+    </div>
+    <div class="rightbox">
+      <h3>{{title}}</h3>
+      <ng-content></ng-content>
+    </div>
+
+  </div>
+  <span class="rightbg">
+    <img [src]="fragmentmap">
+  </span>
+  <span class="leftbg">
+    <img [src]="fragmentmap">
+  </span>
+  <span class="circle"></span>
+</div>

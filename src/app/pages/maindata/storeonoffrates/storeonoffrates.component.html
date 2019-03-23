@@ -1,0 +1,36 @@
+<div class="zh-serchbox textcenter">
+  <button nz-button nzType="default" (click)="addexport()">导出到CSV文件</button>
+</div>
+<my-page [params]='params' [pagecount]='pageSize' [changecount]='pageSize.count' (childparams)="childparams($event)"></my-page>
+
+<nz-table #basicTable [nzData]="storeonofflist" nzShowPagination="false">
+  <thead>
+    <tr>
+      <th nzWidth="6%">日期</th>
+      <th nzWidth="9%">门店名称</th>
+      <th nzWidth="9%">门店编码</th>
+      <th nzWidth="9%">渠道</th>
+      <th nzWidth="9%">当前门店状态</th>
+      <th nzWidth="9%">状态更新时间</th>
+    </tr>
+  </thead>
+  <tbody>
+
+    <tr *ngFor="let item of basicTable.data;let i = index;">
+      <td>{{item.business_date}}</td>
+      <td>{{item.region_name}}</td>
+      <td>{{item.region_code}}</td>
+      <td>
+        <label *ngIf="item.channel==='MTWM'">美团外卖</label>
+        <label *ngIf="item.channel==='ELEM'">饿了么</label>
+        <label *ngIf="item.channel==='JDDJ'">京东到家</label>
+        <label *ngIf="item.channel==='BDWM'">百度外卖</label>
+      </td>
+      <td>
+        <label *ngIf="item.status==='未营业'" style="color:red">{{item.status}}</label>
+        <label *ngIf="item.status==='营业'">{{item.status}}</label>
+      </td>
+      <td> {{item.timestamp}} </td>
+    </tr>
+  </tbody>
+</nz-table>

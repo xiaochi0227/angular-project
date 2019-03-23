@@ -1,0 +1,95 @@
+<nz-card>
+  <div class="zh-textbox">
+    门店：
+    <nz-select [(ngModel)]="params.search.region_code" style="width: 30%;" nzPlaceHolder="请选择门店">
+      <nz-option nzValue="" nzLabel="全部门店"></nz-option>
+      <nz-option nzLabel="{{store.codename}}" nzValue="{{store.code}}" *ngFor="let store of stores"></nz-option>
+    </nz-select>
+    <button nz-button nzType="primary" type="search" (click)="search('1')">查询</button>
+    <button nz-button nzType="primary" type="reset" (click)="Reset('1')">重置</button>
+  </div>
+</nz-card>
+
+<div class="w-listhead">
+  <button nz-button nzType="default" (click)="addexport()">导出门店生鲜商品</button>
+</div>
+
+<div class="w-card">
+  <nz-table #basicTable [nzData]="freshinventorys" nzFrontPagination="false" nzShowPagination="false">
+    <thead>
+      <tr>
+        <th>序号</th>
+        <th>门店编号</th>
+        <th>门店名称</th>
+        <th>计划品项数</th>
+        <th>库存商品数</th>
+        <th>上架商品数</th>
+        <th>操作</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let items of basicTable.data; let i=index">
+        <td>{{i+1}} </td>
+        <td>{{items.region_code}} </td>
+        <td> {{items.region_name}}</td>
+        <td>{{items.is_fresh_count?items.is_fresh_count:0}}</td>
+        <td>{{items.repertory_count?items.repertory_count:0}}</td>
+        <td>{{items.online_count?items.online_count:0}}</td>
+        <td>
+          <button nz-button nzType="primary" nzSize="small" (click)="getcommoditys(modal,items)">查看</button>
+        </td>
+      </tr>
+    </tbody>
+  </nz-table>
+</div>
+
+
+<my-page [params]='params' [pagecount]='pageSize' [changecount]='pageSize.count' (childparams)="childparams($event)"></my-page>
+
+
+<ng-template #modal>
+  <div class="modal-search">
+    <input type="text" nz-input [(ngModel)]="par.search.item_name" placeholder="商品名称">
+    <input type="text" nz-input [(ngModel)]="par.search.item_code" placeholder="商品编码">
+    <input type="text" nz-input [(ngModel)]="par.search.barcode" placeholder="商品条码">
+    <button nz-button nzType="primary" (click)="search('2')">查询</button>
+  </div>
+
+  <div style="margin-top: 20px;">
+    <nz-table #basicTable_one [nzData]="mdlists" nzFrontPagination="false" nzShowSizeChanger [nzShowTotal]="totalTemplate"
+      [(nzPageSize)]="stockCount.Pagesize" [(nzPageIndex)]="stockCount.PageIndex" [nzTotal]="stockCount.count"
+      (nzPageIndexChange)="pageOver($event)" (nzPageSizeChange)="pageOver($event)" [nzScroll]="{ y: '400px' }">
+      <thead>
+        <tr>
+          <th nzWidth="20%">商品编码</th>
+          <th nzWidth="20%">商品条码</th>
+          <th nzWidth="20%">商品名称</th>
+          <th nzWidth="13%">线下库存</th>
+          <th nzWidth="13%">可用库存</th>
+          <th nzWidth="14%">是否上架</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let items of basicTable_one.data; let i=index">
+          <td>{{items.item_code}}</td>
+          <td>{{items.barcode}}</td>
+          <td>{{items.item_name}}</td>
+          <td>
+            <span style="color:#f00" *ngIf="items.erp_qtys<=0">{{items.erp_qtys}}</span>
+            <span *ngIf="items.erp_qtys>0">{{items.erp_qtys}}</span></td>
+          <td>
+            <span style="color:#f00" *ngIf="items.available_qty<=0">{{items.available_qty}}</span>
+            <span *ngIf="items.available_qty>0">{{items.available_qty}}</span></td>
+          <td>
+            <span style="color:#87d068" *ngIf="items.sale_status==0">未知</span>
+            <span style="color:#f00" *ngIf="items.sale_status==2">否</span>
+            <span *ngIf="items.sale_status==1">是</span>
+          </td>
+        </tr>
+      </tbody>
+    </nz-table>
+    <ng-template #totalTemplate let-total>
+      共 {{total}} 条记录
+    </ng-template>
+  </div>
+</ng-template>

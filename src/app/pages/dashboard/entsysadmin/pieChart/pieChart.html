@@ -1,0 +1,42 @@
+<div class="charts" *ngIf="pieData">
+  <div class="chartitembox">
+    <ul class="chartitem">
+      <li class="tit">
+        <span>活跃顾客数</span>
+        <i nz-icon type="info-circle" theme="outline" nzTitle="prompt text" nzPlacement="bottom" nz-tooltip></i>
+      </li>
+      <li class="data">{{pieData['guestCount']}}</li>
+      <li class="compareddata">其中新顾客数:{{pieData['newGuest']}}</li>
+    </ul>
+  </div>
+  <div class="chartitembox">
+    <ul class="chartitem">
+      <li class="tit">
+        <span>订单金额</span>
+        <i nz-icon type="info-circle" theme="outline" nzTitle="prompt text" nzPlacement="bottom" nz-tooltip></i>
+      </li>
+      <li class="data">￥{{pieData['money']}}</li>
+      <li class="compareddata">下单数/有效单数:{{pieData['allTotal'] + '/' + pieData['total']}}</li>
+    </ul>
+  </div>
+  <div class="chartitembox">
+    <ul class="chartitem">
+      <li class="tit">
+        <span>动销商品数</span>
+        <i nz-icon type="info-circle" theme="outline" nzTitle="prompt text" nzPlacement="bottom" nz-tooltip></i>
+      </li>
+      <li class="data">{{pieData['itemCount']}}</li>
+      <li class="compareddata">占总上架商品:{{pieData['dxspbl']}}%</li>
+    </ul>
+  </div>
+  <div class="chartitembox">
+    <ul class="chartitem">
+      <li class="tit">
+        <span>动销/上线门店数</span>
+        <i nz-icon type="info-circle" theme="outline" nzTitle="prompt text" nzPlacement="bottom" nz-tooltip></i>
+      </li>
+      <li class="data">{{pieData['storeCount']}}/ {{pieData['onlineCount']}}</li>
+      <li class="compareddata">占总门店数:{{pieData['dxmdbl']}}%/ {{pieData['osbl']}}%</li>
+    </ul>
+  </div>
+</div>

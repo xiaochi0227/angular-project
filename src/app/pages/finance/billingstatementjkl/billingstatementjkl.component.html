@@ -1,0 +1,117 @@
+<div class="search-wrapper">
+  <div class="search-form">
+    <div nz-row [nzGutter]="24">
+      <div nz-col nzSpan="8">
+        <nz-form-item nzFlex>
+          <nz-form-label>日期</nz-form-label>
+          <nz-form-control>
+            <nz-range-picker [(ngModel)]="searchModel.dateRange" nzAllowClear="false"></nz-range-picker>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+      <div nz-col nzSpan="8">
+        <nz-form-item nzFlex>
+          <nz-form-label>门店</nz-form-label>
+          <nz-form-control style="width: 100%;">
+            <nz-select style="width: 100%;" nzShowSearch nzAllowClear [(ngModel)]="searchModel.region_code"
+              nzPlaceHolder="请选择门店名称">
+              <nz-option [nzValue]="store.code" [nzLabel]="store.codename" *ngFor="let store of stores"></nz-option>
+            </nz-select>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+      <div nz-col nzSpan="8">
+        <nz-form-item nzFlex>
+          <nz-form-label>支付方式</nz-form-label>
+          <nz-form-control style="width: 100%;">
+            <nz-select style="width: 100%;" nzShowSearch nzAllowClear [(ngModel)]="searchModel.payMethod"
+              nzPlaceHolder="请选择支付方式">
+              <nz-option [nzValue]="pay.value" [nzLabel]="pay.name" *ngFor="let pay of payMethodList"></nz-option>
+            </nz-select>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+      <div nz-col nzSpan="8">
+        <button nz-button nzType="primary" style="margin-right:10px;" (click)="search()">查询</button>
+        <button nz-button nzType="default" (click)="reset()">重置</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="export-wrapper textright">
+  <button nz-button nzType="default" (click)="addexport()"><i nz-icon type="file-excel"
+      theme="outline"></i>导出到CSV文件</button>
+  <nz-popover [nzTitle]="'设置费率'" [(nzVisible)]="visible" [nzTrigger]="'click'">
+    <button nz-button nz-popover [nzType]="'primary'" (click)="getrate()">设置费率</button>
+    <ng-template #nzTemplate>
+      <p style="margin-bottom:3px;">
+        <span class="payname">支付宝:</span>
+        <nz-input-number [(ngModel)]="rateopt.rate.alipay" [nzMin]="0" [nzMax]="100" [nzStep]="0.1"
+          [nzFormatter]="formatterPercent" [nzParser]="parserPercent"></nz-input-number>
+      </p>
+      <p style="margin-bottom:3px;"><span class="payname">微信:</span>
+        <nz-input-number [(ngModel)]="rateopt.rate.wechat" [nzMin]="0" [nzMax]="100" [nzStep]="0.1"
+          [nzFormatter]="formatterPercent" [nzParser]="parserPercent"></nz-input-number>
+      </p>
+      <p style="margin-bottom:3px;"><span class="payname">礼金卡:</span>
+        <nz-input-number [(ngModel)]="rateopt.rate.ljk" [nzMin]="0" [nzMax]="100" [nzStep]="0.1"
+          [nzFormatter]="formatterPercent" [nzParser]="parserPercent"></nz-input-number>
+      </p>
+      <p style="text-align:center;">
+        <a (click)='save(rateopt)' style="margin-right:20px;">保存</a>
+        <a (click)='visible = false'>关闭</a>
+      </p>
+    </ng-template>
+  </nz-popover>
+</div>
+<div class="table-wrapper">
+  <my-page [params]='params' [pagecount]='pageSize' [changecount]='pageSize.count' (childparams)="childparams($event)">
+  </my-page>
+  <nz-table #nzTable [nzData]="list" nzBordered nzSize="middle"
+    nzShowPagination="false" nzFrontPagination="false" [nzLoading]="loading">
+    <thead>
+      <tr>
+        <th nzWidth="5%">序号</th>
+        <th>支付方式</th>
+        <th>交易日期</th>
+        <th>店号</th>
+        <th>店名(线上)</th>
+        <th>账套</th>
+        <th>账套编号</th>
+        <th>商品金额</th>
+        <th>购卡金额</th>
+        <th>运费</th>
+        <th>商品优惠</th>
+        <th>积分优惠</th>
+        <th>优惠券</th>
+        <th>购卡优惠</th>
+        <th>实际支付</th>
+        <th>手续费</th>
+        <th>净值</th>
+        <th>差额</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let item of nzTable.data;let i=index">
+        <td nzWidth="5%">{{cow+i+1}}</td>
+        <td>{{item.payName}}</td>
+        <td>{{item.date}}</td>
+        <td>{{item.regionCode}}</td>
+        <td>{{item.regionName}}</td>
+        <td>{{item.zt}}</td>
+        <td>{{item.ztbh}}</td>
+        <td>{{item.totalItemValue}}</td>
+        <td>{{item.cardValue}}</td>
+        <td>{{item.logisticsValue}}</td>
+        <td>{{item.totalSjDisc}}</td>
+        <td>{{item.pointDisc}}</td>
+        <td>{{item.disc}}</td>
+        <td>{{item.cardDisc}}</td>
+        <td>{{item.payableValue}}</td>
+        <td>{{item.serviceCharge}}</td>
+        <td>{{item.netWorth}}</td>
+        <td>{{item.difference}}</td>
+      </tr>
+    </tbody>
+  </nz-table>
+</div>

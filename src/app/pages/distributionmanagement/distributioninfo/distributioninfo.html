@@ -1,0 +1,261 @@
+<div class="widgets">
+  <div class="row">
+    <div class="zh-serchbox">
+      <table class="table zh-serchtable black-muted-bg">
+        <tbody>
+          <tr>
+            <td>
+              <table class="table zh-serch-table">
+                <tr>
+                  <td class="zh-zdname" width="10%">配送员用户名 :</td>
+                  <td class="zh-textbox" width="23%">
+                    <!-- <input [(ngModel)]="params.search.name" type="text" class="form-control"
+                                                name="name" placeholder="搜索配送员用户名"> -->
+                    <input nz-input placeholder="搜索配送员用户名" name="name" [(ngModel)]="params.search.name">
+
+                  </td>
+                  <td class="zh-zdname" width="10%">配送员账号 :</td>
+                  <td class="zh-textbox" width="23%">
+                    <!-- <input [(ngModel)]="params.search.code" type="text" class="form-control"
+                                                name="code" placeholder="搜索配送员账号"> -->
+                    <input nz-input placeholder="搜索配送员账号" name="code" [(ngModel)]="params.search.code">
+                  </td>
+
+                </tr>
+                <tr>
+                  <td class="zh-zdname" width="10%">全部门店 :</td>
+                  <td class="zh-textbox" width="23%">
+                    <!-- <my-searchselect #searchselect [selectlistarr]="stores" (searchcode)="searchcode($event)"
+                                                [gettextvalue]="params.search.region_code"></my-searchselect> -->
+                    <nz-select style="width: 200px;" nzShowSearch nzAllowClear nzPlaceHolder="请选择门店" [(ngModel)]="params.search.region_code">
+                      <nz-option [nzLabel]="store.codename" [nzValue]="store.code" *ngFor="let store of stores"></nz-option>
+                    </nz-select>
+                  </td>
+                  <td class="zh-zdname" width="10%">用户状态 :</td>
+                  <td class="zh-textbox" width="23%">
+                    <!-- <select class="form-control" [(ngModel)]="params.search.order_type" name="channel_keyword"> -->
+                    <!-- <select [(ngModel)]="params.search.status" class="form-control">
+                                                <option value="1">启用</option>
+                                                <option value="-1">停用</option>
+                                            </select> -->
+                    <nz-select style="width: 100px;" nzShowSearch nzAllowClear nzPlaceHolder="账号状态" [(ngModel)]="params.search.status">
+                      <nz-option nzLabel="启用" nzValue="1"></nz-option>
+                      <nz-option nzLabel="停用" nzValue="-1"></nz-option>
+                    </nz-select>
+                  </td>
+                </tr>
+              </table>
+            </td>
+            <td>
+              <!-- <button class="btn btn-primary" type="button" (click)="search(params)">查询</button>
+                                <button class="btn btn-primary" type="button" (click)="Reset()">重置</button> -->
+              <button nz-button nzType="primary" (click)="search(params)"><i nz-icon type="search"></i>查询</button>
+              <button nz-button nzType="primary" (click)="Reset()">重置</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <my-page [params]='params' [pagecount]='pageSize' [changecount]='changecount' (childparams)="childparams($event)"></my-page>
+  </div>
+</div>
+<!-- 添加模态框（Modal） -->
+<div class="horizontal-scroll" id="zh-tablecontent" style="min-height: 260px;">
+  <div class="zh-listhead">
+    <!-- <input type="button" class="btn btn-success" value="添加配送员" (click)="addpushconfig()">
+        <input type="button" class="btn btn-success" value="导出到CSV文件" (click)="addexport()"> -->
+
+    <div style="padding: 10px 0; text-align: center;">
+      <button nz-button nzType="default" (click)="addpushconfig()">添加配送员</button>
+      <button nz-button nzType="default" (click)="addexport()">导出到CSV文件</button>
+    </div>
+    <!-- <nz-modal [nzVisible]="isVisible" [nzTitle]="modeltitle" [nzZIndex]="1000" [nzWidth]="650" [nzContent]="modalContent"
+            (nzOnCancel)="handleCancel($event)" (nzOnOk)="handleOk(userdetails)" [nzConfirmLoading]="isConfirmLoading">
+            <ng-template #modalContent>
+                <table class="table zh-serch-table zh-nzmodalstyle " style="color:black; text-align: left;">
+                  
+                    <tr>
+                        <td class=" zh-zdname" style="text-align: left;"><span style="color:#f00;margin-right:3px">*</span>门店信息</td>
+                        <td class="zh-textbox ">
+                            <my-multipleselect [selectlistarr]="stores" [modelinput]="true" (searchcode)="searchcodeagain($event)"
+                                [userstores]="userdetails.userstores"></my-multipleselect>
+                           
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="zh-zdname " style="text-align: left;"><span style="color:#f00;margin-right:3px">*</span>用户名</td>
+                        <td class="zh-textbox"><input type="text" [(ngModel)]="userdetails.name" name="name" style="color: #333;"
+                                maxlength="6" placeholder="请输入六位字符以内的用户名" class="form-control especially"></td>
+
+                    </tr>
+                    <tr class="">
+                        <td class="zh-zdname" style="text-align: left;"><span style="color:#f00;margin-right:3px">*</span>账号</td>
+                        <td class="zh-textbox"><input type="text" [(ngModel)]="userdetails.code" [disabled]="!isshow"
+                                name="code" style="color: #333;" minlength="4" maxlength="16" placeholder="请输入账号" class="form-control especially"></td>
+
+                    </tr>
+                   
+                    <tr>
+                        <td class="zh-zdname" style="text-align: left;"><span style="color:#f00;margin-right:3px">*</span>密码</td>
+                        <td class="zh-textbox"><input [type]="checkpass" [(ngModel)]="userdetails.password" name="password"
+                                style="color: #333;" required minlength="6" maxlength="20" #name="ngModel" placeholder="请输入密码"
+                                class="form-control especially">
+                            <div *ngIf="name.invalid && (name.dirty || name.touched)" class="alert alert-danger aert-war">
+
+                                <span *ngIf="name.errors.minlength">
+                                    密码最少6位字符 且为字母加数字
+                                </span>
+                                <span *ngIf="name.errors.maxlength">
+                                    密码最多20位字符
+                                </span>
+
+                            </div>
+                        </td>
+                        <span [ngSwitch]="checkpass" style="position:relative; right:38px; top:24px;" (click)="changcepass()">
+                            <i *ngSwitchCase="'password'" class="anticon anticon-eye"></i>
+                            <i *ngSwitchCase="'text'" class="anticon anticon-eye-o"></i>
+                        </span>
+                    </tr>
+                    <tr *ngIf="isshow">
+                        <td class="zh-zdname" style="text-align: left;"><span style="color:#f00;margin-right:3px">*</span>确认密码</td>
+                        <td class="zh-textbox"><input [type]="checkpass" [(ngModel)]="passwordagain" name="passwordagain"
+                                style="color: #333;" minlength="6" maxlength="20" placeholder="请再次输入密码" class="form-control especially">
+                        </td>
+
+                    </tr>
+                    <tr>
+                        <td class="zh-zdname" style="text-align: left;">手机号码</td>
+                        <td class="zh-textbox"><input type="text" [(ngModel)]="userdetails.mobileNo" minlength="11"
+                                name="mobileNo" style="color: #333;" placeholder="请输入手机号码" class="form-control especially">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="zh-zdname" style="text-align: left;"><span style="color:#f00;margin-right:3px">*</span>账号状态</td>
+                        <td class="zh-textbox">
+                            <select class="form-control" [(ngModel)]="userdetails.status" style="color: #333; border:1px solid rgba(7, 2, 2, 0.116)">
+                                <option value="1">启用</option>
+                                <option value="-1">停用</option>
+                            </select>
+                        </td>
+                    </tr>
+                </table>
+            </ng-template>
+        </nz-modal> -->
+    <nz-modal [(nzVisible)]="isVisible" nzTitle="录入配送员信息" [nzWidth]="650" (nzOnCancel)="handleCancel()" (nzOnOk)="handleOk(userdetails)"
+      [nzOkLoading]="isOkLoading">
+      <table class="table zh-serch-table zh-nzmodalstyle " style="color:black; text-align: left;">
+
+        <tr>
+          <td class=" zh-zdname" style="text-align: left;"><span style="color:#f00;margin-right:3px">*</span>门店信息</td>
+          <td class="zh-textbox ">
+
+            <nz-select style="width: 200px;" nzShowSearch nzAllowClear nzPlaceHolder="Select a person" [(ngModel)]="params.search.region_code">
+              <nz-option [nzLabel]="store.codename" [nzValue]="store.code" *ngFor="let store of stores"></nz-option>
+            </nz-select>
+
+          </td>
+        </tr>
+        <tr>
+          <td class="zh-zdname " style="text-align: left;"><span style="color:#f00;margin-right:3px">*</span>用户名</td>
+          <td class="zh-textbox"><input type="text" [(ngModel)]="userdetails.name" name="name" style="color: #333;"
+              maxlength="6" placeholder="请输入六位字符以内的用户名" class="form-control especially"></td>
+
+        </tr>
+        <tr class="">
+          <td class="zh-zdname" style="text-align: left;"><span style="color:#f00;margin-right:3px">*</span>账号</td>
+          <td class="zh-textbox"><input type="text" [(ngModel)]="userdetails.code" [disabled]="!isshow" name="code"
+              style="color: #333;" minlength="4" maxlength="16" placeholder="请输入账号" class="form-control especially"></td>
+
+        </tr>
+        <!-- *ngIf="isshow" -->
+        <tr>
+          <td class="zh-zdname" style="text-align: left;"><span style="color:#f00;margin-right:3px">*</span>密码</td>
+          <td class="zh-textbox"><input [type]="checkpass" [(ngModel)]="userdetails.password" name="password" style="color: #333;"
+              required minlength="6" maxlength="20" #name="ngModel" placeholder="请输入密码" class="form-control especially">
+            <div *ngIf="name.invalid && (name.dirty || name.touched)" class="alert alert-danger aert-war">
+
+              <span *ngIf="name.errors.minlength">
+                密码最少6位字符 且为字母加数字
+              </span>
+              <span *ngIf="name.errors.maxlength">
+                密码最多20位字符
+              </span>
+
+            </div>
+          </td>
+          <span [ngSwitch]="checkpass" style="position:relative; right:38px; top:24px;" (click)="changcepass()">
+            <i *ngSwitchCase="'password'" class="anticon anticon-eye"></i>
+            <i *ngSwitchCase="'text'" class="anticon anticon-eye-o"></i>
+          </span>
+        </tr>
+        <tr *ngIf="isshow">
+          <td class="zh-zdname" style="text-align: left;"><span style="color:#f00;margin-right:3px">*</span>确认密码</td>
+          <td class="zh-textbox"><input [type]="checkpass" [(ngModel)]="passwordagain" name="passwordagain" style="color: #333;"
+              minlength="6" maxlength="20" placeholder="请再次输入密码" class="form-control especially">
+          </td>
+
+        </tr>
+        <tr>
+          <td class="zh-zdname" style="text-align: left;">手机号码</td>
+          <td class="zh-textbox"><input type="text" [(ngModel)]="userdetails.mobileNo" minlength="11" name="mobileNo"
+              style="color: #333;" placeholder="请输入手机号码" class="form-control especially">
+          </td>
+        </tr>
+        <tr>
+          <td class="zh-zdname" style="text-align: left;"><span style="color:#f00;margin-right:3px">*</span>账号状态</td>
+          <td class="zh-textbox">
+            <select class="form-control" [(ngModel)]="userdetails.status" style="color: #333; border:1px solid rgba(7, 2, 2, 0.116)">
+              <option value="1">启用</option>
+              <option value="-1">停用</option>
+            </select>
+          </td>
+        </tr>
+      </table>
+    </nz-modal>
+  </div>
+  <nz-table #nzTable nzBordered class="table table-hover zh-dsrtable">
+    <thead>
+      <tr>
+        <th width="10%">门店编号</th>
+        <th width="15%">用户名</th>
+        <th width="15%">账号</th>
+        <th width="10%">账户状态</th>
+        <th width="15%">联系电话</th>
+        <!-- <th width="10%">创建人</th> -->
+        <th width="20%">创建时间</th>
+        <th>操作</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <!-- ng循环生成 -->
+      <tr *ngFor="let item of menuList">
+        <td>{{item.userstores}}</td>
+        <td>{{item.name}}</td>
+        <td>{{item.code}}</td>
+        <td [ngSwitch]="item.status"> <span *ngSwitchCase="'1'">启用</span><span *ngSwitchCase="'-1'">停用</span></td>
+        <td>{{item.mobileNo}}</td>
+        <!-- <td>{{item.rolename}}</td> -->
+        <td>{{item.timestamp | date:"yyyy-MM-dd HH:mm" }}</td>
+        <td>
+          <!-- <button class="btn btn-info btn-xs" (click)="modifydistribut(item)">修改</button> -->
+          <button nz-button nzType="primary" (click)="modifydistribut(item)">修改</button>
+          <span [ngSwitch]="item.status">
+            <!-- <button class="btn btn-success btn-xs" (click)="stopdistribut(item)" *ngSwitchCase="'-1'">启用</button>
+                        
+                        <button class="btn btn-warning btn-xs" (click)="stopdistribut(item)" *ngSwitchCase="'1'">停用</button> -->
+            <button nz-button nzType="danger" (click)="stopdistribut(item)" *ngSwitchCase="'-1'">启用</button>
+
+            <button nz-button nzType="danger" (click)="stopdistribut(item)" *ngSwitchCase="'1'">停用</button>
+          </span>
+          <!-- <button class="btn btn-info btn-xs" (click)="deldistribut(item)" [ngSwitch]="item.status" ><span *ngSwitchCase="'-1'">启用</span><span *ngSwitchCase="'1'" >停用</span></button> -->
+          <!-- <button class="btn btn-danger btn-xs" (click)="deldist(item)">删除</button> -->
+          <button nz-button nzType="danger" (click)="showConfirm(item)">删除</button>
+        </td>
+      </tr>
+      <tr>
+        <td colspan="7" *ngIf="!menuList || menuList.length === 0">暂无数据！</td>
+      </tr>
+    </tbody>
+  </nz-table>
+</div>

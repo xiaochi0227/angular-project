@@ -1,0 +1,109 @@
+<div class="zh-serchbox">
+  <!-- <table class="table zh-serchtable black-muted-bg"> -->
+  <table class="zh-serchtable">
+    <tbody>
+      <tr>
+        <td>
+          <!-- <table class="table zh-serch-table"> -->
+          <table class="table zh-serch-table">
+
+            <tr>
+              <td class="zh-zdname" width="10%">拣货员姓名</td>
+              <td class="zh-textbox">
+                <!-- <input type="text" class="form-control" [(ngModel)]="params.search.pickername"
+                                                name="channel_sheetno" placeholder="请输入拣货员姓名"> -->
+                <input nz-input placeholder="请输入拣货员姓名" nzSize="default" name="channel_sheetno" [(ngModel)]="params.search.pickername">
+              </td>
+              <td class="zh-zdname">时间:</td>
+              <td class="zh-textbox">
+                <my-daterange [_startDate]="_startDate" [_endDate]="_endDate" (startchange)="startchange($event)"
+                  (endchange)="endchange($event)"></my-daterange>
+              </td>
+            </tr>
+            <tr>
+              <td class="zh-zdname" width="10%">门店</td>
+              <td class="zh-textbox">
+                <nz-select style="width: 200px;" nzShowSearch nzAllowClear nzPlaceHolder="点击下拉选择门店" [(ngModel)]="params.search.region_code">
+                  <nz-option [nzLabel]="store.codename" [nzValue]="store.code" *ngFor="let store of stores"></nz-option>
+
+                </nz-select>
+                <!-- <my-searchselect #searchselect [selectlistarr]="stores" (searchcode)="searchcode($event)"
+                                                (searchname)="searchname($event)" [gettextvalue]="region_name"></my-searchselect> -->
+              </td>
+              <td colspan="2"></td>
+            </tr>
+          </table>
+        </td>
+        <td>
+          <!-- <button class="btn btn-primary" type="button" (click)="search(params)">查询</button>
+                                <button class="btn btn-primary" type="button" (click)="Reset()">重置</button> -->
+          <button nz-button nzType="primary" style="margin-right:10px;" (click)="getsearchresults()">查询</button>
+          <button nz-button nzType="default" (click)="Reset()">重置</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <!-- </table> -->
+</div>
+<my-page [params]='params' [pagecount]='pageSize' [changecount]='changecount' (childparams)="childparams($event)"></my-page>
+
+<div class="horizontal-scroll" id="zh-tablecontent" style="min-height: 260px;" *ngIf="results">
+  <div class="operatingbox">
+    <!-- <input type="button" class="btn btn-success" value="导出到CSV文件" (click)="addexport()"> -->
+    <button nz-button nzType="default" (click)="addexport()"><i nz-icon type="file-excel" theme="outline"></i>导出到CSV文件</button>
+
+  </div>
+  <ul class="tabcontenttit">
+    <li>拣货员总人数:{{results?.pickerstotal}}</li>
+    <li>超时拣货员人数:{{results?.timeoutpickers}}</li>
+    <li>拣货总次数:{{results?.pickstotal}}</li>
+    <li>超时总次数:{{results?.timeouttotal}}</li>
+    <li>超时次数占比:{{results?.timeoutscale}}</li>
+    <li>最长超时时长:{{results?.maxtimeout}}s</li>
+    <li style="border-right: none;">平均超时时长:{{results?.averagetimeout}}s</li>
+  </ul>
+  <div class="resultlists">
+    <nz-table [nzData]="results" nzBordered>
+      <thead>
+        <tr>
+          <th width="5%">编号</th>
+          <th width="5%">姓名</th>
+          <th width="8%">拣货次数</th>
+          <th width="10%">拣货超时次数</th>
+          <th width="10%">超时次数占比</th>
+          <th width="9%">超时总时长</th>
+          <th width="9%">最长超时时长</th>
+          <th width="9%">平均超时时长</th>
+          <th width="10%">日期</th>
+          <th>所属门店</th>
+          <th width="10%">门店联系方式</th>
+        </tr>
+      </thead>
+      <tbody *ngIf="!results.rows||results.rows.length===0">
+        <!-- <tr>
+          <td colspan="11">暂无数据！</td>
+        </tr> -->
+      </tbody>
+      <tbody>
+        <tr *ngFor="let item of results.rows;let i = index;">
+          <td>{{item?.code}}</td>
+          <td>{{item?.name}}</td>
+          <td>{{item?.all_count}}</td>
+          <td>{{item?.over_count}}</td>
+          <td>{{item?.ratio}}</td>
+          <td>{{item?.over_time}}s</td>
+          <td>{{item?.max_time}}s</td>
+          <td>{{item?.average_time}}s</td>
+          <td>{{item.summary_date}}</td>
+          <td>[{{item?.region_code}}]{{item?.region_name}}</td>
+          <td>{{item?.phone}}</td>
+        </tr>
+        <tr>
+          <td colspan="11" style="text-align: left;color:#f00;">
+            列表统计截止时间为24时,到截止时间未完成的项目计入第二天，以此类推
+          </td>
+        </tr>
+      </tbody>
+    </nz-table>
+  </div>
+</div>

@@ -1,0 +1,85 @@
+<div class="addrole-warpper">
+  <form nz-form [formGroup]="validateForm" (ngSubmit)="submitForm()">
+    <nz-form-item>
+      <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="rolename">角色名称</nz-form-label>
+      <nz-form-control [nzSm]="10" [nzXs]="24">
+        <input nz-input formControlName="rolename" id="rolename" [(ngModel)]="params.rolename">
+        <nz-form-explain *ngIf="validateForm.get('rolename')?.dirty && validateForm.get('rolename')?.errors">
+          角色名称不能为空!
+        </nz-form-explain>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="distribution">分配权限</nz-form-label>
+      <nz-form-control [nzSm]="10" [nzXs]="24">
+        <input nz-input formControlName="distribution" id="distribution" [(ngModel)]="params.distribution"
+          (click)="showModel()" readonly>
+        <nz-form-explain *ngIf="validateForm.get('distribution')?.dirty && validateForm.get('distribution')?.errors">
+          请先分配权限
+        </nz-form-explain>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="distribution">描述</nz-form-label>
+      <nz-form-control [nzSm]="10" [nzXs]="24">
+        <textarea formControlName="remarks" nz-input rows="2" [(ngModel)]="params.remarks"></textarea>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-control [nzOffset]="6" [nzSpan]="24">
+        <button nz-button type="submit" nzType="primary" [disabled]="!validateForm.valid" style="margin-right: 15px;">保 存</button>
+        <button nz-button type="button" (click)="gotoList()">返 回</button>
+      </nz-form-control>
+    </nz-form-item>
+  </form>
+</div>
+
+
+<!-- 选择权限 -->
+<nz-modal nzWidth="60%" [(nzVisible)]="totaldiv" nzTitle="权限分配" (nzOnCancel)="closediv()" (nzOnOk)="btnAffirm()">
+  <ul class="modal-body">
+    <li *ngFor="let items of navList;let i=index">
+      <p *ngIf="items.state===0">
+        <input class="zh-toggleicon" *ngIf="!items.zs" type="button" value="-" (click)="isShow($event,i)">
+        <input class="zh-toggleicon" *ngIf="items.zs" type="button" value="+" (click)="isShow($event,i)">
+        <label class="checkbox-inline custom-checkbox nowrap allmd" title="{{items.remarks}}">
+          <input type="checkbox" (change)="getSelected($event,items)" [checked]="items.sfxz" />
+          <span>{{items.menuname}}</span>
+        </label>
+      </p>
+      <div *ngIf="items.state===0">
+        <div *ngIf="items.List">
+          <ul *ngIf="!items.zs">
+            <li *ngFor="let nav of items.List;let j=index" class="menulist">
+              <p *ngIf="nav.state===0">
+                <i></i>
+                <label class="checkbox-inline custom-checkbox nowrap allmd">
+                  <input type="checkbox" (change)="getSelected1($event,nav,i)" [checked]="nav.sfxz" />
+                  <span> {{nav.menuname}}</span>
+                </label>
+              </p>
+              <div *ngIf="nav.state===0">
+                <div class="btnlist" *ngIf="nav.powerbtn">
+                  <div *ngFor="let btns of nav.powerbtn">
+                    <p *ngIf="!btns.btncode">
+                      <label class="checkbox-inline custom-checkbox nowrap allmd" *ngFor="let btn of btns.groupings">
+                        <input type="checkbox" (change)="xzCheck(btn,i,j)" [checked]="btn.sfxz" />
+                        <span class="btns">{{btn.btnname}}</span>
+                      </label>
+                    </p>
+                    <p *ngIf="btns.btncode">
+                      <label class="checkbox-inline custom-checkbox nowrap allmd" *ngFor="let btn of btns.groupings">
+                        <input type="checkbox" (change)="xzCheck(btn,i,j)" [checked]="btn.sfxz" />
+                        <span class="btns">{{btn.btnname}}</span>
+                      </label>
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </li>
+  </ul>
+</nz-modal>

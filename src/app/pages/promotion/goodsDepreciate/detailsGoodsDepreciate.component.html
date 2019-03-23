@@ -1,0 +1,96 @@
+<!-- 标题 -->
+<div class="w-card" style="padding: 20px;font-size: 20px;font-weight: 500">
+  {{pd_name}}（{{params.search.pd_code}}）
+</div>
+
+<!-- 查询条件 -->
+<div class="w-card">
+  <div class="card-left">
+    <table style="width:100%;border-collapse:separate; border-spacing:0px 20px;">
+      <tr>
+        <td width="10%" class="card-title">门店编码</td>
+        <td width="22%">
+          <input nz-input type="text" class="ng-input" placeholder="请输入门店编码" [(ngModel)]="params.search.region_code">
+        </td>
+        <td width="10%" class="card-title">门店名称</td>
+        <td width="22%">
+          <input nz-input type="text" class="ng-input" placeholder="请输入门店名称" [(ngModel)]="params.search.region_name">
+        </td>
+        <td width="10%" class="card-title">商品编码</td>
+        <td width="22%">
+          <input nz-input type="text" class="ng-input" placeholder="请输入商品编码" [(ngModel)]="params.search.item_code">
+        </td>
+      </tr>
+      <tr>
+        <td width="10%" class="card-title">商品名称</td>
+        <td width="22%">
+          <input nz-input type="text" class="ng-input" placeholder="请输入商品名称" [(ngModel)]="params.search.item_name">
+        </td>
+      </tr>
+    </table>
+
+  </div>
+  <div class="card-right">
+    <button nz-button nzType="primary" (click)="searchInfo()" style="width: 65px;height: 32px;">查询</button>
+    <button nz-button nzType="primary" (click)="Reset()" style="margin-left: 10px;width: 65px;height: 32px;">重置</button>
+  </div>
+</div>
+
+<div style="margin: 20px 0 0 10px;" >
+  <span class="link" (click)="onLinkCancel('2')">批量取消</span>
+</div>
+<!-- *ngIf="data_status!=='4'" -->
+
+<!-- 表格 -->
+<div class="w-card">
+  <nz-table #table_Data [nzData]="_dataSet" nzBordered [nzShowPagination]="'false'" style="width:100%"
+    [nzFrontPagination]="'false'" [nzFooter]="commodyNum">
+    <thead>
+      <tr>
+        <th width="6%" style="text-align: left">
+          <label nz-checkbox [(ngModel)]="allChecked" (ngModelChange)="updateAllChecked($event)" [nzIndeterminate]="indeterminate">
+          </label>
+        </th>
+        <th width="10%">门店编号</th>
+        <th width="10%">门店名称</th>
+        <th width="10%">商品编码</th>
+        <th width="10%">商品条码</th>
+        <th width="10%">商品名称</th>
+        <th width="8%">原价</th>
+        <th width="8%">活动价</th>
+        <th width="8%">是否同步</th>
+        <th width="12%">同步失败原因</th>
+        <th style="text-align: center">操作</th>
+      </tr>
+    </thead>
+    <tbody style="font-size: 12px;">
+      <tr *ngFor="let item of table_Data.data">
+        <td style="text-align: left;padding-top: 14px;padding-bottom: 14px;">
+          <div nz-checkbox [(ngModel)]="item.checked" (ngModelChange)="updateSingleChecked($event,item)"></div>
+        </td>
+        <td>{{item.region_code}}</td>
+        <td>{{item.region_name}}</td>
+        <td>{{item.item_code}}</td>
+        <td>{{item.barcode}}</td>
+        <td>{{item.item_name}}</td>
+        <td>{{item.sale_price}}</td>
+        <td>{{item.price}}</td>
+        <td>{{item.has_syn=='1'?'是':'否'}}</td>
+        <td>{{item.errorMsg?item.errorMsg:'--'}}</td>
+        <td style="text-align: center">
+          <div class="link delete" (click)="onLinkCancel('1',item)" style="margin-left: 0" *ngIf="item.data_status==='1'|| item.data_status==='2'">取消
+          </div>
+          <div class="delete" style="margin-left: 0;" *ngIf="item.data_status==='3'" >已取消</div>
+        </td>
+      </tr>
+    </tbody>
+  </nz-table>
+</div>
+
+<!-- 返回按钮 -->
+<div style="margin-top:30px; text-align: center;">
+  <button nz-button nzType="default" (click)="goback()">返回列表</button>
+</div>
+
+<!-- 分页组件 -->
+<my-page [params]='params' [pagecount]='pageSize' [changecount]='pageSize.count' (childparams)="childparams($event)"></my-page>

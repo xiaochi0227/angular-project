@@ -1,0 +1,105 @@
+.logincard {
+  width: 900px;
+  height: 530px;
+  background: #fff;
+  border-radius: 10px;
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  margin: auto;
+
+  .cardhead {
+    padding-left: 38px;
+    padding-top: 24px;
+    vertical-align: middle;
+
+    .logo {
+      margin-right: 18px;
+    }
+
+    .title {
+      display: inline-block;
+      width: 300px;
+      border-left: 1px solid #E9E9F0;
+      vertical-align: middle;
+      height: 40px;
+      padding-left: 18px;
+
+      h2 {
+        font-size: 20px;
+        color: #333;
+        line-height: normal;
+        -webkit-margin-before: 0em;
+        -webkit-margin-after: 0em;
+        margin-bottom: 10px;
+        margin-top: -10px;
+      }
+
+      p {
+        font-size: 14px;
+        color: #4D4F5C;
+        line-height: normal;
+        margin-bottom: 0;
+      }
+    }
+  }
+
+  .rightbg {
+    position: absolute;
+    top: 45px;
+    right: -50px;
+  }
+
+  .leftbg {
+    img {
+      transform: rotateY(180deg);
+    }
+
+    position: absolute;
+    bottom:45px;
+    left:-50px;
+  }
+
+  .circle {
+    position: absolute;
+    bottom: 110px;
+    left: -102px;
+    display: inline-block;
+    width: 32px;
+    height: 32px;
+    border-radius: 16px;
+    background: #fff;
+  }
+
+  .cardbody {
+    position: relative;
+
+    .leftimg {
+      padding-left: 74px;
+      padding-top: 80px;
+
+      img {
+        width: 320px;
+        height: 230px;
+      }
+    }
+
+    .rightbox {
+      position: absolute;
+      width: 280px;
+      right: 100px;
+      top: 20px;
+
+      h3 {
+        font-size: 28px;
+        line-height: normal;
+        color: #0E6EB8;
+        -webkit-margin-before: 0em;
+        -webkit-margin-after: 0em;
+        text-align: center;
+      }
+    }
+  }
+}

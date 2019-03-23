@@ -1,0 +1,198 @@
+.authmain {
+  width: 100%;
+  height: 100%;
+  background-color: #0E6EB8;
+  position: relative;
+
+  .bg {
+    position: absolute;
+    right: 20px;
+    width: 600px;
+    height: 315px;
+    bottom: 1px;
+    right: 20px;
+    z-index: -10;
+  }
+
+  // 登录界面
+  .loginbox {
+    .logincontent {
+      padding-top: 40px;
+      position: relative;
+      z-index: 10;
+
+      ul {
+        list-style: none;
+        padding: 0;
+        font-size: 14px;
+
+        li {
+          margin-bottom: 25px;
+        }
+
+        .logintext {
+          border: none;
+          outline: none;
+          border-bottom: 1px solid #E9E9F0;
+          line-height: 35px;
+          height: 35px;
+          color: #A5A6AC;
+          width: 100%;
+        }
+
+        .loginbt {
+          margin-top: 10px;
+        }
+
+        .wjmm {
+          float: right;
+          color: #43425D;
+        }
+
+        .password {
+          position: relative;
+
+          .icon_eye {
+            position: absolute;
+            right: 5px;
+            top: 10px;
+            font-size: 18px;
+            text-decoration: line-through;
+            cursor: pointer;
+          }
+        }
+      }
+
+      .logintip {
+        position: absolute;
+        text-align: center;
+        bottom: -40px;
+        color: #F2001C;
+        width: 100%;
+      }
+    }
+
+    .loginbottom {
+      position: relative;
+      margin-top: 70px;
+
+      .hzhblogolist {
+        text-align: center;
+
+        .hzhblogo {
+          display: inline-block;
+          vertical-align: middle;
+          width: 25px;
+          height: 25px;
+          margin-right: 24px;
+          overflow: hidden;
+          background: url('../../../assets/img/channelicon.png') no-repeat;
+        }
+
+        .img1-1 {
+          background-position: -2px 0;
+        }
+
+        .img1-2 {
+          background-position: -51px 0;
+        }
+
+        .img1-3 {
+          background-position: -99px 0;
+        }
+
+        .img1-4 {
+          background-position: -147px 0;
+        }
+
+        .img1-5 {
+          background-position: -196px 0;
+        }
+
+        .img1-6 {
+          background-position: -244px 0;
+          margin-right: 0;
+        }
+      }
+
+      p {
+        text-align: center;
+        color: #999;
+        white-space: nowrap;
+        position: absolute;
+        left: -50px;
+        top: 40px;
+      }
+    }
+  }
+
+  //重置密码
+  .resetpassbox {
+    padding-top: 40px;
+    position: relative;
+
+    ul {
+      list-style: none;
+      padding: 0;
+      font-size: 14px;
+
+      li {
+        margin-bottom: 25px;
+      }
+
+      .logintext {
+        border: none;
+        outline: none;
+        border-bottom: 1px solid #E9E9F0;
+        line-height: 35px;
+        height: 35px;
+        color: #A5A6AC;
+        width: 100%;
+      }
+
+      .loginbt {
+        margin-top: 10px;
+      }
+
+      .yzm {
+        position: relative;
+
+        .getyzmbt {
+          background: #00C617;
+          border-color: #00C617;
+          position: absolute;
+          right: 5px;
+          bottom: 5px;
+        }
+      }
+
+      .password {
+        position: relative;
+
+        .icon_eye {
+          position: absolute;
+          right: 5px;
+          top: 10px;
+          font-size: 18px;
+          text-decoration: line-through;
+          cursor: pointer;
+        }
+      }
+
+      .gologin {
+        text-align: right;
+        padding-right: 5px;
+      }
+    }
+
+    .editmsg {
+      display: inline-block;
+      padding: 5px 25px;
+      background: #00C617;
+      position: absolute;
+      color: #fff;
+      top: -135px;
+      left: -123px;
+    }
+  }
+}

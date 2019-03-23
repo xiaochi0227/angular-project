@@ -1,0 +1,94 @@
+<!-- <div class="zh-serchbox">
+  <table class="zh-serchtable">
+    <tbody>
+      <tr>
+        <td>
+          <table class="table zh-serch-table">
+            <tr>
+              <td class="zh-zdname">渠道</td>
+              <td class="zh-textbox">
+                <nz-select style="width: 150px;" [(ngModel)]="params.search.channel" nzShowSearch nzAllowClear
+                  nzPlaceHolder="请选择渠道">
+                  <nz-option nzValue="" nzLabel="全部渠道"></nz-option>
+                  <nz-option *ngFor="let channel of channels" [nzValue]="channel.channel_keyword" [nzLabel]="channel.name"></nz-option>
+                </nz-select>
+              </td>
+              <td class="zh-zdname"><span style="color:#f00;font-size:16px;margin-right:5px;">*</span>门店:</td>
+              <td class="zh-textbox">
+                <nz-select style="width: 200px;" [(ngModel)]="params.search.region_code" nzShowSearch nzAllowClear
+                  nzPlaceHolder="请选择门店名称">
+                  <nz-option nzValue="" nzLabel="全部门店"></nz-option>
+                  <nz-option *ngFor="let store of stores" [nzValue]="store.code" [nzLabel]="store.codename"></nz-option>
+                </nz-select>
+              </td>
+              <td class="zh-zdname">线上品类</td>
+              <td class="zh-textbox">
+                <nz-select style="width: 120px;margin-right:5px;" [(ngModel)]="params.search.online_sup_code"
+                  (ngModelChange)="getSubOnlineCategories(params.search.online_sup_code)" nzShowSearch nzAllowClear>
+                  <nz-option *ngFor="let category of firstCategories;" [nzValue]="category.code" [nzLabel]="category.name"></nz-option>
+                </nz-select>
+                <nz-select style="width: 120px;" [(ngModel)]="params.search.online_cat_code" (ngModelChange)="getSubOnlineCategories(params.search.online_sup_code)"
+                  nzShowSearch nzAllowClear>
+                  <nz-option *ngFor="let category of subCategories;" [nzValue]="category.code" [nzLabel]="category.name"></nz-option>
+                </nz-select>
+              </td>
+            </tr>
+            <tr>
+              <td class="zh-zdname">选择时间</td>
+              <td colspan="3" style="text-align:left;">
+                <my-daterange [_startDate]="_startDate" [_endDate]="_endDate" (startchange)="startchange($event)"
+                  (endchange)="endchange($event)"></my-daterange>
+              </td>
+              <td colspan="2">
+                <span style="color:#f00;">数据汇总量大,请勿频繁操作</span>
+              </td>
+            </tr>
+          </table>
+        </td>
+        <td>
+          <button nz-button nzType="primary" style="margin-right:10px;" (click)="search(params)">查询</button>
+          <button nz-button nzType="default" (click)="rest()">重置</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div> -->
+<app-search-bar [queryList]='queryList' [searchStart]="searchStart"
+  (searchSubOnlineCategories)="getSelection('online_cat_code',$event)" (childemit)="search($event)"></app-search-bar>
+<my-page [params]='params' [pagecount]='pageSize' [changecount]='changecount' (childparams)="childparams($event)">
+</my-page>
+<div class="horizontal-scroll" style="min-height: 500px;">
+  <div class="zh-listhead1">
+    <div class="hzdiv" style="color:#f00;text-align:left;padding-left:15px;">
+      本销售排行以完成订单为准
+    </div>
+    <span class="btspan">
+      <button nz-button nzType="default" (click)="addexport()"><i nz-icon type="file-excel"
+          theme="outline"></i>导出到CSV文件</button>
+    </span>
+  </div>
+
+
+  <nz-table #nzTable [nzData]="rankings" [nzShowPagination]="false" [nzFrontPagination]="false" nzBordered>
+    <thead>
+      <tr>
+        <th width="8%">序号</th>
+        <th width="20%">条码</th>
+        <th width="18%">编码</th>
+        <th>商品名称</th>
+        <th width="10%">数量</th>
+        <th width="13%">金额</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let ranking of nzTable.data;let i=index">
+        <td>{{cow+i+1}}</td>
+        <td>{{ranking.barcode}}</td>
+        <td>{{ranking.item_code}}</td>
+        <td>{{ranking.name}}</td>
+        <td>{{ranking.total}}</td>
+        <td>{{ranking.money}}</td>
+      </tr>
+    </tbody>
+  </nz-table>
+</div>

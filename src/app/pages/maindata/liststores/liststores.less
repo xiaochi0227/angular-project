@@ -1,0 +1,392 @@
+@import "../../../../styles.less";
+// .ng2-smart-table-container table.ng2-smart-table {
+//   th,
+//   td {
+//     border: 1px solid $border-light !important;
+//     line-height: 35px;
+//     vertical-align: middle;
+//   }
+//   color: $default-text;
+//   input {
+//     line-height: 1.5 !important;
+//   }
+//   tbody {
+//     tr:hover {
+//       background: rgba(0, 0, 0, 0.03);
+//     }
+//   }
+//   a.ng2-smart-sort-link {
+//     font-size: 14px !important;
+//     color: $default-text;
+//     font-weight: $font-bolder;
+//     &.sort {
+//       font-weight: $font-bolder !important;
+//       &::after {
+//         border-bottom-color: $default-text !important;
+//       }
+//     }
+//   }
+//   .ng2-smart-actions {
+//     width: 70px;
+//     text-align: center;
+//     .actions {
+//       float: none;
+//       text-align: center;
+//     }
+//   }
+//   a.ng2-smart-action {
+//     font-size: 14px !important;
+//     color: $default-text;
+//     padding: 0 5px;
+//     display: inline-block;
+//     &.ng2-smart-action-add-add {
+//       font-size: 25px !important;
+//     }
+//   }
+// }
+
+// nav.ng2-smart-pagination-nav {
+//   display: flex;
+//   justify-content: center;
+// }
+
+// img.goodimg {
+//   width: 60px;
+//   height: 60px;
+// }
+
+// /*搜索条件样式*/
+
+// .zh-serchbox .zh-serchtable {
+//   margin-bottom: 0px;
+//   border-top: 1px solid #fff
+// }
+
+// .zh-serchbox .zh-serchtable td {
+//   vertical-align: middle;
+//   border-top: none;
+// }
+
+// .zh-serchbox .zh-serchtable .zh-zdname {
+//   text-align: right;
+// }
+
+// .zh-serchbox .zh-serchtable .zh-textbox {
+//   text-align: left;
+// }
+
+// .zh-serchbox .zh-serchtable .zh-serch-table {
+//   margin-bottom: 0;
+// }
+
+// .zh-serchbox .zh-serchtable .zh-serch-table td {
+//   border-top: 0;
+//   height: 50px;
+// }
+
+// .zh-serchbox input[type="radio"] {
+//   vertical-align: middle;
+//   margin-right: 5px;
+// }
+
+// .zh-serchbox .table .table {
+//   background: none;
+// }
+
+// .horizontal-scroll .table td {
+//   vertical-align: middle;
+// }
+
+// .zh-tdbox {
+//   padding: 0;
+// }
+
+// .horizontal-scroll .zh-tdtable {
+//   width: 100%;
+//   border: none;
+// }
+
+// .horizontal-scroll .zh-tdtable td {
+//   border: none;
+// }
+
+// .table tbody+tbody {
+//   border-top: none;
+// }
+
+// .table-bordered th,
+// .table-bordered td {
+//   border: 1px solid rgba(255, 255, 255, 0.3);
+//   vertical-align: middle;
+//   height: 45px;
+// }
+
+// select.form-control:not([size]):not([multiple]) {
+//   height: 2.2rem;
+// }
+
+// .in {
+//   display: block;
+// }
+
+// .modal {
+//   position: fixd;
+//   overflow: visible;
+// }
+
+// .modal .modal-dialog {
+//   z-index: 2;
+//   color: #333;
+// }
+
+// .modal .zh-serch-table td {
+//   height: 50px;
+// }
+
+// .modal .zh-serch-table .form-control {
+//   border: 1px solid #d9d9d9;
+//   color: #333;
+// }
+
+// .modal-backdrop {
+//   opacity: 0.2;
+//   display: none;
+// }
+
+// .modal .zh-text,
+// .modal .zh-select {
+//   border: 1px solid #d9d9d9;
+//   color: #333;
+// }
+
+// .modal .zh-pages {
+//   padding: 0 15px;
+// }
+
+// .modal .table-bordered,
+// .modal .table-bordered>thead>tr>th,
+// .modal .table-bordered>tbody>tr>th,
+// .modal .table-bordered>tfoot>tr>th,
+// .modal .table-bordered>thead>tr>td,
+// .modal .table-bordered>tbody>tr>td,
+// .modal .table-bordered>tfoot>tr>td {
+//   border: 1px solid #d9d9d9;
+//   line-height: 25px;
+//   text-align: center;
+// }
+
+// .modal .table-bordered .form-control {
+//   border: 1px solid #d9d9d9;
+//   color: #333;
+//   margin: 3px;
+// }
+
+// .modal .modal-body {
+//   height: auto;
+// }
+
+// select.form-control:not([size]):not([multiple]) {
+//   height: 35px;
+// }
+
+// .zh-upload {
+//   position: relative;
+//   cursor: pointer;
+//   overflow: hidden;
+//   display: block;
+//   *display: inline;
+//   *zoom: 1;
+//   line-height: 25px;
+//   color: #333;
+//   cursor: pointer;
+//   text-align: center;
+// }
+
+// .zh-upload input[type="file"] {
+//   position: absolute;
+//   font-size: 100px;
+//   right: 0;
+//   top: 0;
+//   opacity: 0;
+//   filter: alpha(opacity=0);
+//   cursor: pointer;
+// }
+
+// .zh-mulcoltable thead th {
+//   text-align: center !important;
+// }
+
+// .zh-mulcoltable thead tr[class='tablehead'] {
+//   background: rgba(63, 122, 188, 0.5);
+//   font-weight: bold;
+// }
+
+// .textleft {
+//   text-align: left;
+// }
+
+// .textright {
+//   text-align: right;
+// }
+
+// .textcenter {
+//   text-align: center;
+// }
+
+// .zh-dsrtable {
+//   border: 1px solid rgba(225, 225, 225, 0.2);
+//   border-top: none;
+// }
+
+// .zh-dsrtable span {
+//   display: block;
+//   text-align: center;
+// }
+
+// .zh-dsrtable th,
+// .zh-dsrtable td {
+//   text-align: center;
+// }
+
+// .zh-dsrtable th {
+//   background: rgba(63, 122, 188, 0.5);
+//   color: #fff;
+//   font-weight: bold;
+// }
+
+// .zh-optlist {
+//   width: 100%;
+//   padding: 5px 0;
+//   text-align: left;
+
+//   select {
+//     width: 90%;
+//   }
+// }
+
+// .zh-optlist span {
+//   display: inline-block;
+//   vertical-align: middle;
+// }
+
+// .zh-optlist .zh-infoname {
+//   width: 11%;
+//   text-align: right;
+//   margin-bottom: 3px;
+//   line-height: 18px;
+// }
+
+// .zh-optlist .zh-channeltext {
+//   width: 21%;
+//   margin-bottom: 6px;
+// }
+
+// .zh-optlist .zh-channeltext input {
+//   width: 90%;
+// }
+
+.phone {
+  margin-left: 30px;
+  margin-top: 10px;
+}
+
+.phone input {
+  color: #666;
+  border-radius: 5px;
+  background-color: rgba(255, 255, 255, 0.1);
+  box-shadow: none;
+  font-size: 14px;
+  border: 1px solid #999;
+  display: inline-block
+}
+
+table tr td {
+  text-align: right;
+
+}
+
+// .p-table {
+//   tr td {
+//     padding: 5px 0;
+//   }
+// }
+
+.p-textbox {
+  text-align: right;
+  padding:5px 0;
+}
+table tr .p-inputbox {
+  text-align:left;
+  padding-left:15px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+}
+.set_qdbox {
+  display:flex;
+  justify-content:space-between;
+  .qd_right button {
+    margin-right:5px;
+  }
+}
+.qd_left {
+  padding-left:5px;
+}
+table thead tr th {
+  padding:10px 0;
+  border: 1px solid #ccc;
+  // border-bottom: 1px solid #ccc;
+}
+.zh-infoname {
+  width:12.5%;
+  padding:5px 10px;
+  // vertical-align: middle;
+}
+.zh-channeltext {
+  width:20%;
+  padding:5px 10px;
+}
+.select_box{
+  width:100%;
+}
+.save_qdbox {
+  padding:5px 0;
+  border:1px solid #ccc;
+ text-align: center;
+ button {
+   margin-right:5px;
+ }
+}
+.log_table {
+    border-top: 1px solid #ccc;
+    border-left: 1px solid #ccc;
+    margin-bottom:80px;
+    text-align: center;
+  tr td {
+    padding:5px;
+    border-bottom: 1px solid #ccc;
+    border-right: 1px solid #ccc;
+  }
+}
+
+// 添加门店页面
+.head_top {
+  width:100%;
+  display:flex;
+  justify-content: space-around;
+  // align-items: center;
+  align-content:flex-start;
+}
+.head_bottom {
+  width:100%;
+  display:flex;
+  justify-content: space-around;
+  // align-items: center;
+  align-content:flex-start;
+}
+.text_box {
+  padding:5px 5px;
+  text-align: center;
+}
+
+
+

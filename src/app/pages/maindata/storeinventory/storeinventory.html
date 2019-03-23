@@ -1,0 +1,202 @@
+<nz-card *ngIf="stocks">
+  <table width="100%" class="p_table">
+    <tr>
+      <td class="zh-zdname" width="10%">商品编码：</td>
+      <td class="zh-textbox" width="15%">
+        <input nz-input type="text" class="form-control" [(ngModel)]="paras.search.item_code" placeholder="请输入商品编码"
+          name="code"></td>
+      <td class="zh-zdname" width="10%">商品条码：</td>
+      <td class="zh-textbox" width="15%"><input nz-input type="text" class="form-control"
+          [(ngModel)]="paras.search.barcode" placeholder="请输入商品条码" name="barcode"></td>
+      <td class="zh-zdname" width="10%"><span style="color:#f00;font-size:16px;margin-right:5px;">*</span>门店: </td>
+      <td class="zh-textbox" width="15%">
+        <nz-select [(ngModel)]="paras.search.region_code" style="width:100%">
+          <nz-option nzLabel="{{store.codename}}" nzValue="{{store.code}}" *ngFor="let store of stores"></nz-option>
+        </nz-select>
+      </td>
+      <td rowspan="3" width="25%" style="text-align:center;">
+        <button nz-button nzType="primary" style="margin-right:10px;" (click)="search(paras)">查询</button>
+        <button nz-button nzType="primary" (click)="Reset()">重置</button>
+      </td>
+    </tr>
+    <tr>
+      <td class="zh-zdname">商品名称：</td>
+      <td class="zh-textbox"><input nz-input type="text" class="form-control" [(ngModel)]="paras.search.item_name"
+          placeholder="请输入商品名称" name="name"></td>
+      <td class="zh-zdname">经营渠道：</td>
+      <td class="zh-textbox">
+        <nz-select [(ngModel)]="paras.search.channel_keyword" class="select_box">
+          <nz-option nzLabel="{{channel.name}}" *ngFor="let channel of channelss;"
+            nzValue="{{channel.channel_keyword}}"></nz-option>
+        </nz-select>
+      </td>
+      <td class="zh-zdname">线上品类: </td>
+      <td class="zh-textbox">
+        <div>
+          <nz-select [(ngModel)]="paras.search.online_sup_code" class="select_box" name="online_sup_code"
+            style="width:48%;display:inline-block;" (change)="getSubOnlineCategories(paras.search.online_sup_code)">
+            <nz-option *ngFor="let category of firstCategories;" nzLabel="{{category.name}}"
+              nzValue="{{category.code}}"></nz-option>
+          </nz-select>
+          <nz-select [(ngModel)]="paras.search.online_cat_code" class="select_box" name="online_cat_code"
+            style="width:48%;display:inline-block;">
+            <nz-option *ngFor="let category of subCategories;" nzLabel="{{category.name}}" nzValue="{{category.code}}">
+            </nz-option>
+          </nz-select>
+        </div>
+      </td>
+    </tr>
+    <tr>
+      <td></td>
+      <td class="zh-textbox" colspan="5">
+        <label nz-checkbox [(ngModel)]="paras.search.ltzero">小于等于门店安全库存量</label>
+      </td>
+    </tr>
+  </table>
+
+
+  <div class="btn_box">
+    <div>
+      <button nz-button nzSzie="small" *ngIf="dcdcsvwj" (click)="addexport()">导出到CSV文件</button>
+    </div>
+    <div>
+      <button nz-button nzSzie="small" *ngIf="spaqkcdr" (click)="gettemplate(template)">
+        <app-upload [onUploaded]="spaqkcimport" nzLimit="1" [uploadname]="'商品安全库存导入'" [uploadtype]="'text'">
+        </app-upload>
+      </button>
+    </div>
+    <div>
+      <button nz-button nzSzie="small" *ngIf="xzmb" (click)="download('商品安全库存导入模板')">下载模板</button>
+    </div>
+  </div>
+  <my-page [params]='paras' [pagecount]='stockCount' [changecount]='changecount' (childparams)="childparams($event)">
+  </my-page>
+
+  <nz-table #nzTable [nzData]="stocks.rows" [nzShowPagination]="false" [nzFrontPagination]="false" nzBordered>
+    <thead>
+      <tr>
+        <th width="5%">序号</th>
+        <th width="7%">来源</th>
+        <th width="10%">线下商品编码/条码</th>
+        <th width="15%">商品名称</th>
+        <th width="13%">线上品类</th>
+        <th width="7%">库存共享率</th>
+        <th width="7%">安全库存量</th>
+        <th width="6%">线下库存</th>
+        <th width="6%">可用库存</th>
+        <th width="11%">同步时间</th>
+        <th>操作</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let stock of nzTable.data; let i=index">
+        <td>{{cow+i+1}}</td>
+        <td>{{stock.source_type_keyword}}</td>
+        <td>{{stock.item_code}}/<div>{{stock.barcode}}</div>
+        </td>
+        <td>{{stock.item_name}}</td>
+        <td>
+          <div *ngIf="stock.online_cat_code"><span class="label label-success">线上</span>{{stock.online_cat_name}}</div>
+        </td>
+        <td style="padding:0 2px;"><input nz-input type="number" [(ngModel)]="stock.kcgxl" name="kcgxl"></td>
+        <td style="padding:0 2px;"><input nz-input type="number" [(ngModel)]="stock.aqkcl" name="aqkcl"></td>
+        <td class="textright">{{stock.erp_qty}}</td>
+        <td class="textright">{{stock.available_qty}}</td>
+        <td>
+          <div><span class="label label-default">线下</span>{{stock.timestamp}}</div>
+        </td>
+        <td>
+          <!-- <input type="button" class="btn btn-info btn-xs" (click)="updateStock(stock)" value="保 存"> -->
+          <!-- <input type="button" class="btn btn-info btn-xs" (click)="inventorychangelog(stock)" value="库存日志"> -->
+          <button nz-button nzType="primary" nzSize="small" (click)="updateStock(stock)">保 存</button>
+          <button nz-button nzType="primary" nzSize="small" (click)="inventorychangelog(stock)">库存日志</button>
+        </td>
+      </tr>
+    </tbody>
+  </nz-table>
+
+</nz-card>
+
+<!-- 库存日志 -->
+<!-- <div class="modal fade" [class.in]="totaldiv12">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" (click)="closediv12()">
+          &times;
+        </button>
+        <h4 class="modal-title" id="myModalLabel">
+          库存日志
+        </h4>
+      </div>
+      <form>
+        <div class="modal-body" style="max-height: 660px;overflow-y: scroll;" *ngIf="inventorychangelogs">
+          <div style="text-align: left;padding-left: 10px;padding-bottom:10px;font-weight: bold;">
+            <span style="margin-right:30px;">门店编码:<b style="color:#f00;">{{inventorychangelogs[0]?.region_code}}</b></span>
+            <span style="margin-right:30px;">商品编码:<b style="color:#f00;">{{inventorychangelogs[0]?.item_code}}</b></span>
+            <span style="margin-right:30px;">商品条码:<b style="color:#f00;">{{inventorychangelogs[0]?.barcode}}</b></span>
+          </div>
+          <div class="row" style="padding:0 15px;">
+            <table class="table table-bordered">
+              <tr>
+                <td>修改时间</td>
+                <td>可用库存</td>
+                <td>库存变化值</td>
+                <td>修改人</td>
+              </tr>
+              <tr *ngFor="let inventorychangelog of inventorychangelogs; let i=index">
+                <td>{{inventorychangelog.timestamp}}</td>
+                <td>{{inventorychangelog.qty}}</td>
+                <td [ngSwitch]="inventorychangelog?.yanse">
+                  <span *ngSwitchCase="'0'" style="color:#bb3cc2;">{{inventorychangelog?.variation}}</span>
+                  <span *ngSwitchCase="'1'" style="color:#f00;">{{inventorychangelog?.variation}}</span>
+                  <span *ngSwitchCase="'2'" style="color: #1da130;">{{inventorychangelog?.variation}}</span>
+                </td>
+                <td>{{inventorychangelog.oper_user}}</td>
+              </tr>
+            </table>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div> -->
+
+<!-- 库存日志 -->
+<nz-modal [(nzVisible)]="totaldiv12" nzTitle="The first Modal" (nzOnCancel)="closediv12()" (nzOnOk)="closediv12()">
+  <div class="modal-body" style="max-height: 660px;overflow-y: scroll;" *ngIf="inventorychangelogs">
+    <div style="text-align: left;padding-left: 10px;padding-bottom:10px;font-weight: bold;">
+      <span style="margin-right:30px;">门店编码:<b style="color:#f00;">{{inventorychangelogs[0]?.region_code}}</b></span>
+      <span style="margin-right:30px;">商品编码:<b style="color:#f00;">{{inventorychangelogs[0]?.item_code}}</b></span>
+      <span style="margin-right:30px;">商品条码:<b style="color:#f00;">{{inventorychangelogs[0]?.barcode}}</b></span>
+    </div>
+    <div class="row" style="padding:0 15px;">
+        <nz-table #modalTable [nzData]="inventorychangelogs" [nzShowPagination]="false" [nzFrontPagination]="false"
+          nzBordered>
+          <tr>
+            <td>修改时间</td>
+            <td>可用库存</td>
+            <td>库存变化值</td>
+            <td>修改人</td>
+          </tr>
+          <tr *ngFor="let inventorychangelog of modalTable.data; let i=index">
+            <td>{{inventorychangelog.timestamp}}</td>
+            <td>{{inventorychangelog.qty}}</td>
+            <td [ngSwitch]="inventorychangelog?.yanse">
+              <span *ngSwitchCase="'0'" style="color:#bb3cc2;">{{inventorychangelog?.variation}}</span>
+              <span *ngSwitchCase="'1'" style="color:#f00;">{{inventorychangelog?.variation}}</span>
+              <span *ngSwitchCase="'2'" style="color: #1da130;">{{inventorychangelog?.variation}}</span>
+            </td>
+            <td>{{inventorychangelog.oper_user}}</td>
+          </tr>
+        </nz-table>
+    </div>
+  </div>
+</nz-modal>
+
+
+
+
+<ng-template #template let-notification>
+  <import-tip [importres]="results"></import-tip>
+</ng-template>

@@ -1,0 +1,36 @@
+<div class="zh-serchbox">
+  <div class="box">
+    <div class="left">
+      <span>自动回复模板</span>
+    </div>
+    <div class="right">
+      <textarea rows="4" nz-input [(ngModel)]="postObj.conlent" nzPlaceHolder="回复内容会被公开展示并影响用户对门店的印象，一旦提交不可修改，请注意措辞，最多200字"></textarea>
+      <div style="padding:3px 0;">
+        输入内容不能超过
+        <span style="color:#f00;font-weight:bold;">200</span>
+        个文字
+        <span *ngIf="postObj.conlent&&postObj.conlent.length>0">，
+          您已经输入了
+          <span style="color:#f00;font-weight: bold;">{{postObj.conlent.length}}</span>
+          字</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="box">
+    <div class="left">
+      <span>开启自动回复好评</span>
+    </div>
+    <div class="right">
+      <nz-radio-group [(ngModel)]="postObj.iszdhf">
+        <label [nzValue]="true" nz-radio>是</label>
+        <label [nzValue]="false" nz-radio>否</label>
+      </nz-radio-group>
+    </div>
+
+  </div>
+  <div class="box">
+    <button nz-button nzType="primary" (click)="saveautoreply()">保存</button>
+  </div>
+
+</div>
